@@ -1,0 +1,31 @@
+{
+  "meta": {
+    "id": "market-v1",
+    "title": "Market structure sample series",
+    "note": "ILLUSTRATIVE SAMPLE DATA demonstrating terminal wiring and chart forms. Values are not live quotes. Live feed integration (exchange / data-vendor API) is a roadmap item.",
+    "sources": ["Illustrative"],
+    "version": "0.1.0"
+  },
+  "futuresCurve": {
+    "asOfLabel": "Sample curve — not live",
+    "unit": "USD/bbl",
+    "months": ["M1", "M2", "M3", "M4", "M5", "M6", "M7", "M8", "M9", "M10", "M11", "M12"],
+    "series": [
+      { "name": "WTI", "values": [67.4, 67.0, 66.6, 66.2, 65.8, 65.5, 65.2, 65.0, 64.8, 64.7, 64.6, 64.5] },
+      { "name": "Brent", "values": [71.1, 70.8, 70.4, 70.0, 69.6, 69.3, 69.0, 68.8, 68.6, 68.4, 68.3, 68.2] }
+    ],
+    "reading": "Sample curve shown in backwardation: near-dated contracts above deferred, the classic tight-market shape."
+  },
+  "crackSpread": {
+    "unit": "USD/bbl",
+    "label": "3-2-1 crack spread, trailing 12 weeks (sample)",
+    "weeks": ["W-11", "W-10", "W-9", "W-8", "W-7", "W-6", "W-5", "W-4", "W-3", "W-2", "W-1", "W-0"],
+    "values": [23.1, 24.0, 25.2, 24.6, 23.8, 25.9, 27.4, 26.8, 25.5, 24.9, 26.2, 27.1]
+  },
+  "inventories": {
+    "unit": "million barrels, weekly change",
+    "label": "US commercial crude inventory change (sample)",
+    "weeks": ["W-7", "W-6", "W-5", "W-4", "W-3", "W-2", "W-1", "W-0"],
+    "values": [2.4, -1.1, -3.8, 0.9, -2.2, 1.6, -4.1, -0.7]
+  }
+}

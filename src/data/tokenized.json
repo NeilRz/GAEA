@@ -1,0 +1,89 @@
+{
+  "meta": {
+    "id": "tokenized-v1",
+    "title": "Tokenized oil & commodity RWA registry",
+    "note": "Seed registry. Entries compiled from public issuer documentation and require verification before publication. The headline finding is the gap itself: no tokenized crude oil product currently operates at institutional scale.",
+    "sources": ["Issuer documentation", "Public block explorers"],
+    "version": "0.1.0"
+  },
+  "gap": {
+    "oilEquityMarketCapUSD": 2100000000000,
+    "oilEquityNote": "Approximate combined market capitalization of listed oil & gas majors (illustrative order of magnitude)",
+    "tokenizedOilUSD": 0,
+    "tokenizedCommodityRWAUSD": 1400000000,
+    "tokenizedCommodityNote": "Approximate live tokenized commodity value, dominated by gold products (PAXG, XAUT)"
+  },
+  "assets": [
+    {
+      "symbol": "PAXG",
+      "name": "Pax Gold",
+      "issuer": "Paxos",
+      "underlying": "Allocated gold (LBMA)",
+      "category": "commodity-gold",
+      "chains": ["Ethereum"],
+      "status": "live",
+      "relevance": "Benchmark for compliant commodity-backed token structure — the template a crude-backed token would follow"
+    },
+    {
+      "symbol": "XAUT",
+      "name": "Tether Gold",
+      "issuer": "Tether",
+      "underlying": "Allocated gold",
+      "category": "commodity-gold",
+      "chains": ["Ethereum"],
+      "status": "live",
+      "relevance": "Largest tokenized commodity by market value alongside PAXG"
+    },
+    {
+      "symbol": "—",
+      "name": "Tokenized oil-major equity wrappers",
+      "issuer": "Various (e.g. Backed / xStocks-style issuers)",
+      "underlying": "Listed oil & gas equities",
+      "category": "tokenized-equity",
+      "chains": ["Multiple"],
+      "status": "partial",
+      "relevance": "Equity wrapper programs exist but oil & gas coverage is thin and unverified — tracked as a coverage gap"
+    },
+    {
+      "symbol": "OUSG",
+      "name": "Ondo Short-Term US Govt Bond",
+      "issuer": "Ondo Finance",
+      "underlying": "US Treasuries",
+      "category": "context-rwa",
+      "chains": ["Ethereum"],
+      "status": "live",
+      "relevance": "Context: institutional RWA rails exist and are proven for treasuries — not yet applied to energy"
+    },
+    {
+      "symbol": "PTR",
+      "name": "Petro",
+      "issuer": "Government of Venezuela",
+      "underlying": "Claimed oil-reserve backing",
+      "category": "oil-backed",
+      "chains": ["Proprietary"],
+      "status": "defunct",
+      "relevance": "Cautionary precedent: oil-linked token without verifiable reserves attestation or redemption, wound down in 2024"
+    },
+    {
+      "symbol": "—",
+      "name": "Direct tokenized crude (barrels / royalty streams)",
+      "issuer": "None at institutional scale",
+      "underlying": "Physical crude, wellbore royalty interests",
+      "category": "oil-backed",
+      "chains": [],
+      "status": "gap",
+      "relevance": "The whitespace GAEA targets: no verifiable, institutionally credible tokenized crude instrument exists today"
+    }
+  ],
+  "watchlist": [
+    { "ticker": "XOM", "name": "Exxon Mobil", "listing": "NYSE", "tokenization": "none-verified" },
+    { "ticker": "CVX", "name": "Chevron", "listing": "NYSE", "tokenization": "none-verified" },
+    { "ticker": "SHEL", "name": "Shell", "listing": "NYSE/LSE", "tokenization": "none-verified" },
+    { "ticker": "TTE", "name": "TotalEnergies", "listing": "NYSE/Euronext", "tokenization": "none-verified" },
+    { "ticker": "BP", "name": "BP", "listing": "NYSE/LSE", "tokenization": "none-verified" },
+    { "ticker": "COP", "name": "ConocoPhillips", "listing": "NYSE", "tokenization": "none-verified" },
+    { "ticker": "OXY", "name": "Occidental Petroleum", "listing": "NYSE", "tokenization": "none-verified" },
+    { "ticker": "EQNR", "name": "Equinor", "listing": "NYSE/OSE", "tokenization": "none-verified" },
+    { "ticker": "TBA", "name": "GAEA NASDAQ partner companies", "listing": "NASDAQ", "tokenization": "pending-announcement" }
+  ]
+}

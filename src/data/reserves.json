@@ -1,0 +1,36 @@
+{
+  "meta": {
+    "id": "reserves-v1",
+    "title": "Proven crude oil reserves by country",
+    "unit": "billion barrels",
+    "note": "Seed dataset. Figures are approximate, compiled from public OPEC Annual Statistical Bulletin and U.S. EIA country data. Verify against primary sources before publication.",
+    "sources": ["OPEC ASB", "U.S. EIA"],
+    "version": "0.1.0"
+  },
+  "countries": [
+    { "iso": "VE", "name": "Venezuela", "reserves": 303.0, "lat": 8.5, "lng": -66.0, "status": "constrained", "note": "Largest proven reserves; output constrained by sanctions and underinvestment" },
+    { "iso": "SA", "name": "Saudi Arabia", "reserves": 267.0, "lat": 24.0, "lng": 45.0, "status": "producing", "note": "Swing producer; OPEC+ anchor" },
+    { "iso": "IR", "name": "Iran", "reserves": 209.0, "lat": 32.5, "lng": 53.5, "status": "constrained", "note": "Sanctions-constrained exports" },
+    { "iso": "CA", "name": "Canada", "reserves": 171.0, "lat": 56.5, "lng": -114.0, "status": "producing", "note": "Predominantly Alberta oil sands" },
+    { "iso": "IQ", "name": "Iraq", "reserves": 145.0, "lat": 32.0, "lng": 44.0, "status": "producing", "note": "Second-largest OPEC producer" },
+    { "iso": "AE", "name": "United Arab Emirates", "reserves": 113.0, "lat": 24.0, "lng": 54.0, "status": "producing", "note": "Capacity expansion toward 5 Mb/d" },
+    { "iso": "KW", "name": "Kuwait", "reserves": 102.0, "lat": 29.3, "lng": 47.6, "status": "producing", "note": "Greater Burgan complex" },
+    { "iso": "RU", "name": "Russia", "reserves": 80.0, "lat": 61.0, "lng": 74.0, "status": "constrained", "note": "West Siberian core; G7 price cap and sanctions regime" },
+    { "iso": "LY", "name": "Libya", "reserves": 48.0, "lat": 28.0, "lng": 17.5, "status": "volatile", "note": "Output swings with political stability" },
+    { "iso": "US", "name": "United States", "reserves": 48.0, "lat": 38.0, "lng": -98.0, "status": "producing", "note": "World's largest producer; shale-driven" },
+    { "iso": "NG", "name": "Nigeria", "reserves": 37.0, "lat": 5.5, "lng": 6.5, "status": "producing", "note": "Niger Delta and deepwater offshore" },
+    { "iso": "KZ", "name": "Kazakhstan", "reserves": 30.0, "lat": 47.0, "lng": 52.0, "status": "producing", "note": "Tengiz and Kashagan; CPC export dependency" },
+    { "iso": "CN", "name": "China", "reserves": 26.0, "lat": 36.0, "lng": 105.0, "status": "producing", "note": "Mature onshore basins; largest crude importer" },
+    { "iso": "QA", "name": "Qatar", "reserves": 25.0, "lat": 25.3, "lng": 51.2, "status": "producing", "note": "Condensate-weighted; LNG superpower" },
+    { "iso": "BR", "name": "Brazil", "reserves": 15.0, "lat": -23.5, "lng": -41.0, "status": "producing", "note": "Pre-salt Santos Basin growth" },
+    { "iso": "DZ", "name": "Algeria", "reserves": 12.0, "lat": 30.0, "lng": 5.0, "status": "producing", "note": "Saharan blend; European pipeline supplier" },
+    { "iso": "GY", "name": "Guyana", "reserves": 11.0, "lat": 8.0, "lng": -57.0, "status": "producing", "note": "Stabroek block discovered recoverable resource; fastest-growing new producer" },
+    { "iso": "NO", "name": "Norway", "reserves": 8.0, "lat": 60.0, "lng": 3.0, "status": "producing", "note": "North Sea and Barents; Arctic-active producer" },
+    { "iso": "EC", "name": "Ecuador", "reserves": 8.0, "lat": -1.0, "lng": -77.5, "status": "producing", "note": "Oriente basin" },
+    { "iso": "AO", "name": "Angola", "reserves": 8.0, "lat": -8.0, "lng": 12.0, "status": "producing", "note": "Deepwater offshore; exited OPEC 2024" },
+    { "iso": "AZ", "name": "Azerbaijan", "reserves": 7.0, "lat": 40.0, "lng": 50.5, "status": "producing", "note": "Caspian ACG complex" },
+    { "iso": "MX", "name": "Mexico", "reserves": 6.0, "lat": 19.5, "lng": -93.5, "status": "producing", "note": "Bay of Campeche; mature decline" },
+    { "iso": "OM", "name": "Oman", "reserves": 5.0, "lat": 20.5, "lng": 56.5, "status": "producing", "note": "EOR-heavy production; Murban-adjacent pricing" },
+    { "iso": "GL", "name": "Greenland", "reserves": 0.0, "lat": 71.0, "lng": -42.0, "status": "moratorium", "note": "No proven reserves; USGS assessed significant undiscovered potential. New oil & gas exploration licensing suspended by government decision in 2021" }
+  ]
+}

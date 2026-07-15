@@ -1,0 +1,40 @@
+{
+  "meta": {
+    "id": "fields-v1",
+    "title": "Major oil & gas fields and Arctic energy assets",
+    "note": "Seed dataset. Locations are approximate basin/field centroids; statuses compiled from public reporting. Verify against operator disclosures before publication.",
+    "sources": ["Operator disclosures", "Public reporting"],
+    "version": "0.1.0"
+  },
+  "fields": [
+    { "name": "Ghawar", "country": "Saudi Arabia", "lat": 25.43, "lng": 49.62, "type": "conventional", "status": "producing", "arctic": false, "note": "World's largest conventional oil field" },
+    { "name": "Safaniya", "country": "Saudi Arabia", "lat": 28.3, "lng": 48.75, "type": "offshore", "status": "producing", "arctic": false, "note": "World's largest offshore oil field" },
+    { "name": "Greater Burgan", "country": "Kuwait", "lat": 28.95, "lng": 47.95, "type": "conventional", "status": "producing", "arctic": false, "note": "Second-largest conventional field" },
+    { "name": "Rumaila", "country": "Iraq", "lat": 30.2, "lng": 47.35, "type": "conventional", "status": "producing", "arctic": false, "note": "Iraq's largest producing field" },
+    { "name": "West Qurna", "country": "Iraq", "lat": 30.7, "lng": 47.4, "type": "conventional", "status": "producing", "arctic": false, "note": "Multi-phase supergiant" },
+    { "name": "Upper Zakum", "country": "UAE", "lat": 24.87, "lng": 53.67, "type": "offshore", "status": "producing", "arctic": false, "note": "Among the largest offshore fields globally" },
+    { "name": "Tengiz", "country": "Kazakhstan", "lat": 46.15, "lng": 53.4, "type": "conventional", "status": "producing", "arctic": false, "note": "Supergiant; CPC pipeline export route" },
+    { "name": "Kashagan", "country": "Kazakhstan", "lat": 46.4, "lng": 51.0, "type": "offshore", "status": "producing", "arctic": false, "note": "North Caspian; highest-cost supergiant development" },
+    { "name": "Samotlor", "country": "Russia", "lat": 61.1, "lng": 76.75, "type": "conventional", "status": "producing", "arctic": false, "note": "Mature West Siberian supergiant" },
+    { "name": "Priobskoye", "country": "Russia", "lat": 61.3, "lng": 70.3, "type": "conventional", "status": "producing", "arctic": false, "note": "One of Russia's largest producing fields" },
+    { "name": "Permian Basin", "country": "United States", "lat": 31.8, "lng": -102.4, "type": "shale", "status": "producing", "arctic": false, "note": "World's most productive basin; ~6 Mb/d" },
+    { "name": "Bakken", "country": "United States", "lat": 47.8, "lng": -103.0, "type": "shale", "status": "producing", "arctic": false, "note": "Williston Basin tight oil" },
+    { "name": "Eagle Ford", "country": "United States", "lat": 28.9, "lng": -98.4, "type": "shale", "status": "producing", "arctic": false, "note": "South Texas tight oil and condensate" },
+    { "name": "Athabasca Oil Sands", "country": "Canada", "lat": 57.0, "lng": -111.5, "type": "oil-sands", "status": "producing", "arctic": false, "note": "Largest single deposit of crude bitumen" },
+    { "name": "Tupi (Lula)", "country": "Brazil", "lat": -25.4, "lng": -42.8, "type": "pre-salt", "status": "producing", "arctic": false, "note": "Santos Basin pre-salt anchor" },
+    { "name": "Stabroek Block", "country": "Guyana", "lat": 8.0, "lng": -56.8, "type": "deepwater", "status": "producing", "arctic": false, "note": "Liza, Payara, Yellowtail developments" },
+    { "name": "Johan Sverdrup", "country": "Norway", "lat": 58.85, "lng": 2.45, "type": "offshore", "status": "producing", "arctic": false, "note": "Largest North Sea development in decades" },
+    { "name": "Cantarell", "country": "Mexico", "lat": 19.4, "lng": -92.2, "type": "offshore", "status": "declining", "arctic": false, "note": "Former supergiant in long-term decline" },
+
+    { "name": "Prudhoe Bay", "country": "United States", "lat": 70.32, "lng": -148.7, "type": "conventional", "status": "producing", "arctic": true, "note": "Largest North American Arctic oil field; feeds Trans-Alaska Pipeline" },
+    { "name": "Willow", "country": "United States", "lat": 70.2, "lng": -152.0, "type": "conventional", "status": "development", "arctic": true, "note": "NPR-A development approved 2023" },
+    { "name": "Vankor", "country": "Russia", "lat": 67.8, "lng": 83.6, "type": "conventional", "status": "producing", "arctic": true, "note": "Anchor of Vostok Oil cluster" },
+    { "name": "Yamal LNG (Sabetta)", "country": "Russia", "lat": 71.27, "lng": 72.06, "type": "lng", "status": "producing", "arctic": true, "note": "Arctic LNG export hub on the Northern Sea Route" },
+    { "name": "Arctic LNG 2", "country": "Russia", "lat": 71.6, "lng": 74.3, "type": "lng", "status": "constrained", "arctic": true, "note": "Gydan Peninsula; development constrained by sanctions" },
+    { "name": "Snøhvit", "country": "Norway", "lat": 71.6, "lng": 21.3, "type": "lng", "status": "producing", "arctic": true, "note": "Barents Sea gas to Melkøya LNG" },
+    { "name": "Goliat", "country": "Norway", "lat": 71.3, "lng": 22.3, "type": "offshore", "status": "producing", "arctic": true, "note": "First oil field in the Norwegian Barents Sea" },
+    { "name": "Johan Castberg", "country": "Norway", "lat": 72.5, "lng": 20.3, "type": "offshore", "status": "producing", "arctic": true, "note": "Barents Sea; came onstream 2025" },
+    { "name": "Disko–Nuussuaq Basin", "country": "Greenland", "lat": 70.3, "lng": -53.5, "type": "frontier", "status": "moratorium", "arctic": true, "note": "West Greenland frontier basin; new exploration licensing suspended in 2021" },
+    { "name": "Jameson Land Basin", "country": "Greenland", "lat": 71.0, "lng": -24.0, "type": "frontier", "status": "inactive", "arctic": true, "note": "East Greenland frontier basin; historically explored, currently inactive" }
+  ]
+}
