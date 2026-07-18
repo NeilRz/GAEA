@@ -1,5 +1,6 @@
 import { createHash } from "node:crypto";
-import { Wallet } from "ethers";
+import nacl from "tweetnacl";
+import bs58 from "bs58";
 import reserves from "@/data/reserves.json";
 import fields from "@/data/fields.json";
 import tokenized from "@/data/tokenized.json";
@@ -7,16 +8,19 @@ import market from "@/data/market.json";
 import briefs from "@/data/briefs.json";
 
 /**
- * GAEA Oracle v1 — verifiable data attestation.
+ * GAEA Oracle v2 — verifiable data attestation, Solana-native.
  *
  * Every dataset is canonicalized (recursively sorted keys), hashed with
- * SHA-256, and the digest is signed by the GAEA oracle key over the
- * message `GAEA-ATTEST-V1|<dataset>|<version>|<sha256>`. Anyone can
- * recompute the hash from /api/datasets/:id and recover the signer with
- * a standard EIP-191 personal-message verification.
+ * SHA-256, and the digest is signed by the GAEA oracle key (Ed25519, a
+ * standard Solana keypair) over the message
+ * `GAEA-ATTEST-V2|<dataset>|<version>|<sha256>`. Anyone can recompute the
+ * hash from /api/datasets/:id and verify the detached Ed25519 signature
+ * against the published signer pubkey. The same key anchors the digest
+ * manifest on Solana via the Memo program (see scripts/anchor.ts).
  */
 
-export const ATTEST_DOMAIN = "GAEA-ATTEST-V1";
+export const ATTEST_DOMAIN = "GAEA-ATTEST-V2";
+export const ANCHOR_DOMAIN = "GAEA-ANCHOR-V1";
 
 // Dev signer only. Set ORACLE_SIGNER_KEY in production; without it, the key
 // is derived from a public string and provides no security guarantees.
@@ -71,11 +75,28 @@ export function sha256Hex(input: string): string {
   return createHash("sha256").update(input, "utf8").digest("hex");
 }
 
-function getSigner(): { wallet: Wallet; dev: boolean } {
+// ORACLE_SIGNER_KEY accepts either a base58-encoded 64-byte secret key or a
+// solana-keygen JSON array. Both are the standard Solana secret-key formats.
+function parseSecretKey(raw: string): Uint8Array {
+  const trimmed = raw.trim();
+  const bytes = trimmed.startsWith("[")
+    ? Uint8Array.from(JSON.parse(trimmed) as number[])
+    : bs58.decode(trimmed);
+  if (bytes.length !== nacl.sign.secretKeyLength) {
+    throw new Error(
+      `ORACLE_SIGNER_KEY must be a ${nacl.sign.secretKeyLength}-byte Ed25519 secret key (got ${bytes.length} bytes)`
+    );
+  }
+  return bytes;
+}
+
+export function getSigner(): { keypair: nacl.SignKeyPair; dev: boolean } {
   const envKey = process.env.ORACLE_SIGNER_KEY;
-  if (envKey) return { wallet: new Wallet(envKey), dev: false };
-  const derived = "0x" + createHash("sha256").update(DEV_KEY_SEED).digest("hex");
-  return { wallet: new Wallet(derived), dev: true };
+  if (envKey) {
+    return { keypair: nacl.sign.keyPair.fromSecretKey(parseSecretKey(envKey)), dev: false };
+  }
+  const seed = createHash("sha256").update(DEV_KEY_SEED).digest();
+  return { keypair: nacl.sign.keyPair.fromSeed(seed), dev: true };
 }
 
 export function attestMessage(
@@ -88,33 +109,40 @@ export function attestMessage(
 
 export interface Attestation {
   domain: string;
+  scheme: "ed25519";
   dataset: string;
   title: string;
   version: string;
   sha256: string;
   message: string;
+  /** Base58 Ed25519 public key — the oracle's Solana address. */
   signer: string;
+  /** Base58 detached Ed25519 signature over the UTF-8 message bytes. */
   signature: string;
   signedAt: string;
   devSigner: boolean;
 }
 
-export async function attest(datasetId: string): Promise<Attestation | null> {
+export function attest(datasetId: string): Attestation | null {
   const entry = DATASETS[datasetId];
   if (!entry) return null;
   const hash = sha256Hex(canonicalize(entry.data));
   const message = attestMessage(datasetId, entry.version, hash);
-  const { wallet, dev } = getSigner();
-  const signature = await wallet.signMessage(message);
+  const { keypair, dev } = getSigner();
+  const signature = nacl.sign.detached(
+    new TextEncoder().encode(message),
+    keypair.secretKey
+  );
   return {
     domain: ATTEST_DOMAIN,
+    scheme: "ed25519",
     dataset: datasetId,
     title: entry.title,
     version: entry.version,
     sha256: hash,
     message,
-    signer: wallet.address,
-    signature,
+    signer: bs58.encode(keypair.publicKey),
+    signature: bs58.encode(signature),
     signedAt: new Date().toISOString(),
     devSigner: dev,
   };
@@ -132,4 +160,25 @@ export function datasetHashes(): Array<{
     version: entry.version,
     sha256: sha256Hex(canonicalize(entry.data)),
   }));
+}
+
+/**
+ * The anchor manifest is the canonical list of dataset digests. Its SHA-256
+ * is what gets written to Solana (memo `GAEA-ANCHOR-V1|<manifestSha256>`),
+ * so one transaction commits to every dataset at once.
+ */
+export function anchorManifest(): {
+  domain: string;
+  datasets: Array<{ id: string; version: string; sha256: string }>;
+} {
+  return {
+    domain: ANCHOR_DOMAIN,
+    datasets: datasetHashes()
+      .map(({ id, version, sha256 }) => ({ id, version, sha256 }))
+      .sort((a, b) => (a.id < b.id ? -1 : 1)),
+  };
+}
+
+export function anchorManifestHash(): string {
+  return sha256Hex(canonicalize(anchorManifest()));
 }

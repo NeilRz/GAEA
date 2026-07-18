@@ -357,6 +357,46 @@ table.data th.num { text-align: right; }
 }
 .kv-list .v { flex: 1; min-width: 0; }
 
+/* ── oracle: pipeline steps & verdict banner ── */
+
+.step { display: flex; flex-direction: column; gap: 6px; }
+.step-num {
+  font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.14em;
+  color: var(--glacial-bright);
+}
+.step h4 {
+  font-family: var(--font-display); font-weight: 700; font-size: 15px;
+  margin: 0; letter-spacing: 0.01em;
+}
+.step p { margin: 0; font-size: 13px; color: var(--ink-2); }
+
+.verdict-banner {
+  display: flex; align-items: center; gap: 14px;
+  border: 1px solid var(--line-strong); border-radius: 8px;
+  padding: 14px 16px; margin-bottom: 16px;
+}
+.verdict-banner.valid {
+  border-color: rgba(43, 165, 126, 0.45);
+  background: rgba(43, 165, 126, 0.08);
+}
+.verdict-banner.invalid {
+  border-color: rgba(204, 74, 87, 0.45);
+  background: rgba(204, 74, 87, 0.08);
+}
+.verdict-mark {
+  width: 34px; height: 34px; border-radius: 50%; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 17px; font-weight: 700;
+}
+.verdict-banner.valid .verdict-mark { background: rgba(43, 165, 126, 0.18); color: #5fd4ae; }
+.verdict-banner.invalid .verdict-mark { background: rgba(204, 74, 87, 0.18); color: #e87a85; }
+.verdict-title {
+  font-family: var(--font-display); font-weight: 700; font-size: 15px; margin: 0;
+}
+.verdict-banner.valid .verdict-title { color: #5fd4ae; }
+.verdict-banner.invalid .verdict-title { color: #e87a85; }
+.verdict-sub { margin: 1px 0 0; font-size: 12px; color: var(--ink-2); }
+
 /* ── chart frame ── */
 
 .chart-frame { width: 100%; }

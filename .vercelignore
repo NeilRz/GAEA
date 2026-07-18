@@ -1,0 +1,5 @@
+# Never upload to Vercel builds
+vault/
+.keys/
+.claude/
+.env*

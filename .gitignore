@@ -24,6 +24,9 @@
 .DS_Store
 *.pem
 
+# oracle signer keys — never commit
+/.keys/
+
 # debug
 npm-debug.log*
 yarn-debug.log*

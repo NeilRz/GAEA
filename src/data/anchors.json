@@ -1,0 +1,44 @@
+{
+  "meta": {
+    "title": "On-chain anchors",
+    "description": "History of GAEA anchor transactions on Solana. Each entry commits the SHA-256 of the full dataset-digest manifest via the Memo program, signed by the oracle key. Written by scripts/anchor.ts."
+  },
+  "anchors": [
+    {
+      "anchoredAt": "2026-07-17T15:50:44.000Z",
+      "cluster": "devnet",
+      "slot": 476940654,
+      "signature": "gF1LxbA33Ybt6WConLc4JkGMw4gmBL43THH3SArZm8MipTEn47SqfPUEy3YJAM9TQadXLdBu7oWFLjrKhdw4usD",
+      "signer": "DDBT4er8HAHoHvg7xWHfqBY3sdrDhD7uZJW8SctxD9hY",
+      "memo": "GAEA-ANCHOR-V1|997c2b2fbf37763e451fa80c8dfe98ea26b05ce4acb70f1df6e169dd3c0c395f",
+      "manifestSha256": "997c2b2fbf37763e451fa80c8dfe98ea26b05ce4acb70f1df6e169dd3c0c395f",
+      "datasets": [
+        {
+          "id": "briefs",
+          "version": "0.1.0",
+          "sha256": "f56fe26ba1f91d5c2cb3083061325de03153cee549fcf949adb9f1cb902fb1f3"
+        },
+        {
+          "id": "fields",
+          "version": "0.1.0",
+          "sha256": "389233ac5b6b5a66b7bef8bb5355625a93ba13f47d5ffc306015a094c7317abc"
+        },
+        {
+          "id": "market",
+          "version": "0.1.0",
+          "sha256": "3c8183d60603a682ab4bd8a5008ac1d7db5c824678d1f970dbb72c033cdedf9b"
+        },
+        {
+          "id": "reserves",
+          "version": "0.1.0",
+          "sha256": "72a9bff19c4030931bdab2dbf757cbba0340c92e1e37a75d8b26736e92f44632"
+        },
+        {
+          "id": "tokenized",
+          "version": "0.1.0",
+          "sha256": "a545893694d4c33942a40b23dc2d6174da653e096165a016d6b80ee95b32be97"
+        }
+      ]
+    }
+  ]
+}

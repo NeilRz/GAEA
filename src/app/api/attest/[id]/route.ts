@@ -6,7 +6,7 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params;
-  const attestation = await attest(id);
+  const attestation = attest(id);
   if (!attestation) {
     return NextResponse.json(
       { error: `Unknown dataset '${id}'`, available: Object.keys(DATASETS) },

@@ -100,7 +100,7 @@ export default function Home() {
             DATASETS <b>{hashes.length}</b>
           </span>
           <span>
-            ATTESTATION <b>SHA-256 · EIP-191</b>
+            ATTESTATION <b>SHA-256 · ED25519</b>
           </span>
           <span>
             STATUS <b>V1 PROTOTYPE</b>

@@ -21,17 +21,23 @@ settlement infrastructure when digital commodity rules are final.
 ## Oracle scheme
 
 Datasets are canonicalized (recursively sorted keys), hashed with SHA-256, and
-signed over `GAEA-ATTEST-V1|<dataset>|<version>|<sha256>` using EIP-191
-personal-message signing. Anyone can recompute the hash from the raw dataset
-and recover the signer.
+signed over `GAEA-ATTEST-V2|<dataset>|<version>|<sha256>` with the oracle key —
+a standard Solana Ed25519 keypair. Anyone can recompute the hash from the raw
+dataset and verify the detached signature against the published signer pubkey.
+
+Each publication window, the manifest of all digests is anchored on Solana:
+`npm run anchor` sends a Memo-program transaction (`GAEA-ANCHOR-V1|<manifest
+sha256>`) signed by the oracle key and records it in `src/data/anchors.json`.
 
 ```
 GET /api/datasets          # dataset ids + current digests
 GET /api/datasets/:id      # raw canonical dataset
-GET /api/attest/:id        # signed attestation
+GET /api/attest/:id        # signed attestation (Ed25519)
 ```
 
-Set `ORACLE_SIGNER_KEY` (hex private key) in the environment for a real signer.
+Set `ORACLE_SIGNER_KEY` (base58 or solana-keygen JSON array) in the environment
+for a real signer; without it a publicly-derived dev key is used. The anchor
+script targets devnet by default (`SOLANA_RPC_URL`, `SOLANA_CLUSTER`).
 Without it a **dev key derived from a public string** is used — fine for local
 demos, meaningless for production.
 

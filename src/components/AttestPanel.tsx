@@ -1,10 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { verifyMessage } from "ethers";
+import nacl from "tweetnacl";
+import bs58 from "bs58";
 
 interface Attestation {
   domain: string;
+  scheme: "ed25519";
   dataset: string;
   title: string;
   version: string;
@@ -38,10 +40,12 @@ export default function AttestPanel({
       const a: Attestation = await res.json();
       setAtt(a);
       setVerified("pending");
-      const recovered = verifyMessage(a.message, a.signature);
-      setVerified(
-        recovered.toLowerCase() === a.signer.toLowerCase() ? "valid" : "invalid"
+      const ok = nacl.sign.detached.verify(
+        new TextEncoder().encode(a.message),
+        bs58.decode(a.signature),
+        bs58.decode(a.signer)
       );
+      setVerified(ok ? "valid" : "invalid");
     } catch (e) {
       setError(e instanceof Error ? e.message : "Request failed");
     } finally {
@@ -51,7 +55,11 @@ export default function AttestPanel({
 
   return (
     <div className="panel">
-      <p className="panel-title">Request & verify an attestation</p>
+      <p className="panel-title">Live demo — request & verify an attestation</p>
+      <p className="dim" style={{ fontSize: 13, marginTop: -6, marginBottom: 14 }}>
+        Pick a dataset. The oracle signs its fingerprint on the server; your
+        browser then checks the signature itself, locally.
+      </p>
       <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 16 }}>
         <select
           value={selected}
@@ -79,21 +87,35 @@ export default function AttestPanel({
       )}
 
       {att && (
+        <>
+          {verified === "valid" && (
+            <div className="verdict-banner valid">
+              <span className="verdict-mark" aria-hidden="true">✓</span>
+              <div>
+                <p className="verdict-title">Signature valid</p>
+                <p className="verdict-sub">
+                  Ed25519 signature verified locally in your browser — not by
+                  this server.
+                </p>
+              </div>
+            </div>
+          )}
+          {verified === "invalid" && (
+            <div className="verdict-banner invalid">
+              <span className="verdict-mark" aria-hidden="true">✕</span>
+              <div>
+                <p className="verdict-title">Signature mismatch</p>
+                <p className="verdict-sub">
+                  The signature does not match the signer key — do not trust
+                  this attestation.
+                </p>
+              </div>
+            </div>
+          )}
+          {verified === "pending" && (
+            <p className="dim" style={{ fontSize: 13 }}>Verifying…</p>
+          )}
         <div className="kv-list">
-          <div className="row">
-            <span className="k">Verdict</span>
-            <span className="v">
-              {verified === "valid" && (
-                <span className="badge good">
-                  Signature valid — signer recovered in your browser
-                </span>
-              )}
-              {verified === "invalid" && (
-                <span className="badge critical">Signature mismatch</span>
-              )}
-              {verified === "pending" && <span className="badge">Verifying…</span>}
-            </span>
-          </div>
           <div className="row">
             <span className="k">Dataset</span>
             <span className="v mono" style={{ fontSize: 12 }}>
@@ -134,6 +156,7 @@ export default function AttestPanel({
             </span>
           </div>
         </div>
+        </>
       )}
     </div>
   );
