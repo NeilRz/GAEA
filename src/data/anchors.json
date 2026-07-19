@@ -5,6 +5,42 @@
   },
   "anchors": [
     {
+      "anchoredAt": "2026-07-19T14:16:51.000Z",
+      "cluster": "devnet",
+      "slot": 477397200,
+      "signature": "5iqfr5v4Cw4MWr8b2L26HSV24Zy8fXf2mhZYnXBTp4yZvfZ7PQAUveeRscvHjSNLeTyVwW7T9ZTTyGxtuYRz16cG",
+      "signer": "DDBT4er8HAHoHvg7xWHfqBY3sdrDhD7uZJW8SctxD9hY",
+      "memo": "GAEA-ANCHOR-V1|6ec1c28a007f99f6ecffbc1fe167140949e0c191f912c880edae01d23f645809",
+      "manifestSha256": "6ec1c28a007f99f6ecffbc1fe167140949e0c191f912c880edae01d23f645809",
+      "datasets": [
+        {
+          "id": "fields",
+          "version": "0.2.0",
+          "sha256": "04d3248d82dadc3f732c48eea2fcb82566761d358f381f75878bd881f8f37c2f"
+        },
+        {
+          "id": "market",
+          "version": "0.1.0",
+          "sha256": "3c8183d60603a682ab4bd8a5008ac1d7db5c824678d1f970dbb72c033cdedf9b"
+        },
+        {
+          "id": "reserves",
+          "version": "0.1.0",
+          "sha256": "72a9bff19c4030931bdab2dbf757cbba0340c92e1e37a75d8b26736e92f44632"
+        },
+        {
+          "id": "sites",
+          "version": "0.1.0",
+          "sha256": "0df77f7d1c9d2cd09318ddb5739ee6b8ac44fc2b7eba6e72a03c0e00ea41e9aa"
+        },
+        {
+          "id": "tokenized",
+          "version": "0.2.0",
+          "sha256": "015f48514dd188263f1517aafe665fa5c3d508e5c8ed4513597cd68fce8a086c"
+        }
+      ]
+    },
+    {
       "anchoredAt": "2026-07-19T14:03:37.000Z",
       "cluster": "devnet",
       "slot": 477395029,

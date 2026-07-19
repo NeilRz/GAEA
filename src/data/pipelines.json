@@ -1,0 +1,20 @@
+{
+  "meta": {
+    "title": "Major oil & gas trunk pipelines (approximate routes)",
+    "note": "Reference layer — schematic waypoint routes for orientation, not engineering alignments. Unsigned; not part of the attested dataset manifest."
+  },
+  "pipelines": [
+    { "name": "Trans-Alaska (TAPS)", "kind": "oil", "status": "operating", "figure": "~0.5 Mb/d", "note": "Prudhoe Bay to Valdez, 1,288 km", "coords": [[-148.7, 70.3], [-149.0, 68.5], [-148.8, 66.5], [-147.7, 64.8], [-145.6, 63.0], [-146.35, 61.13]] },
+    { "name": "Keystone", "kind": "oil", "status": "operating", "figure": "~0.6 Mb/d", "note": "Hardisty to Steele City / Cushing / Gulf", "coords": [[-111.3, 52.7], [-104.6, 49.0], [-100.7, 45.5], [-97.0, 40.0], [-96.77, 35.98], [-95.2, 30.0]] },
+    { "name": "Trans Mountain (TMX)", "kind": "oil", "status": "operating", "figure": "~0.89 Mb/d capacity", "note": "Edmonton to Burnaby; expansion onstream 2024", "coords": [[-113.3, 53.5], [-118.0, 52.2], [-120.5, 50.7], [-122.9, 49.28]] },
+    { "name": "Colonial", "kind": "products", "status": "operating", "figure": "~2.5 Mb/d", "note": "Largest US refined-products system, Houston to NY harbor", "coords": [[-95.1, 29.8], [-90.1, 32.3], [-84.4, 33.75], [-80.8, 35.2], [-77.5, 37.5], [-74.1, 40.7]] },
+    { "name": "CPC", "kind": "oil", "status": "operating", "figure": "~1.4 Mb/d", "note": "Tengiz to Novorossiysk; main Kazakh export route", "coords": [[53.4, 46.6], [51.9, 47.1], [48.0, 46.3], [44.0, 45.0], [39.5, 44.9], [37.77, 44.72]] },
+    { "name": "Druzhba (southern branch)", "kind": "oil", "status": "constrained", "figure": "flows curtailed", "note": "World's longest oil pipeline network; EU flows largely wound down", "coords": [[52.3, 54.9], [50.1, 53.2], [43.0, 53.4], [34.4, 53.25], [29.27, 52.05], [24.0, 49.8], [22.3, 48.6], [19.1, 47.5]] },
+    { "name": "ESPO", "kind": "oil", "status": "operating", "figure": "~1.6 Mb/d system", "note": "Taishet to Kozmino with Daqing branch; Russia's Pacific route", "coords": [[98.0, 55.94], [104.0, 56.8], [108.0, 56.5], [117.0, 55.0], [123.9, 53.99], [128.0, 50.5], [131.0, 45.5], [133.05, 42.74]] },
+    { "name": "Power of Siberia", "kind": "gas", "status": "operating", "figure": "38 Bcm/yr design", "note": "Chayanda/Kovykta gas to China", "coords": [[112.0, 62.5], [116.5, 60.0], [122.0, 55.5], [127.5, 50.3], [126.6, 45.8]] },
+    { "name": "Nord Stream 1 & 2", "kind": "gas", "status": "inactive", "figure": "110 Bcm/yr design", "note": "Baltic seabed lines; damaged 2022, idle", "coords": [[28.7, 60.7], [24.0, 59.2], [18.5, 56.5], [15.5, 55.0], [13.6, 54.15]] },
+    { "name": "TurkStream", "kind": "gas", "status": "operating", "figure": "31.5 Bcm/yr", "note": "Anapa across the Black Sea to Thrace", "coords": [[37.35, 44.9], [33.0, 43.3], [29.5, 42.2], [27.7, 41.63]] },
+    { "name": "BTC", "kind": "oil", "status": "operating", "figure": "~1.0 Mb/d capacity", "note": "Baku–Tbilisi–Ceyhan; Caspian crude to the Mediterranean", "coords": [[49.9, 40.4], [46.9, 41.6], [44.8, 41.72], [42.8, 41.0], [41.3, 39.9], [38.5, 38.3], [35.3, 36.9]] },
+    { "name": "West–East Gas Pipeline", "kind": "gas", "status": "operating", "figure": "~77 Bcm/yr system", "note": "Tarim Basin to Shanghai, backbone of Chinese gas", "coords": [[84.0, 41.5], [93.5, 40.5], [103.8, 36.05], [108.9, 34.3], [114.3, 32.0], [118.8, 32.1], [121.5, 31.2]] }
+  ]
+}

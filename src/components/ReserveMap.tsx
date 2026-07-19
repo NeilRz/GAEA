@@ -1,31 +1,54 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import maplibregl, { Map as MLMap } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 import reserves from "@/data/reserves.json";
 import fields from "@/data/fields.json";
 import sites from "@/data/sites.json";
+import pipelines from "@/data/pipelines.json";
 
 const GROUPS = {
   oilgas: { color: "#e8a33d", label: "Oil & gas fields", hint: "supergiants, shale, LNG" },
+  pipelines: { color: "#c67c1b", label: "Trunk pipelines", hint: "approximate routes" },
   base: { color: "#b26a4e", label: "Base & industrial metals", hint: "copper, iron, zinc, bauxite" },
   precious: { color: "#cbc3b1", label: "Precious metals", hint: "gold, silver, PGM" },
   battery: { color: "#2ba57e", label: "Battery metals", hint: "lithium, nickel, cobalt" },
   ree: { color: "#8a75e8", label: "Rare earths", hint: "NdPr, heavy REE" },
   nuclear: { color: "#8fb4c9", label: "Nuclear", hint: "plants ◦ white ring · U mines" },
+  plants: { color: "#5fd4ae", label: "Power plants (34,936)", hint: "WRI GPPD · all fuels · clustered" },
   reserves: { color: "#5e8ba6", label: "Proven oil reserves", hint: "circle area = billion bbl" },
   arctic: { color: "#6fd4c3", label: "Arctic highlight", hint: "assets above 66°33′N" },
 } as const;
 
 type GroupKey = keyof typeof GROUPS;
 
-const SPOTLIGHT: Array<{
-  name: string;
-  sub: string;
-  lngLat: [number, number];
-  zoom: number;
-}> = [
+const FUEL_GROUP: Record<string, string> = {
+  Coal: "fossil", Gas: "fossil", Oil: "fossil", Petcoke: "fossil", Cogeneration: "fossil",
+  Hydro: "hydro",
+  Nuclear: "nuclear",
+  Solar: "renewable", Wind: "renewable", Geothermal: "renewable", Biomass: "renewable",
+  Waste: "renewable", "Wave and Tidal": "renewable",
+  Storage: "other", Other: "other",
+};
+
+const FUEL_COLORS: Record<string, string> = {
+  fossil: "#c67c1b",
+  hydro: "#3e90cb",
+  nuclear: "#8fb4c9",
+  renewable: "#2ba57e",
+  other: "#7e97a6",
+};
+
+const FUEL_CHIPS = [
+  { id: "all", label: "All" },
+  { id: "fossil", label: "Fossil" },
+  { id: "renewable", label: "Renewables" },
+  { id: "hydro", label: "Hydro" },
+  { id: "nuclear", label: "Nuclear" },
+];
+
+const SPOTLIGHT: Array<{ name: string; sub: string; lngLat: [number, number]; zoom: number }> = [
   { name: "Ghawar", sub: "world's largest oil field", lngLat: [49.62, 25.43], zoom: 6 },
   { name: "North Field / South Pars", sub: "world's largest gas field", lngLat: [52.2, 26.4], zoom: 6 },
   { name: "Permian Basin", sub: "~6 Mb/d shale engine", lngLat: [-102.4, 31.8], zoom: 5.5 },
@@ -41,43 +64,25 @@ const SPOTLIGHT: Array<{
 ];
 
 const STATUS_COLOR: Record<string, string> = {
-  producing: "#2ba57e",
-  operating: "#2ba57e",
-  development: "#8fb4c9",
-  construction: "#8fb4c9",
-  "restart-pending": "#8fb4c9",
-  constrained: "#c4a469",
-  declining: "#c4a469",
-  moratorium: "#c4a469",
-  dormant: "#c4a469",
-  blocked: "#cc4a57",
-  inactive: "#cc4a57",
-  defunct: "#cc4a57",
+  producing: "#2ba57e", operating: "#2ba57e",
+  development: "#8fb4c9", construction: "#8fb4c9", "restart-pending": "#8fb4c9",
+  constrained: "#c4a469", declining: "#c4a469", moratorium: "#c4a469", dormant: "#c4a469",
+  blocked: "#cc4a57", inactive: "#cc4a57", defunct: "#cc4a57",
 };
 
 function fc(features: GeoJSON.Feature[]): GeoJSON.FeatureCollection {
   return { type: "FeatureCollection", features };
 }
 
-function point(
-  lng: number,
-  lat: number,
-  properties: Record<string, unknown>
-): GeoJSON.Feature {
+function point(lng: number, lat: number, properties: Record<string, unknown>): GeoJSON.Feature {
   return { type: "Feature", geometry: { type: "Point", coordinates: [lng, lat] }, properties };
 }
 
 function fieldFeatures(): GeoJSON.Feature[] {
   return fields.fields.map((f) =>
     point(f.lng, f.lat, {
-      name: f.name,
-      country: f.country,
-      commodity: f.type,
-      figure: f.figure,
-      operator: "",
-      status: f.status,
-      note: f.note,
-      arctic: f.arctic,
+      name: f.name, country: f.country, commodity: f.type, figure: f.figure,
+      operator: "", status: f.status, note: f.note, arctic: f.arctic,
     })
   );
 }
@@ -87,17 +92,22 @@ function siteFeatures(group: string): GeoJSON.Feature[] {
     .filter((s) => s.group === group)
     .map((s) =>
       point(s.lng, s.lat, {
-        name: s.name,
-        country: s.country,
-        commodity: s.commodity,
-        figure: s.figure,
-        operator: s.operator,
-        status: s.status,
-        note: s.note,
-        arctic: s.arctic,
+        name: s.name, country: s.country, commodity: s.commodity, figure: s.figure,
+        operator: s.operator, status: s.status, note: s.note, arctic: s.arctic,
         kind: s.commodity.startsWith("Nuclear plant") ? "plant" : "mine",
       })
     );
+}
+
+function pipelineFeatures(): GeoJSON.Feature[] {
+  return pipelines.pipelines.map((p) => ({
+    type: "Feature",
+    geometry: { type: "LineString", coordinates: p.coords as [number, number][] },
+    properties: {
+      name: p.name, country: "", commodity: `${p.kind} pipeline`, figure: p.figure,
+      operator: "", status: p.status, note: p.note, kind: p.kind,
+    },
+  }));
 }
 
 function arcticFeatures(): GeoJSON.Feature[] {
@@ -112,14 +122,9 @@ function reservesFeatures(): GeoJSON.Feature[] {
     .filter((c) => c.reserves > 0)
     .map((c) =>
       point(c.lng, c.lat, {
-        name: c.name,
-        country: "",
-        commodity: "proven crude reserves",
-        figure: `${c.reserves} billion bbl`,
-        operator: "",
-        status: c.status,
-        note: c.note,
-        reserves: c.reserves,
+        name: c.name, country: "", commodity: "proven crude reserves",
+        figure: `${c.reserves} billion bbl`, operator: "", status: c.status,
+        note: c.note, reserves: c.reserves,
       })
     );
 }
@@ -146,34 +151,56 @@ function popupHTML(p: Record<string, unknown>): string {
     </div>`;
 }
 
-const POINT_LAYERS: GroupKey[] = ["oilgas", "base", "precious", "battery", "ree", "nuclear"];
+function plantPopupHTML(p: Record<string, unknown>): string {
+  return `
+    <div class="popup-title">${p.n}</div>
+    <div class="popup-kv">
+      ${p.c} · ${p.f}<br/>
+      <b>${p.mw} MW</b><br/>
+      <span style="color:#64778f">WRI Global Power Plant Database · CC-BY 4.0</span>
+    </div>`;
+}
+
+const POINT_LAYERS: Exclude<GroupKey, "plants" | "pipelines" | "reserves" | "arctic">[] = [
+  "oilgas", "base", "precious", "battery", "ree", "nuclear",
+];
+const PLANT_LAYER_IDS = ["plants-clusters", "plants-count", "plants"];
 
 export default function ReserveMap() {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<MLMap | null>(null);
   const popupRef = useRef<maplibregl.Popup | null>(null);
+  const plantsDataRef = useRef<GeoJSON.FeatureCollection | null>(null);
   const [visible, setVisible] = useState<Record<GroupKey, boolean>>({
-    oilgas: true,
-    base: true,
-    precious: true,
-    battery: true,
-    ree: true,
-    nuclear: true,
-    reserves: true,
-    arctic: true,
+    oilgas: true, pipelines: true, base: true, precious: true, battery: true,
+    ree: true, nuclear: true, plants: true, reserves: true, arctic: true,
   });
+  const [terrain3d, setTerrain3d] = useState(false);
+  const terrain3dRef = useRef(false);
+  const [fuel, setFuel] = useState("all");
+  const [plantCount, setPlantCount] = useState<number | null>(null);
+  const [query, setQuery] = useState("");
 
-  const counts: Record<GroupKey, number> = {
-    oilgas: fields.fields.length,
-    base: sites.sites.filter((s) => s.group === "base").length,
-    precious: sites.sites.filter((s) => s.group === "precious").length,
-    battery: sites.sites.filter((s) => s.group === "battery").length,
-    ree: sites.sites.filter((s) => s.group === "ree").length,
-    nuclear: sites.sites.filter((s) => s.group === "nuclear").length,
-    reserves: reserves.countries.filter((c) => c.reserves > 0).length,
-    arctic: arcticFeatures().length,
-  };
-  const totalSites = fields.fields.length + sites.sites.length;
+  const searchIndex = useMemo(
+    () => [
+      ...fields.fields.map((f) => ({
+        name: f.name, sub: `${f.country} · ${f.type}`, lngLat: [f.lng, f.lat] as [number, number],
+        props: { name: f.name, country: f.country, commodity: f.type, figure: f.figure, operator: "", status: f.status, note: f.note },
+      })),
+      ...sites.sites.map((s) => ({
+        name: s.name, sub: `${s.country} · ${s.commodity}`, lngLat: [s.lng, s.lat] as [number, number],
+        props: { name: s.name, country: s.country, commodity: s.commodity, figure: s.figure, operator: s.operator, status: s.status, note: s.note },
+      })),
+    ],
+    []
+  );
+  const results = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (q.length < 2) return [];
+    return searchIndex
+      .filter((r) => `${r.name} ${r.sub}`.toLowerCase().includes(q))
+      .slice(0, 7);
+  }, [query, searchIndex]);
 
   useEffect(() => {
     if (!containerRef.current || mapRef.current) return;
@@ -183,13 +210,10 @@ export default function ReserveMap() {
       style: {
         version: 8,
         projection: { type: "globe" },
+        glyphs: "https://demotiles.maplibre.org/font/{fontstack}/{range}.pbf",
         sky: {
-          "sky-color": "#0b1a24",
-          "horizon-color": "#16303d",
-          "fog-color": "#0c1519",
-          "sky-horizon-blend": 0.6,
-          "horizon-fog-blend": 0.6,
-          "fog-ground-blend": 0.8,
+          "sky-color": "#0b1a24", "horizon-color": "#16303d", "fog-color": "#0c1519",
+          "sky-horizon-blend": 0.6, "horizon-fog-blend": 0.6, "fog-ground-blend": 0.8,
         },
         sources: {
           carto: {
@@ -201,30 +225,15 @@ export default function ReserveMap() {
             ],
             tileSize: 256,
             attribution:
-              "© <a href='https://www.openstreetmap.org/copyright'>OpenStreetMap</a> contributors © <a href='https://carto.com/attributions'>CARTO</a> · terrain © <a href='https://registry.opendata.aws/terrain-tiles/'>Mapzen/AWS</a>",
+              "© <a href='https://www.openstreetmap.org/copyright'>OpenStreetMap</a> contributors © <a href='https://carto.com/attributions'>CARTO</a> · terrain © <a href='https://registry.opendata.aws/terrain-tiles/'>Mapzen/AWS</a> · plants © <a href='https://datasets.wri.org/dataset/globalpowerplantdatabase'>WRI GPPD</a>",
           },
           dem: {
             type: "raster-dem",
             tiles: ["https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png"],
-            encoding: "terrarium",
-            tileSize: 256,
-            maxzoom: 12,
+            encoding: "terrarium", tileSize: 256, maxzoom: 10,
           },
         },
-        layers: [
-          { id: "carto", type: "raster", source: "carto" },
-          {
-            id: "hillshade",
-            type: "hillshade",
-            source: "dem",
-            paint: {
-              "hillshade-shadow-color": "#04080c",
-              "hillshade-highlight-color": "#2a4552",
-              "hillshade-accent-color": "#0c1519",
-              "hillshade-exaggeration": 0.55,
-            },
-          },
-        ],
+        layers: [{ id: "carto", type: "raster", source: "carto" }],
       },
       center: [-30, 45],
       zoom: 2.1,
@@ -236,79 +245,71 @@ export default function ReserveMap() {
       (window as unknown as Record<string, unknown>).__geomMap = map;
     }
     map.on("error", (e) => console.error("[GEOM map]", e.error?.message ?? e));
-    map.addControl(
-      new maplibregl.NavigationControl({ showCompass: true, visualizePitch: true }),
-      "top-right"
-    );
+    map.addControl(new maplibregl.NavigationControl({ showCompass: true, visualizePitch: true }), "top-right");
     map.addControl(new maplibregl.GlobeControl(), "top-right");
 
     map.on("load", () => {
-      map.setTerrain({ source: "dem", exaggeration: 1.4 });
-
       map.addSource("arctic-circle", { type: "geojson", data: arcticCircle() });
       map.addLayer({
-        id: "arctic-circle",
-        type: "line",
-        source: "arctic-circle",
+        id: "arctic-circle", type: "line", source: "arctic-circle",
+        paint: { "line-color": "#5e8ba6", "line-width": 1, "line-dasharray": [2, 3], "line-opacity": 0.65 },
+      });
+
+      map.addSource("pipelines", { type: "geojson", data: fc(pipelineFeatures()) });
+      // line-dasharray is not data-driven in MapLibre — two layers instead.
+      map.addLayer({
+        id: "pipelines", type: "line", source: "pipelines",
+        filter: ["==", ["get", "status"], "operating"],
+        layout: { "line-cap": "round", "line-join": "round" },
         paint: {
-          "line-color": "#5e8ba6",
-          "line-width": 1,
-          "line-dasharray": [2, 3],
-          "line-opacity": 0.65,
+          "line-color": ["match", ["get", "kind"], "gas", "#8fb4c9", "products", "#cbc3b1", "#c67c1b"],
+          "line-width": ["interpolate", ["linear"], ["zoom"], 1, 1.2, 6, 2.6],
+          "line-opacity": 0.85,
+        },
+      });
+      map.addLayer({
+        id: "pipelines-idle", type: "line", source: "pipelines",
+        filter: ["!=", ["get", "status"], "operating"],
+        layout: { "line-cap": "round", "line-join": "round" },
+        paint: {
+          "line-color": ["match", ["get", "kind"], "gas", "#8fb4c9", "products", "#cbc3b1", "#c67c1b"],
+          "line-width": ["interpolate", ["linear"], ["zoom"], 1, 1.2, 6, 2.6],
+          "line-opacity": 0.7,
+          "line-dasharray": [2, 1.6],
         },
       });
 
       map.addSource("reserves", { type: "geojson", data: fc(reservesFeatures()) });
       map.addLayer({
-        id: "reserves",
-        type: "circle",
-        source: "reserves",
+        id: "reserves", type: "circle", source: "reserves",
         paint: {
-          "circle-color": GROUPS.reserves.color,
-          "circle-opacity": 0.22,
-          "circle-stroke-color": GROUPS.reserves.color,
-          "circle-stroke-width": 1.2,
+          "circle-color": GROUPS.reserves.color, "circle-opacity": 0.22,
+          "circle-stroke-color": GROUPS.reserves.color, "circle-stroke-width": 1.2,
           "circle-radius": ["interpolate", ["linear"], ["sqrt", ["get", "reserves"]], 0, 3, 17.5, 34],
         },
       });
 
       map.addSource("arctic", { type: "geojson", data: fc(arcticFeatures()) });
       map.addLayer({
-        id: "arctic",
-        type: "circle",
-        source: "arctic",
+        id: "arctic", type: "circle", source: "arctic",
         paint: {
-          "circle-color": "transparent",
-          "circle-radius": 10,
-          "circle-stroke-color": GROUPS.arctic.color,
-          "circle-stroke-width": 1.4,
-          "circle-stroke-opacity": 0.85,
+          "circle-color": "transparent", "circle-radius": 10,
+          "circle-stroke-color": GROUPS.arctic.color, "circle-stroke-width": 1.4, "circle-stroke-opacity": 0.85,
         },
       });
 
       const sourcesByLayer: Record<string, GeoJSON.Feature[]> = {
-        oilgas: fieldFeatures(),
-        base: siteFeatures("base"),
-        precious: siteFeatures("precious"),
-        battery: siteFeatures("battery"),
-        ree: siteFeatures("ree"),
-        nuclear: siteFeatures("nuclear"),
+        oilgas: fieldFeatures(), base: siteFeatures("base"), precious: siteFeatures("precious"),
+        battery: siteFeatures("battery"), ree: siteFeatures("ree"), nuclear: siteFeatures("nuclear"),
       };
 
       for (const id of POINT_LAYERS) {
         map.addSource(id, { type: "geojson", data: fc(sourcesByLayer[id]) });
         map.addLayer({
-          id,
-          type: "circle",
-          source: id,
+          id, type: "circle", source: id,
           paint: {
-            "circle-color": GROUPS[id].color,
-            "circle-opacity": 0.92,
-            "circle-radius": [
-              "interpolate", ["linear"], ["zoom"],
-              1, 4,
-              6, 7,
-            ],
+            "circle-color": GROUPS[id].color, "circle-opacity": 0.92,
+            "circle-radius": ["interpolate", ["linear"], ["zoom"], 1, 4, 6, 7],
             "circle-stroke-color":
               id === "nuclear"
                 ? ["case", ["==", ["get", "kind"], "plant"], "#edf1f3", "#0c1519"]
@@ -321,18 +322,85 @@ export default function ReserveMap() {
       const popup = new maplibregl.Popup({ closeButton: false, maxWidth: "300px" });
       popupRef.current = popup;
 
-      for (const id of [...POINT_LAYERS, "reserves"]) {
+      for (const id of [...POINT_LAYERS, "reserves", "pipelines", "pipelines-idle"]) {
         map.on("click", id, (e) => {
           const f = e.features?.[0];
           if (!f) return;
-          popup
-            .setLngLat(e.lngLat)
-            .setHTML(popupHTML(f.properties as Record<string, unknown>))
-            .addTo(map);
+          popup.setLngLat(e.lngLat).setHTML(popupHTML(f.properties as Record<string, unknown>)).addTo(map);
         });
         map.on("mouseenter", id, () => (map.getCanvas().style.cursor = "pointer"));
         map.on("mouseleave", id, () => (map.getCanvas().style.cursor = ""));
       }
+
+      // Power plants: lazy-load 35k points after the base map is interactive.
+      fetch("/data/power-plants.geojson")
+        .then((r) => r.json())
+        .then((data: GeoJSON.FeatureCollection) => {
+          plantsDataRef.current = data;
+          setPlantCount(data.features.length);
+          map.addSource("plants", {
+            type: "geojson", data,
+            cluster: true, clusterMaxZoom: 6, clusterRadius: 42,
+          });
+          map.addLayer({
+            id: "plants-clusters", type: "circle", source: "plants",
+            filter: ["has", "point_count"],
+            paint: {
+              "circle-color": "#16303d",
+              "circle-stroke-color": "#5fd4ae", "circle-stroke-width": 1.2, "circle-stroke-opacity": 0.7,
+              "circle-opacity": 0.8,
+              "circle-radius": ["step", ["get", "point_count"], 10, 50, 14, 250, 19, 1000, 25],
+            },
+          }, "oilgas");
+          map.addLayer({
+            id: "plants-count", type: "symbol", source: "plants",
+            filter: ["has", "point_count"],
+            layout: {
+              "text-field": ["get", "point_count_abbreviated"],
+              "text-font": ["Noto Sans Regular"], "text-size": 10,
+            },
+            paint: { "text-color": "#b9c6ce" },
+          }, "oilgas");
+          map.addLayer({
+            id: "plants", type: "circle", source: "plants",
+            filter: ["!", ["has", "point_count"]],
+            paint: {
+              "circle-color": [
+                "match",
+                ["match", ["get", "f"],
+                  "Coal", "fossil", "Gas", "fossil", "Oil", "fossil", "Petcoke", "fossil", "Cogeneration", "fossil",
+                  "Hydro", "hydro", "Nuclear", "nuclear",
+                  "Solar", "renewable", "Wind", "renewable", "Geothermal", "renewable",
+                  "Biomass", "renewable", "Waste", "renewable", "Wave and Tidal", "renewable",
+                  "other",
+                ],
+                "fossil", FUEL_COLORS.fossil, "hydro", FUEL_COLORS.hydro, "nuclear", FUEL_COLORS.nuclear,
+                "renewable", FUEL_COLORS.renewable, FUEL_COLORS.other,
+              ],
+              "circle-opacity": 0.8,
+              "circle-radius": ["interpolate", ["linear"], ["sqrt", ["coalesce", ["get", "mw"], 1]], 0, 2, 70, 9],
+              "circle-stroke-color": "#0c1519", "circle-stroke-width": 0.6,
+            },
+          }, "oilgas");
+
+          map.on("click", "plants", (e) => {
+            const f = e.features?.[0];
+            if (!f) return;
+            popup.setLngLat(e.lngLat).setHTML(plantPopupHTML(f.properties as Record<string, unknown>)).addTo(map);
+          });
+          map.on("click", "plants-clusters", async (e) => {
+            const f = e.features?.[0];
+            if (!f) return;
+            const src = map.getSource("plants") as maplibregl.GeoJSONSource;
+            const zoom = await src.getClusterExpansionZoom(f.properties?.cluster_id as number);
+            map.easeTo({ center: (f.geometry as GeoJSON.Point).coordinates as [number, number], zoom });
+          });
+          for (const id of ["plants", "plants-clusters"]) {
+            map.on("mouseenter", id, () => (map.getCanvas().style.cursor = "pointer"));
+            map.on("mouseleave", id, () => (map.getCanvas().style.cursor = ""));
+          }
+        })
+        .catch((e) => console.error("[GEOM map] plants load failed", e));
     });
 
     return () => {
@@ -341,40 +409,76 @@ export default function ReserveMap() {
     };
   }, []);
 
+  const setTerrainEnabled = (on: boolean) => {
+    const map = mapRef.current;
+    if (!map) return;
+    terrain3dRef.current = on;
+    setTerrain3d(on);
+    if (on) {
+      map.setTerrain({ source: "dem", exaggeration: 1.35 });
+      if (!map.getLayer("hillshade")) {
+        map.addLayer(
+          {
+            id: "hillshade", type: "hillshade", source: "dem", minzoom: 3.5,
+            paint: {
+              "hillshade-shadow-color": "#04080c", "hillshade-highlight-color": "#2a4552",
+              "hillshade-accent-color": "#0c1519", "hillshade-exaggeration": 0.55,
+            },
+          },
+          "arctic-circle"
+        );
+      }
+    } else {
+      map.setTerrain(null);
+      if (map.getLayer("hillshade")) map.removeLayer("hillshade");
+      if (map.getPitch() > 0) map.easeTo({ pitch: 0, duration: 600 });
+    }
+  };
+
   const toggle = (key: GroupKey) => {
     const map = mapRef.current;
     const next = { ...visible, [key]: !visible[key] };
     setVisible(next);
-    if (map?.getLayer(key)) {
-      map.setLayoutProperty(key, "visibility", next[key] ? "visible" : "none");
+    const vis = next[key] ? "visible" : "none";
+    const ids =
+      key === "plants" ? PLANT_LAYER_IDS : key === "pipelines" ? ["pipelines", "pipelines-idle"] : [key];
+    for (const id of ids) {
+      if (map?.getLayer(id)) map.setLayoutProperty(id, "visibility", vis);
+    }
+  };
+
+  const applyFuel = (id: string) => {
+    setFuel(id);
+    const map = mapRef.current;
+    const data = plantsDataRef.current;
+    if (!map || !data) return;
+    const src = map.getSource("plants") as maplibregl.GeoJSONSource | undefined;
+    if (!src) return;
+    if (id === "all") {
+      src.setData(data);
+    } else {
+      src.setData(fc(data.features.filter((f) => FUEL_GROUP[(f.properties as { f: string }).f] === id)));
+    }
+  };
+
+  const focus = (lngLat: [number, number], zoom: number, props?: Record<string, unknown>, cinematic = false) => {
+    const map = mapRef.current;
+    if (!map) return;
+    if (cinematic && !terrain3dRef.current) setTerrainEnabled(true);
+    map.flyTo({
+      center: lngLat, zoom,
+      pitch: cinematic ? 55 : map.getPitch(),
+      bearing: cinematic ? -12 : map.getBearing(),
+      duration: cinematic ? 2600 : 1600,
+    });
+    if (props && popupRef.current) {
+      popupRef.current.setLngLat(lngLat).setHTML(popupHTML(props)).addTo(map);
     }
   };
 
   const spotlight = (s: (typeof SPOTLIGHT)[number]) => {
-    const map = mapRef.current;
-    if (!map) return;
-    map.flyTo({ center: s.lngLat, zoom: s.zoom, pitch: 55, bearing: -12, duration: 2600 });
-    const all = [
-      ...fields.fields.map((f) => ({ ...f, operator: "", commodity: f.type, group: "oilgas" })),
-      ...sites.sites,
-    ];
-    const hit = all.find((x) => x.name === s.name);
-    if (hit && popupRef.current) {
-      popupRef.current
-        .setLngLat(s.lngLat)
-        .setHTML(
-          popupHTML({
-            name: hit.name,
-            country: hit.country,
-            commodity: (hit as { commodity: string }).commodity,
-            figure: hit.figure,
-            operator: (hit as { operator?: string }).operator ?? "",
-            status: hit.status,
-            note: hit.note,
-          })
-        )
-        .addTo(map);
-    }
+    const hit = searchIndex.find((x) => x.name === s.name);
+    focus(s.lngLat, s.zoom, hit?.props, true);
   };
 
   return (
@@ -384,27 +488,81 @@ export default function ReserveMap() {
         <p className="panel-title" style={{ marginBottom: 4 }}>
           Physical layer
         </p>
-        <p className="dimmer mono" style={{ fontSize: 10, margin: "0 0 10px", letterSpacing: "0.06em" }}>
-          {totalSites} ASSETS · {counts.arctic} ARCTIC · 3D TERRAIN · DRAG TO SPIN
+        <p className="dimmer mono" style={{ fontSize: 10, margin: "0 0 8px", letterSpacing: "0.06em" }}>
+          {fields.fields.length + sites.sites.length} CURATED
+          {plantCount ? ` + ${plantCount.toLocaleString("en-US")} PLANTS` : " · PLANTS LOADING…"} · DRAG TO SPIN
         </p>
-        {(Object.keys(GROUPS) as GroupKey[]).map((key) => (
-          <button
-            key={key}
-            className={`layer-toggle ${visible[key] ? "on" : ""}`}
-            onClick={() => toggle(key)}
-            aria-pressed={visible[key]}
-          >
-            <span
-              className="layer-dot"
-              style={{ background: GROUPS[key].color, opacity: visible[key] ? 1 : 0.3 }}
-            />
-            <span style={{ flex: 1 }}>
-              {GROUPS[key].label}
-              <br />
-              <span className="dimmer" style={{ fontSize: 10 }}>{GROUPS[key].hint}</span>
+
+        <input
+          className="lib-search"
+          style={{ marginBottom: 6 }}
+          placeholder="search fields, mines, plants…"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          aria-label="Search assets"
+        />
+        {results.length > 0 && (
+          <div style={{ marginBottom: 8 }}>
+            {results.map((r) => (
+              <button
+                key={r.name + r.sub}
+                className="spotlight-row"
+                onClick={() => {
+                  setQuery("");
+                  focus(r.lngLat, 6.5, r.props);
+                }}
+              >
+                <span>{r.name}</span>
+                <span className="dimmer" style={{ fontSize: 10 }}>{r.sub}</span>
+              </button>
+            ))}
+          </div>
+        )}
+
+        <button
+          className={`layer-toggle ${terrain3d ? "on" : ""}`}
+          onClick={() => setTerrainEnabled(!terrain3d)}
+          aria-pressed={terrain3d}
+        >
+          <span className="layer-dot" style={{ background: terrain3d ? "#6fd4c3" : "#3c4c57" }} />
+          <span style={{ flex: 1 }}>
+            3D terrain
+            <br />
+            <span className="dimmer" style={{ fontSize: 10 }}>
+              {terrain3d ? "on — right-drag to tilt" : "off — flat globe (faster)"}
             </span>
-            <span className="dimmer mono" style={{ fontSize: 10 }}>{counts[key]}</span>
-          </button>
+          </span>
+        </button>
+
+        {(Object.keys(GROUPS) as GroupKey[]).map((key) => (
+          <div key={key}>
+            <button
+              className={`layer-toggle ${visible[key] ? "on" : ""}`}
+              onClick={() => toggle(key)}
+              aria-pressed={visible[key]}
+            >
+              <span className="layer-dot" style={{ background: GROUPS[key].color, opacity: visible[key] ? 1 : 0.3 }} />
+              <span style={{ flex: 1 }}>
+                {GROUPS[key].label}
+                <br />
+                <span className="dimmer" style={{ fontSize: 10 }}>{GROUPS[key].hint}</span>
+              </span>
+            </button>
+            {key === "plants" && visible.plants && (
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 4, margin: "2px 0 6px 26px" }}>
+                {FUEL_CHIPS.map((c) => (
+                  <button
+                    key={c.id}
+                    className={`dl-chip ${fuel === c.id ? "on" : ""}`}
+                    style={{ fontSize: 10, padding: "2px 8px" }}
+                    onClick={() => applyFuel(c.id)}
+                  >
+                    {c.label}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
         ))}
 
         <p className="panel-title" style={{ margin: "14px 0 6px" }}>
@@ -421,19 +579,17 @@ export default function ReserveMap() {
 
         <div className="map-legend">
           <div className="legend-row">
-            <span
-              className="layer-dot"
-              style={{ border: `1.5px dashed ${GROUPS.reserves.color}`, background: "transparent" }}
-            />
+            <span className="layer-dot" style={{ border: `1.5px dashed ${GROUPS.reserves.color}`, background: "transparent" }} />
             Arctic Circle · 66°33′N
           </div>
           <div className="legend-row dimmer" style={{ marginTop: 4 }}>
-            Click any marker for detail · right-drag to tilt
+            Click markers, clusters & pipelines for detail
           </div>
         </div>
         <div className="provenance" style={{ marginTop: 14 }}>
-          Seed data · approx. figures from operator disclosures, EIA, WNA,
-          mining rankings · verify before publication
+          Curated layers: seed data, verify before publication · Power plants ©
+          WRI Global Power Plant Database (CC-BY 4.0) · Pipeline routes
+          schematic
         </div>
       </div>
     </div>
