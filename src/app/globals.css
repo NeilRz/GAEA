@@ -534,3 +534,147 @@ table.data th.num { text-align: right; }
 .chart-tooltip .t-label { color: var(--ink-3); margin-bottom: 4px; }
 .chart-tooltip .t-row { display: flex; align-items: center; gap: 7px; line-height: 1.8; }
 .chart-tooltip .t-swatch { width: 8px; height: 8px; border-radius: 2px; }
+
+/* ── terminal: live board ──────────────────────────────────────────── */
+
+.term-head { margin-bottom: 10px; }
+
+.term-head-row {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  gap: 20px; flex-wrap: wrap; margin-bottom: 14px;
+}
+
+.term-symbol {
+  font-family: var(--font-mono); font-size: 30px; font-weight: 700;
+  letter-spacing: -0.02em; color: var(--ink); margin: 0; line-height: 1.1;
+}
+.term-name { color: var(--ink-3); font-size: 13px; margin: 2px 0 0; }
+
+.term-price-block {
+  display: flex; flex-direction: column; align-items: flex-end; gap: 2px;
+  text-align: right;
+}
+.term-price {
+  font-family: var(--font-mono); font-size: 30px; font-weight: 700;
+  letter-spacing: -0.02em; line-height: 1.1;
+}
+.term-delta { font-family: var(--font-mono); font-size: 13px; }
+.term-stamp {
+  font-family: var(--font-mono); font-size: 10px; color: var(--ink-3);
+  letter-spacing: 0.06em; margin-top: 2px;
+}
+
+.tone-up { color: var(--good); }
+.tone-down { color: var(--critical); }
+.tone-flat { color: var(--ink-2); }
+.term-price.tone-flat { color: var(--ink); }
+
+.term-controls {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 14px; flex-wrap: wrap; margin-bottom: 12px;
+}
+
+.range-switch {
+  display: inline-flex; gap: 2px; padding: 2px;
+  border: 1px solid var(--line-strong); border-radius: 999px;
+}
+.range-btn {
+  font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em;
+  padding: 4px 12px; border-radius: 999px; border: 0; cursor: pointer;
+  background: transparent; color: var(--ink-3);
+  transition: color 160ms var(--ease), background 160ms var(--ease);
+}
+.range-btn:hover { color: var(--ink); }
+.range-btn.is-active { background: var(--panel-2); color: var(--glacial-bright); }
+
+.term-52w {
+  font-family: var(--font-mono); font-size: 11px; color: var(--ink-3);
+  letter-spacing: 0.04em;
+}
+
+.term-empty {
+  display: flex; flex-direction: column; align-items: center;
+  justify-content: center; height: 340px;
+  border: 1px dashed var(--line-strong); border-radius: 10px;
+}
+
+.term-note {
+  color: var(--ink-2); font-size: 13px; margin: 12px 0 0;
+  padding-top: 12px; border-top: 1px solid var(--line); max-width: 78ch;
+}
+
+.term-updated {
+  font-family: var(--font-mono); font-size: 10px; color: var(--ink-3);
+  letter-spacing: 0.08em; text-align: right; margin: 0 0 18px;
+}
+
+/* ── quote tiles ── */
+
+.quote-grid {
+  display: grid; gap: 10px; margin-top: 14px;
+  grid-template-columns: repeat(auto-fill, minmax(168px, 1fr));
+}
+
+.quote-tile {
+  display: grid; grid-template-columns: 1fr auto; gap: 2px 8px;
+  align-items: baseline; text-align: left; cursor: pointer;
+  background: var(--bg-raised); border: 1px solid var(--line);
+  border-radius: 10px; padding: 12px 14px; font: inherit; color: inherit;
+  transition: border-color 160ms var(--ease), background 160ms var(--ease),
+              transform 160ms var(--ease);
+}
+.quote-tile:hover { border-color: var(--line-strong); transform: translateY(-1px); }
+.quote-tile.is-active {
+  border-color: var(--glacial); background: var(--panel-2);
+}
+
+.quote-sym {
+  font-family: var(--font-mono); font-size: 14px; font-weight: 700;
+  letter-spacing: 0.02em; color: var(--ink);
+}
+.quote-venue {
+  font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--ink-3);
+  grid-column: 1; grid-row: 2;
+}
+.quote-price {
+  font-family: var(--font-mono); font-size: 14px; color: var(--ink);
+  grid-column: 2; grid-row: 1; text-align: right; white-space: nowrap;
+}
+.quote-delta {
+  font-family: var(--font-mono); font-size: 11px;
+  grid-column: 2; grid-row: 2; text-align: right; white-space: nowrap;
+}
+
+/* $GEOM — no market yet, so the tile is inert and says so. */
+.geom-tile {
+  cursor: default; border-style: dashed;
+  border-color: var(--line-strong);
+  background: linear-gradient(180deg, rgba(94,139,166,0.06), transparent);
+}
+.geom-tile:hover { transform: none; }
+.geom-tile .quote-sym { color: var(--cream); }
+.geom-status {
+  font-size: 9.5px; letter-spacing: 0.1em; color: var(--warn);
+  text-align: right;
+}
+.geom-tile.is-live {
+  cursor: pointer; border-style: solid; border-color: var(--glacial);
+}
+.geom-tile.is-live:hover { transform: translateY(-1px); }
+.geom-tile.is-live .quote-delta { color: var(--glacial-bright); }
+
+/* ── candlestick tooltip ── */
+
+.chart-tooltip .ohlc-grid {
+  display: grid; grid-template-columns: repeat(2, auto); gap: 2px 14px;
+  margin-top: 2px;
+}
+.chart-tooltip .ohlc-cell { display: flex; gap: 6px; line-height: 1.7; }
+.chart-tooltip .ohlc-k { color: var(--ink-3); }
+
+@media (max-width: 600px) {
+  .term-head-row { flex-direction: column; }
+  .term-price-block { align-items: flex-start; text-align: left; }
+  .quote-grid { grid-template-columns: repeat(auto-fill, minmax(148px, 1fr)); }
+}

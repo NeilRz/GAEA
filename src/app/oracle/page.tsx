@@ -30,6 +30,49 @@ function shortSig(sig: string): string {
   return `${sig.slice(0, 8)}…${sig.slice(-8)}`;
 }
 
+// Public base URL shown in the copy-paste examples. Verification must work
+// from a stranger's machine, so these are absolute, not relative.
+const PUBLIC_BASE = "https://gaea-gray.vercel.app";
+
+const VERIFY_SCRIPT = `// verify.mjs — checks a GEOM dataset from your own machine.
+// Usage:  node verify.mjs reserves     (or fields, market, sites, tokenized)
+import { createHash } from "node:crypto";
+import nacl from "tweetnacl";
+import bs58 from "bs58";
+
+const base = "${PUBLIC_BASE}";
+const id = process.argv[2] ?? "reserves";
+
+// 1. Download the raw dataset and its signed attestation
+const data = await (await fetch(base + "/api/datasets/" + id)).json();
+const att  = await (await fetch(base + "/api/attest/" + id)).json();
+
+// 2. Recompute the SHA-256 fingerprint yourself (canonical JSON:
+//    object keys recursively sorted, no whitespace)
+const canon = (v) =>
+  v === null || typeof v !== "object" ? JSON.stringify(v)
+  : Array.isArray(v) ? "[" + v.map(canon).join(",") + "]"
+  : "{" + Object.entries(v)
+      .filter(([, x]) => x !== undefined)
+      .sort(([a], [b]) => (a < b ? -1 : 1))
+      .map(([k, x]) => JSON.stringify(k) + ":" + canon(x))
+      .join(",") + "}";
+const hash = createHash("sha256").update(canon(data), "utf8").digest("hex");
+console.log(hash === att.sha256
+  ? "OK   hash matches — the data you hold is what was attested"
+  : "FAIL hash mismatch — do not trust this data");
+
+// 3. Verify the Ed25519 signature against the oracle's public key
+const ok = nacl.sign.detached.verify(
+  new TextEncoder().encode(att.message),
+  bs58.decode(att.signature),
+  bs58.decode(att.signer)
+);
+console.log(ok
+  ? "OK   signature valid — signed by " + att.signer
+  : "FAIL invalid signature — do not trust this attestation");
+`;
+
 /* Radial attestation burst — Pyth-style data halo in GEOM mineral colors.
    Deterministic (no randomness) so server and client render identically. */
 function AttestationBurst() {
@@ -359,10 +402,76 @@ export default function OraclePage() {
           </div>
         </section>
 
+        <section className="panel">
+          <p className="panel-title">
+            Verify from your own machine <span className="badge good">free forever</span>
+          </p>
+          <p className="dim" style={{ fontSize: 13, marginTop: -6, marginBottom: 18 }}>
+            The demo above runs in this page — but the whole point is that you
+            don&apos;t need this page. Anyone with{" "}
+            <a
+              href="https://nodejs.org"
+              target="_blank"
+              rel="noreferrer"
+              style={{ color: "var(--glacial-bright)" }}
+            >
+              Node.js 18+
+            </a>{" "}
+            can re-check everything GEOM publishes in three steps. No account,
+            no key, no permission.
+          </p>
+
+          <div style={{ display: "grid", gap: 18 }}>
+            <div>
+              <span className="step-num">STEP 01 — LOOK AROUND</span>
+              <p className="dim" style={{ fontSize: 13, margin: "6px 0 8px" }}>
+                Open a terminal. List the published datasets, then fetch one
+                with its signed attestation — plain HTTPS, readable JSON:
+              </p>
+              <div className="codeblock">
+                <span className="k">curl</span> {PUBLIC_BASE}/api/datasets{"            "}<span className="v"># all dataset ids + digests</span>{"\n"}
+                <span className="k">curl</span> {PUBLIC_BASE}/api/datasets/reserves{"   "}<span className="v"># the raw dataset itself</span>{"\n"}
+                <span className="k">curl</span> {PUBLIC_BASE}/api/attest/reserves{"     "}<span className="v"># its signed attestation (Ed25519)</span>
+              </div>
+            </div>
+
+            <div>
+              <span className="step-num">STEP 02 — SET UP (ONCE)</span>
+              <p className="dim" style={{ fontSize: 13, margin: "6px 0 8px" }}>
+                In an empty folder, install the two open-source crypto
+                libraries the verifier uses (the same ones this page uses):
+              </p>
+              <div className="codeblock">
+                <span className="k">npm</span> install tweetnacl bs58
+              </div>
+            </div>
+
+            <div>
+              <span className="step-num">STEP 03 — VERIFY</span>
+              <p className="dim" style={{ fontSize: 13, margin: "6px 0 8px" }}>
+                Save this as <code className="mono" style={{ fontSize: 12 }}>verify.mjs</code>{" "}
+                in the same folder and run{" "}
+                <code className="mono" style={{ fontSize: 12 }}>node verify.mjs reserves</code>.
+                It downloads the data, recomputes the fingerprint, and checks
+                the signature — entirely on your machine:
+              </p>
+              <div className="codeblock">{VERIFY_SCRIPT}</div>
+            </div>
+          </div>
+
+          <p className="dim" style={{ fontSize: 13, marginTop: 16, marginBottom: 0 }}>
+            Two <span className="mono" style={{ fontSize: 12 }}>OK</span> lines
+            prove the data you downloaded is byte-for-byte what the oracle key
+            signed. To also prove <em>when</em> it was published, compare the
+            manifest hash in the Solana memo transaction above — three checks,
+            zero trust in this server.
+          </p>
+        </section>
+
         <section className="grid grid-2">
           <div className="panel" style={{ display: "flex", flexDirection: "column" }}>
             <p className="panel-title">
-              Public verification <span className="badge good">free forever</span>
+              API reference <span className="badge good">public</span>
             </p>
             <div className="codeblock" style={{ marginBottom: 14 }}>
               <span className="k">GET</span> /api/datasets            <span className="v"># all dataset ids + digests</span>{"\n"}
@@ -371,10 +480,8 @@ export default function OraclePage() {
             </div>
             <p className="dim" style={{ fontSize: 13, marginBottom: 0 }}>
               Verifying what GEOM published will never sit behind a paywall —
-              public verifiability is the point. Recompute each SHA-256 from
-              the raw dataset, check the Ed25519 signature against the
-              published signer, and confirm the manifest hash inside the
-              Solana memo. Three checks, zero trust in this server.
+              public verifiability is the point. These three endpoints are all
+              a verifier needs, from curl, a browser, or any language.
             </p>
           </div>
           <div className="panel" style={{ display: "flex", flexDirection: "column", gap: 12 }}>

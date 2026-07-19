@@ -5,11 +5,12 @@ import {
   CrackSpreadChart,
   InventoryChart,
 } from "@/components/charts";
+import { MarketBoard } from "@/components/MarketBoard";
 
 export const metadata: Metadata = {
   title: "Terminal — GEOM",
   description:
-    "Read-only oil market structure: futures curve, crack spreads, inventories.",
+    "Live candlestick board: partner equities, tokenized real-world assets, energy, minerals and benchmarks.",
 };
 
 export default function TerminalPage() {
@@ -18,15 +19,30 @@ export default function TerminalPage() {
       <p className="eyebrow">MOD-03</p>
       <h1 className="page-title">Terminal</h1>
       <p className="page-lede">
-        Read-only market structure. The terminal reads the shape of the market
-        — curve, cracks, inventories — rather than calling price. All series
-        below are <strong style={{ color: "var(--ink)" }}>illustrative
-        samples</strong> demonstrating the wiring; exchange and vendor feed
-        integration is the next milestone.
+        Live market structure across the instruments we track — partner
+        equities, tokenized real-world assets, the energy complex, critical
+        minerals, and the benchmarks underneath all of them. The terminal reads
+        the shape of the market. It does not call price, and nothing here is
+        advice.
       </p>
       <p style={{ margin: "8px 0 20px" }}>
-        <span className="badge warn">Sample data — not live quotes</span>
+        <span className="badge">Live quotes · 60s refresh</span>
       </p>
+
+      <MarketBoard />
+
+      <section className="panel" style={{ marginTop: 28 }}>
+        <p className="chart-title">Structural series</p>
+        <p className="chart-sub">
+          Curve, cracks and inventories — the shape behind the tape. These three
+          remain{" "}
+          <strong style={{ color: "var(--ink)" }}>illustrative samples</strong>;
+          exchange and vendor feed integration is the next milestone.
+        </p>
+        <p style={{ margin: "8px 0 4px" }}>
+          <span className="badge warn">Sample data — not live quotes</span>
+        </p>
+      </section>
 
       <div className="grid grid-2">
         <section className="panel" style={{ gridColumn: "1 / -1" }}>
@@ -53,7 +69,11 @@ export default function TerminalPage() {
         </section>
       </div>
 
-      <p className="provenance">{market.meta.note}</p>
+      <p className="provenance">
+        Live quotes proxied from the Yahoo Finance chart API (unofficial,
+        delayed, unlicensed) and cached 60s — market colour, not a trading feed.
+        Structural series: {market.meta.note}
+      </p>
     </main>
   );
 }
