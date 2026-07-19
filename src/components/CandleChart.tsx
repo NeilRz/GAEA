@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import {
   ComposedChart,
   Bar,
@@ -8,7 +8,6 @@ import {
   XAxis,
   YAxis,
   CartesianGrid,
-  Tooltip,
   ReferenceLine,
   ResponsiveContainer,
 } from "recharts";
@@ -22,7 +21,6 @@ const UP = "#26a69a";
 const DOWN = "#ef5350";
 const INK3 = "#7e97a6";
 const GRID = "#1b272d";
-const CROSSHAIR = "#8fb4c9";
 
 const axisTick = { fill: INK3, fontSize: 11, fontFamily: "var(--font-mono)" };
 
@@ -94,30 +92,6 @@ function Candlestick(props: {
   );
 }
 
-/** Vertical crosshair snapped to the hovered bar. */
-function CrosshairCursor(props: {
-  x?: number;
-  y?: number;
-  width?: number;
-  height?: number;
-}) {
-  const { x, y, width, height } = props;
-  if (x == null || y == null || width == null || height == null) return null;
-  const cx = x + width / 2;
-  return (
-    <line
-      x1={cx}
-      x2={cx}
-      y1={y}
-      y2={y + height}
-      stroke={CROSSHAIR}
-      strokeWidth={1}
-      strokeDasharray="3 3"
-      opacity={0.6}
-    />
-  );
-}
-
 /** Price tag pinned to the right axis at the last close — the marker every
  *  terminal puts there so you can find the current print instantly. */
 function LastPriceTag({
@@ -167,6 +141,10 @@ export function CandleChart({
   height?: number;
 }) {
   const [hover, setHover] = useState<number | null>(null);
+  const [cross, setCross] = useState<{ x: number; top: number; height: number } | null>(
+    null,
+  );
+  const wrapRef = useRef<HTMLDivElement>(null);
 
   const data: Row[] = candles.map((k) => ({
     t: k.t,
@@ -183,11 +161,18 @@ export function CandleChart({
   const max = Math.max(...data.map((d) => d.h));
   const pad = (max - min) * 0.08 || max * 0.05 || 1;
   // On a wide range (VEEE spans $1.50–$128 over 6m) the padding exceeds the
-  // low, and an axis tick reading "$-1.60" is nonsense for a price.
-  const floor = Math.max(0, min - pad);
+  // low: `min - pad` goes negative, and clamping at 0 then wastes a fifth of
+  // the plot on empty space below the cheapest bar. Floor at 85% of the low
+  // instead, which leaves normal ranges untouched.
+  const floor = Math.max(min - pad, min * 0.85, 0);
 
   const maxVol = Math.max(...data.map((d) => d.v), 0);
   const last = data[data.length - 1];
+  // Colour the last-price tag against the previous *close*, not this bar's
+  // open — otherwise a green "+6.97%" header sits next to a red tag whenever
+  // the session opened above where it closed.
+  const priorClose = data.length > 1 ? data[data.length - 2].c : null;
+  const lastUp = priorClose === null ? last.up : last.c >= priorClose;
 
   // The legend reads the hovered bar, falling back to the latest — so the
   // OHLC line is always populated rather than blank until you mouse over.
@@ -199,6 +184,47 @@ export function CandleChart({
   // Thin out ticks so the axis never crowds — roughly six labels at any width.
   const step = Math.max(1, Math.ceil(data.length / 6));
   const ticks = data.filter((_, i) => i % step === 0).map((d) => d.t);
+
+  /* The crosshair is driven off the plot geometry rather than Recharts'
+     tooltip: in v3 the cursor only renders while the tooltip is active, and a
+     tooltip that renders nothing never activates — so a hidden tooltip gives
+     no cursor. The grid element's box *is* the plot rect, which is all the
+     geometry needed to snap to a bar. */
+  function pointAt(clientX: number) {
+    const wrap = wrapRef.current;
+    const grid = wrap?.querySelector(".recharts-cartesian-grid");
+    if (!wrap || !grid || data.length === 0) return null;
+
+    const wb = wrap.getBoundingClientRect();
+    const gb = grid.getBoundingClientRect();
+    const rel = clientX - gb.left;
+    if (rel < 0 || rel > gb.width) return null;
+
+    const band = gb.width / data.length;
+    const index = Math.min(data.length - 1, Math.max(0, Math.floor(rel / band)));
+    return {
+      index,
+      x: gb.left - wb.left + (index + 0.5) * band,
+      top: gb.top - wb.top,
+      height: gb.height,
+    };
+  }
+
+  function handleMove(e: React.MouseEvent<HTMLDivElement>) {
+    const p = pointAt(e.clientX);
+    if (!p) {
+      setHover(null);
+      setCross(null);
+      return;
+    }
+    setHover(p.index);
+    setCross({ x: p.x, top: p.top, height: p.height });
+  }
+
+  function handleLeave() {
+    setHover(null);
+    setCross(null);
+  }
 
   return (
     <div>
@@ -229,7 +255,19 @@ export function CandleChart({
         </span>
       </div>
 
-      <div className="chart-frame" style={{ height }}>
+      <div
+        ref={wrapRef}
+        className="chart-frame"
+        style={{ height, position: "relative" }}
+        onMouseMove={handleMove}
+        onMouseLeave={handleLeave}
+      >
+        {cross && (
+          <span
+            className="crosshair-v"
+            style={{ left: cross.x, top: cross.top, height: cross.height }}
+          />
+        )}
         <ResponsiveContainer width="100%" height="100%">
           <ComposedChart
             data={data}
@@ -268,8 +306,6 @@ export function CandleChart({
                 separate pane without stealing height from price. */}
             <YAxis yAxisId="vol" domain={[0, maxVol > 0 ? maxVol * 5.5 : 1]} hide />
 
-            <Tooltip content={() => null} cursor={<CrosshairCursor />} />
-
             <Bar yAxisId="vol" dataKey="v" isAnimationActive={false}>
               {data.map((d, i) => (
                 <Cell key={i} fill={d.up ? UP : DOWN} fillOpacity={0.3} />
@@ -285,11 +321,11 @@ export function CandleChart({
             <ReferenceLine
               yAxisId="price"
               y={last.c}
-              stroke={last.up ? UP : DOWN}
+              stroke={lastUp ? UP : DOWN}
               strokeDasharray="2 3"
               strokeOpacity={0.75}
               label={
-                <LastPriceTag value={last.c} currency={currency} up={last.up} />
+                <LastPriceTag value={last.c} currency={currency} up={lastUp} />
               }
             />
           </ComposedChart>
