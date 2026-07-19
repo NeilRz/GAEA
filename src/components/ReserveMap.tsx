@@ -8,33 +8,50 @@ import fields from "@/data/fields.json";
 import sites from "@/data/sites.json";
 import pipelines from "@/data/pipelines.json";
 import {
-  type BasemapMode,
-  DEFAULT_BASEMAP,
-  BASEMAP_LABELS,
   SATELLITE_TILE_URL,
   SATELLITE_ATTRIBUTION,
   SATELLITE_TILE_SIZE,
   SATELLITE_MAX_ZOOM,
   DARK_SATELLITE_PAINT,
-  NATURAL_SATELLITE_PAINT,
   ATMOSPHERE,
   BOUNDARY_STYLE,
 } from "@/lib/map-config";
+import { registerMapIcons } from "@/lib/map-icons";
 
 const GROUPS = {
-  oilgas: { color: "#e8a33d", label: "Oil & gas fields", hint: "supergiants, shale, LNG" },
+  oilgas: { color: "#e8a33d", label: "Oil & gas fields", hint: "droplet · supergiants, shale, LNG" },
   pipelines: { color: "#c67c1b", label: "Trunk pipelines", hint: "approximate routes" },
-  base: { color: "#b26a4e", label: "Base & industrial metals", hint: "copper, iron, zinc, bauxite" },
-  precious: { color: "#cbc3b1", label: "Precious metals", hint: "gold, silver, PGM" },
-  battery: { color: "#2ba57e", label: "Battery metals", hint: "lithium, nickel, cobalt" },
-  ree: { color: "#8a75e8", label: "Rare earths", hint: "NdPr, heavy REE" },
-  nuclear: { color: "#8fb4c9", label: "Nuclear", hint: "plants ◦ white ring · U mines" },
-  plants: { color: "#5fd4ae", label: "Power plants (34,936)", hint: "WRI GPPD · all fuels · clustered" },
+  base: { color: "#b26a4e", label: "Base & industrial metals", hint: "hammer · copper, iron, zinc" },
+  precious: { color: "#cbc3b1", label: "Precious metals", hint: "diamond · gold, silver, PGM" },
+  battery: { color: "#2ba57e", label: "Battery metals", hint: "bolt · lithium, nickel, cobalt" },
+  ree: { color: "#8a75e8", label: "Rare earths", hint: "crystal · NdPr, heavy REE" },
+  nuclear: { color: "#8fb4c9", label: "Nuclear", hint: "atom = plant · trefoil = U mine" },
+  plants: { color: "#5fd4ae", label: "Power plants (34,936)", hint: "typed clusters by fuel · WRI GPPD" },
   reserves: { color: "#5e8ba6", label: "Proven oil reserves", hint: "circle area = billion bbl" },
   arctic: { color: "#6fd4c3", label: "Arctic highlight", hint: "assets above 66°33′N" },
 } as const;
 
 type GroupKey = keyof typeof GROUPS;
+
+/** Typed power-plant groups — each gets its own clustered source so its
+ *  clusters carry the category's icon and color instead of a generic
+ *  number circle. */
+const PLANT_GROUPS = [
+  { id: "fossil", icon: "i-fossil", color: "#c67c1b", label: "Fossil" },
+  { id: "renewable", icon: "i-renewable", color: "#2ba57e", label: "Renewables" },
+  { id: "hydro", icon: "i-hydro", color: "#3e90cb", label: "Hydro" },
+  { id: "nuclear", icon: "i-nuclear-fuel", color: "#8fb4c9", label: "Nuclear" },
+  { id: "other", icon: "i-other", color: "#7e97a6", label: "Other" },
+] as const;
+
+const CURATED_ICON: Record<string, string | unknown[]> = {
+  oilgas: "i-oilgas",
+  base: "i-base",
+  precious: "i-precious",
+  battery: "i-battery",
+  ree: "i-ree",
+  nuclear: ["case", ["==", ["get", "kind"], "plant"], "i-nuclear-plant", "i-uranium"],
+};
 
 const FUEL_GROUP: Record<string, string> = {
   Coal: "fossil", Gas: "fossil", Oil: "fossil", Petcoke: "fossil", Cogeneration: "fossil",
@@ -45,20 +62,9 @@ const FUEL_GROUP: Record<string, string> = {
   Storage: "other", Other: "other",
 };
 
-const FUEL_COLORS: Record<string, string> = {
-  fossil: "#c67c1b",
-  hydro: "#3e90cb",
-  nuclear: "#8fb4c9",
-  renewable: "#2ba57e",
-  other: "#7e97a6",
-};
-
 const FUEL_CHIPS = [
   { id: "all", label: "All" },
-  { id: "fossil", label: "Fossil" },
-  { id: "renewable", label: "Renewables" },
-  { id: "hydro", label: "Hydro" },
-  { id: "nuclear", label: "Nuclear" },
+  ...PLANT_GROUPS.filter((g) => g.id !== "other").map((g) => ({ id: g.id, label: g.label })),
 ];
 
 const SPOTLIGHT: Array<{ name: string; sub: string; lngLat: [number, number]; zoom: number }> = [
@@ -177,7 +183,7 @@ function plantPopupHTML(p: Record<string, unknown>): string {
 const POINT_LAYERS: Exclude<GroupKey, "plants" | "pipelines" | "reserves" | "arctic">[] = [
   "oilgas", "base", "precious", "battery", "ree", "nuclear",
 ];
-const PLANT_LAYER_IDS = ["plants-clusters", "plants-count", "plants"];
+const plantLayerIds = (g: string) => [`pl-${g}-cc`, `pl-${g}-cs`, `pl-${g}-pt`];
 
 export default function ReserveMap() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -190,7 +196,6 @@ export default function ReserveMap() {
   });
   const [terrain3d, setTerrain3d] = useState(false);
   const terrain3dRef = useRef(false);
-  const [basemap, setBasemap] = useState<BasemapMode>(DEFAULT_BASEMAP);
   const [fuel, setFuel] = useState("all");
   const [plantCount, setPlantCount] = useState<number | null>(null);
   const [query, setQuery] = useState("");
@@ -314,6 +319,7 @@ export default function ReserveMap() {
     map.addControl(new maplibregl.GlobeControl(), "top-right");
 
     map.on("load", () => {
+      registerMapIcons(map);
       map.addSource("arctic-circle", { type: "geojson", data: arcticCircle() });
       map.addLayer({
         id: "arctic-circle", type: "line", source: "arctic-circle",
@@ -371,15 +377,12 @@ export default function ReserveMap() {
       for (const id of POINT_LAYERS) {
         map.addSource(id, { type: "geojson", data: fc(sourcesByLayer[id]) });
         map.addLayer({
-          id, type: "circle", source: id,
-          paint: {
-            "circle-color": GROUPS[id].color, "circle-opacity": 0.92,
-            "circle-radius": ["interpolate", ["linear"], ["zoom"], 1, 4, 6, 7],
-            "circle-stroke-color":
-              id === "nuclear"
-                ? ["case", ["==", ["get", "kind"], "plant"], "#edf1f3", "#0c1519"]
-                : "#0c1519",
-            "circle-stroke-width": id === "nuclear" ? 1.8 : 1.4,
+          id, type: "symbol", source: id,
+          layout: {
+            "icon-image": CURATED_ICON[id] as string,
+            "icon-size": ["interpolate", ["linear"], ["zoom"], 1, 0.42, 6, 0.8],
+            "icon-allow-overlap": true,
+            "icon-ignore-placement": true,
           },
         });
       }
@@ -397,72 +400,90 @@ export default function ReserveMap() {
         map.on("mouseleave", id, () => (map.getCanvas().style.cursor = ""));
       }
 
-      // Power plants: lazy-load 35k points after the base map is interactive.
+      // Power plants: lazy-load 35k points, split into typed clustered
+      // sources so every cluster carries its category icon + color.
       fetch("/data/power-plants.geojson")
         .then((r) => r.json())
         .then((data: GeoJSON.FeatureCollection) => {
           plantsDataRef.current = data;
           setPlantCount(data.features.length);
-          map.addSource("plants", {
-            type: "geojson", data,
-            cluster: true, clusterMaxZoom: 6, clusterRadius: 42,
-          });
-          map.addLayer({
-            id: "plants-clusters", type: "circle", source: "plants",
-            filter: ["has", "point_count"],
-            paint: {
-              "circle-color": "#16303d",
-              "circle-stroke-color": "#5fd4ae", "circle-stroke-width": 1.2, "circle-stroke-opacity": 0.7,
-              "circle-opacity": 0.8,
-              "circle-radius": ["step", ["get", "point_count"], 10, 50, 14, 250, 19, 1000, 25],
-            },
-          }, "oilgas");
-          map.addLayer({
-            id: "plants-count", type: "symbol", source: "plants",
-            filter: ["has", "point_count"],
-            layout: {
-              "text-field": ["get", "point_count_abbreviated"],
-              "text-font": ["Noto Sans Regular"], "text-size": 10,
-            },
-            paint: { "text-color": "#b9c6ce" },
-          }, "oilgas");
-          map.addLayer({
-            id: "plants", type: "circle", source: "plants",
-            filter: ["!", ["has", "point_count"]],
-            paint: {
-              "circle-color": [
-                "match",
-                ["match", ["get", "f"],
-                  "Coal", "fossil", "Gas", "fossil", "Oil", "fossil", "Petcoke", "fossil", "Cogeneration", "fossil",
-                  "Hydro", "hydro", "Nuclear", "nuclear",
-                  "Solar", "renewable", "Wind", "renewable", "Geothermal", "renewable",
-                  "Biomass", "renewable", "Waste", "renewable", "Wave and Tidal", "renewable",
-                  "other",
-                ],
-                "fossil", FUEL_COLORS.fossil, "hydro", FUEL_COLORS.hydro, "nuclear", FUEL_COLORS.nuclear,
-                "renewable", FUEL_COLORS.renewable, FUEL_COLORS.other,
-              ],
-              "circle-opacity": 0.8,
-              "circle-radius": ["interpolate", ["linear"], ["sqrt", ["coalesce", ["get", "mw"], 1]], 0, 2, 70, 9],
-              "circle-stroke-color": "#0c1519", "circle-stroke-width": 0.6,
-            },
-          }, "oilgas");
 
-          map.on("click", "plants", (e) => {
-            const f = e.features?.[0];
-            if (!f) return;
-            popup.setLngLat(e.lngLat).setHTML(plantPopupHTML(f.properties as Record<string, unknown>)).addTo(map);
-          });
-          map.on("click", "plants-clusters", async (e) => {
-            const f = e.features?.[0];
-            if (!f) return;
-            const src = map.getSource("plants") as maplibregl.GeoJSONSource;
-            const zoom = await src.getClusterExpansionZoom(f.properties?.cluster_id as number);
-            map.easeTo({ center: (f.geometry as GeoJSON.Point).coordinates as [number, number], zoom });
-          });
-          for (const id of ["plants", "plants-clusters"]) {
-            map.on("mouseenter", id, () => (map.getCanvas().style.cursor = "pointer"));
-            map.on("mouseleave", id, () => (map.getCanvas().style.cursor = ""));
+          const byGroup: Record<string, GeoJSON.Feature[]> = {};
+          for (const g of PLANT_GROUPS) byGroup[g.id] = [];
+          for (const f of data.features) {
+            const grp = FUEL_GROUP[(f.properties as { f: string }).f] ?? "other";
+            byGroup[grp].push(f);
+          }
+
+          for (const g of PLANT_GROUPS) {
+            const srcId = `pl-${g.id}`;
+            map.addSource(srcId, {
+              type: "geojson",
+              data: fc(byGroup[g.id]),
+              cluster: true,
+              clusterMaxZoom: 6,
+              clusterRadius: 46,
+              clusterProperties: { mw_sum: ["+", ["coalesce", ["get", "mw"], 0]] },
+            });
+            map.addLayer({
+              id: `pl-${g.id}-cc`, type: "circle", source: srcId,
+              filter: ["has", "point_count"],
+              paint: {
+                "circle-color": g.color,
+                "circle-opacity": 0.14,
+                "circle-stroke-color": g.color,
+                "circle-stroke-width": 1.3,
+                "circle-stroke-opacity": 0.75,
+                "circle-radius": ["step", ["get", "point_count"], 12, 50, 15, 250, 19, 1000, 24],
+              },
+            }, "oilgas");
+            map.addLayer({
+              id: `pl-${g.id}-cs`, type: "symbol", source: srcId,
+              filter: ["has", "point_count"],
+              layout: {
+                "icon-image": g.icon,
+                "icon-size": ["step", ["get", "point_count"], 0.42, 250, 0.5, 1000, 0.58],
+                "icon-allow-overlap": true,
+                "icon-ignore-placement": true,
+                "text-field": ["get", "point_count_abbreviated"],
+                "text-font": ["Noto Sans Regular"],
+                "text-size": 9,
+                "text-offset": [0, 1.35],
+                "text-allow-overlap": true,
+                "text-optional": true,
+              },
+              paint: {
+                "text-color": "#edf1f3",
+                "text-halo-color": "#0c1519",
+                "text-halo-width": 1.1,
+              },
+            }, "oilgas");
+            map.addLayer({
+              id: `pl-${g.id}-pt`, type: "symbol", source: srcId,
+              filter: ["!", ["has", "point_count"]],
+              layout: {
+                "icon-image": g.icon,
+                "icon-size": ["interpolate", ["linear"], ["zoom"], 4, 0.28, 8, 0.48, 11, 0.62],
+                "icon-allow-overlap": false,
+              },
+            }, "oilgas");
+
+            map.on("click", `pl-${g.id}-pt`, (e) => {
+              const f = e.features?.[0];
+              if (!f) return;
+              popup.setLngLat(e.lngLat).setHTML(plantPopupHTML(f.properties as Record<string, unknown>)).addTo(map);
+            });
+            map.on("click", `pl-${g.id}-cc`, async (e) => {
+              const f = e.features?.[0];
+              if (!f) return;
+              const src = map.getSource(srcId) as maplibregl.GeoJSONSource;
+              const zoom = await src.getClusterExpansionZoom(f.properties?.cluster_id as number);
+              map.easeTo({ center: (f.geometry as GeoJSON.Point).coordinates as [number, number], zoom });
+            });
+            for (const id of [`pl-${g.id}-pt`, `pl-${g.id}-cc`]) {
+              map.on("mouseenter", id, () => (map.getCanvas().style.cursor = "pointer"));
+              map.on("mouseleave", id, () => (map.getCanvas().style.cursor = ""));
+            }
           }
         })
         .catch((e) => console.error("[GEOM map] plants load failed", e));
@@ -473,19 +494,6 @@ export default function ReserveMap() {
       mapRef.current = null;
     };
   }, []);
-
-  const applyBasemap = (mode: BasemapMode) => {
-    const map = mapRef.current;
-    setBasemap(mode);
-    if (!map || !map.getLayer("satellite")) return;
-    const satOn = mode !== "dark-minimal";
-    map.setLayoutProperty("satellite", "visibility", satOn ? "visible" : "none");
-    map.setLayoutProperty("boundaries", "visibility", satOn ? "visible" : "none");
-    const paint = mode === "satellite-natural" ? NATURAL_SATELLITE_PAINT : DARK_SATELLITE_PAINT;
-    for (const [k, v] of Object.entries(paint)) {
-      map.setPaintProperty("satellite", k, v);
-    }
-  };
 
   const setTerrainEnabled = (on: boolean) => {
     const map = mapRef.current;
@@ -513,13 +521,27 @@ export default function ReserveMap() {
     }
   };
 
+  const syncPlantLayers = (plantsOn: boolean, fuelSel: string) => {
+    const map = mapRef.current;
+    if (!map) return;
+    for (const g of PLANT_GROUPS) {
+      const vis = plantsOn && (fuelSel === "all" || fuelSel === g.id) ? "visible" : "none";
+      for (const id of plantLayerIds(g.id)) {
+        if (map.getLayer(id)) map.setLayoutProperty(id, "visibility", vis);
+      }
+    }
+  };
+
   const toggle = (key: GroupKey) => {
     const map = mapRef.current;
     const next = { ...visible, [key]: !visible[key] };
     setVisible(next);
+    if (key === "plants") {
+      syncPlantLayers(next.plants, fuel);
+      return;
+    }
     const vis = next[key] ? "visible" : "none";
-    const ids =
-      key === "plants" ? PLANT_LAYER_IDS : key === "pipelines" ? ["pipelines", "pipelines-idle"] : [key];
+    const ids = key === "pipelines" ? ["pipelines", "pipelines-idle"] : [key];
     for (const id of ids) {
       if (map?.getLayer(id)) map.setLayoutProperty(id, "visibility", vis);
     }
@@ -527,16 +549,7 @@ export default function ReserveMap() {
 
   const applyFuel = (id: string) => {
     setFuel(id);
-    const map = mapRef.current;
-    const data = plantsDataRef.current;
-    if (!map || !data) return;
-    const src = map.getSource("plants") as maplibregl.GeoJSONSource | undefined;
-    if (!src) return;
-    if (id === "all") {
-      src.setData(data);
-    } else {
-      src.setData(fc(data.features.filter((f) => FUEL_GROUP[(f.properties as { f: string }).f] === id)));
-    }
+    syncPlantLayers(visible.plants, id);
   };
 
   const focus = (lngLat: [number, number], zoom: number, props?: Record<string, unknown>, cinematic = false) => {
@@ -596,19 +609,6 @@ export default function ReserveMap() {
             ))}
           </div>
         )}
-
-        <div style={{ display: "flex", flexWrap: "wrap", gap: 4, margin: "0 0 8px" }}>
-          {(Object.keys(BASEMAP_LABELS) as BasemapMode[]).map((m) => (
-            <button
-              key={m}
-              className={`dl-chip ${basemap === m ? "on" : ""}`}
-              style={{ fontSize: 10, padding: "2px 8px" }}
-              onClick={() => applyBasemap(m)}
-            >
-              {BASEMAP_LABELS[m]}
-            </button>
-          ))}
-        </div>
 
         <button
           className={`layer-toggle ${terrain3d ? "on" : ""}`}

@@ -1,28 +1,34 @@
 "use client";
 
+import { useState } from "react";
 import {
   ComposedChart,
   Bar,
+  Cell,
   XAxis,
   YAxis,
   CartesianGrid,
   Tooltip,
+  ReferenceLine,
   ResponsiveContainer,
 } from "recharts";
 import type { Candle } from "@/lib/quotes";
 import { formatPrice, formatVolume, formatBarDate } from "@/lib/format";
 
+/* Standard terminal conventions, not the GEOM categorical palette: candles
+   read green/red the way every trading screen does, and traders parse that
+   faster than any house colour. The chrome around them stays GEOM. */
+const UP = "#26a69a";
+const DOWN = "#ef5350";
 const INK3 = "#7e97a6";
-const GRID = "#1f2e35";
-const UP = "#2ba57e";
-const DOWN = "#cc4a57";
-const VOL = "#2e4650";
+const GRID = "#1b272d";
+const CROSSHAIR = "#8fb4c9";
 
 const axisTick = { fill: INK3, fontSize: 11, fontFamily: "var(--font-mono)" };
 
 interface Row {
   t: number;
-  /* Floating bar: Recharts gives the custom shape the pixel box spanning
+  /* Floating bar: Recharts hands the custom shape the pixel box spanning
      [low, high], which is all we need to place open and close by hand. */
   wick: [number, number];
   o: number;
@@ -33,7 +39,7 @@ interface Row {
   up: boolean;
 }
 
-/** Draws one candle inside the pixel box Recharts computed for [low, high]. */
+/** One candle, drawn inside the pixel box Recharts computed for [low, high]. */
 function Candlestick(props: {
   x?: number;
   y?: number;
@@ -52,7 +58,9 @@ function Candlestick(props: {
   // A doji whose high equals its low collapses the box, so pin to the top.
   const yFor = (p: number) => (span === 0 ? y : y + ((h - p) / span) * height);
 
-  const bodyW = Math.max(Math.min(width * 0.62, 14), 1);
+  // Standard proportions: body fills the slot leaving a ~1px gutter, so at
+  // dense ranges the candles read as a continuous block the way a terminal does.
+  const bodyW = Math.max(width - 1.4, 1);
   const bodyX = x + (width - bodyW) / 2;
   const centre = x + width / 2;
 
@@ -86,54 +94,80 @@ function Candlestick(props: {
   );
 }
 
-function CandleTooltip({
-  active,
-  payload,
-  currency,
-}: {
-  active?: boolean;
-  payload?: { payload?: Row }[];
-  currency: string;
+/** Vertical crosshair snapped to the hovered bar. */
+function CrosshairCursor(props: {
+  x?: number;
+  y?: number;
+  width?: number;
+  height?: number;
 }) {
-  const row = payload?.[0]?.payload;
-  if (!active || !row) return null;
+  const { x, y, width, height } = props;
+  if (x == null || y == null || width == null || height == null) return null;
+  const cx = x + width / 2;
+  return (
+    <line
+      x1={cx}
+      x2={cx}
+      y1={y}
+      y2={y + height}
+      stroke={CROSSHAIR}
+      strokeWidth={1}
+      strokeDasharray="3 3"
+      opacity={0.6}
+    />
+  );
+}
 
-  const rows: [string, string][] = [
-    ["O", formatPrice(row.o, currency)],
-    ["H", formatPrice(row.h, currency)],
-    ["L", formatPrice(row.l, currency)],
-    ["C", formatPrice(row.c, currency)],
-  ];
+/** Price tag pinned to the right axis at the last close — the marker every
+ *  terminal puts there so you can find the current print instantly. */
+function LastPriceTag({
+  viewBox,
+  value,
+  currency,
+  up,
+}: {
+  viewBox?: { x?: number; y?: number; width?: number };
+  value: number;
+  currency: string;
+  up: boolean;
+}) {
+  const y = viewBox?.y;
+  const x = viewBox?.x;
+  const w = viewBox?.width;
+  if (y == null || x == null || w == null) return null;
+
+  const text = formatPrice(value, currency);
+  const boxW = Math.max(text.length * 6.6 + 12, 48);
 
   return (
-    <div className="chart-tooltip">
-      <div className="t-label">{formatBarDate(row.t, true)}</div>
-      <div className="ohlc-grid">
-        {rows.map(([k, v]) => (
-          <span key={k} className="ohlc-cell">
-            <span className="ohlc-k">{k}</span>
-            <span style={{ color: row.up ? UP : DOWN }}>{v}</span>
-          </span>
-        ))}
-      </div>
-      {row.v > 0 && (
-        <div className="t-row" style={{ marginTop: 4 }}>
-          <span className="ohlc-k">VOL</span> {formatVolume(row.v)}
-        </div>
-      )}
-    </div>
+    <g transform={`translate(${x + w}, ${y})`}>
+      <rect x={2} y={-8.5} width={boxW} height={17} rx={2} fill={up ? UP : DOWN} />
+      <text
+        x={2 + boxW / 2}
+        y={4}
+        textAnchor="middle"
+        fill="#08120f"
+        fontSize={11}
+        fontFamily="var(--font-mono)"
+        fontWeight={700}
+      >
+        {text}
+      </text>
+    </g>
   );
 }
 
 export function CandleChart({
   candles,
   currency = "USD",
-  height = 340,
+  height = 360,
 }: {
   candles: Candle[];
   currency?: string;
   height?: number;
 }) {
+  const [hover, setHover] = useState<number | null>(null);
+
   const data: Row[] = candles.map((k) => ({
     t: k.t,
     wick: [k.l, k.h],
@@ -145,67 +179,122 @@ export function CandleChart({
     up: k.c >= k.o,
   }));
 
-  const lows = data.map((d) => d.l);
-  const highs = data.map((d) => d.h);
-  const min = Math.min(...lows);
-  const max = Math.max(...highs);
+  const min = Math.min(...data.map((d) => d.l));
+  const max = Math.max(...data.map((d) => d.h));
   const pad = (max - min) * 0.08 || max * 0.05 || 1;
   // On a wide range (VEEE spans $1.50–$128 over 6m) the padding exceeds the
   // low, and an axis tick reading "$-1.60" is nonsense for a price.
   const floor = Math.max(0, min - pad);
 
   const maxVol = Math.max(...data.map((d) => d.v), 0);
+  const last = data[data.length - 1];
+
+  // The legend reads the hovered bar, falling back to the latest — so the
+  // OHLC line is always populated rather than blank until you mouse over.
+  const active = hover != null && data[hover] ? data[hover] : last;
+  const prev = hover != null && hover > 0 ? data[hover - 1] : data[data.length - 2];
+  const barChangePct =
+    prev && prev.c !== 0 ? ((active.c - prev.c) / prev.c) * 100 : null;
 
   // Thin out ticks so the axis never crowds — roughly six labels at any width.
   const step = Math.max(1, Math.ceil(data.length / 6));
   const ticks = data.filter((_, i) => i % step === 0).map((d) => d.t);
 
   return (
-    <div className="chart-frame" style={{ height }}>
-      <ResponsiveContainer width="100%" height="100%">
-        <ComposedChart data={data} margin={{ top: 8, right: 8, bottom: 0, left: 0 }}>
-          <CartesianGrid stroke={GRID} strokeDasharray="2 4" vertical={false} />
-          <XAxis
-            dataKey="t"
-            type="category"
-            ticks={ticks}
-            tickFormatter={(t: number) => formatBarDate(t)}
-            tick={axisTick}
-            axisLine={{ stroke: GRID }}
-            tickLine={false}
-            interval={0}
-            minTickGap={0}
-          />
-          <YAxis
-            yAxisId="price"
-            orientation="right"
-            domain={[floor, max + pad]}
-            tick={axisTick}
-            tickFormatter={(v: number) => formatPrice(v, currency)}
-            axisLine={false}
-            tickLine={false}
-            width={78}
-          />
-          {/* Volume shares the plot but is scaled to the bottom ~18% so it
-              reads as a footprint rather than competing with price. */}
-          <YAxis
-            yAxisId="vol"
-            domain={[0, maxVol > 0 ? maxVol * 5.5 : 1]}
-            hide
-          />
-          <Tooltip
-            content={<CandleTooltip currency={currency} />}
-            cursor={{ fill: "rgba(94,139,166,0.07)" }}
-          />
-          <Bar yAxisId="vol" dataKey="v" fill={VOL} isAnimationActive={false} maxBarSize={14} />
-          <Bar
-            yAxisId="price"
-            dataKey="wick"
-            shape={<Candlestick />}
-            isAnimationActive={false}
-          />
-        </ComposedChart>
-      </ResponsiveContainer>
+    <div>
+      <div className="ohlc-legend">
+        <span className="ohlc-date">{formatBarDate(active.t, true)}</span>
+        {(
+          [
+            ["O", active.o],
+            ["H", active.h],
+            ["L", active.l],
+            ["C", active.c],
+          ] as [string, number][]
+        ).map(([k, v]) => (
+          <span key={k} className="ohlc-pair">
+            <span className="ohlc-k">{k}</span>
+            <span style={{ color: active.up ? UP : DOWN }}>{formatPrice(v, currency)}</span>
+          </span>
+        ))}
+        {barChangePct !== null && (
+          <span className="ohlc-pair" style={{ color: active.up ? UP : DOWN }}>
+            {barChangePct >= 0 ? "+" : "−"}
+            {Math.abs(barChangePct).toFixed(2)}%
+          </span>
+        )}
+        <span className="ohlc-pair">
+          <span className="ohlc-k">VOL</span>
+          <span style={{ color: INK3 }}>{formatVolume(active.v)}</span>
+        </span>
+      </div>
+
+      <div className="chart-frame" style={{ height }}>
+        <ResponsiveContainer width="100%" height="100%">
+          <ComposedChart
+            data={data}
+            margin={{ top: 8, right: 4, bottom: 0, left: 0 }}
+            onMouseMove={(s) => {
+              // recharts types this as number | TooltipIndex | null | undefined
+              const i = (s as { activeTooltipIndex?: unknown })?.activeTooltipIndex;
+              setHover(typeof i === "number" ? i : null);
+            }}
+            onMouseLeave={() => setHover(null)}
+          >
+            <CartesianGrid stroke={GRID} vertical={false} />
+            <XAxis
+              dataKey="t"
+              type="category"
+              ticks={ticks}
+              tickFormatter={(t: number) => formatBarDate(t)}
+              tick={axisTick}
+              axisLine={{ stroke: GRID }}
+              tickLine={false}
+              interval={0}
+              minTickGap={0}
+            />
+            <YAxis
+              yAxisId="price"
+              orientation="right"
+              domain={[floor, max + pad]}
+              tick={axisTick}
+              tickFormatter={(v: number) => formatPrice(v, currency)}
+              axisLine={false}
+              tickLine={false}
+              width={82}
+            />
+            {/* Volume rides a hidden axis scaled so it occupies the bottom
+                ~18% — the conventional overlay footprint, close enough to a
+                separate pane without stealing height from price. */}
+            <YAxis yAxisId="vol" domain={[0, maxVol > 0 ? maxVol * 5.5 : 1]} hide />
+
+            <Tooltip content={() => null} cursor={<CrosshairCursor />} />
+
+            <Bar yAxisId="vol" dataKey="v" isAnimationActive={false}>
+              {data.map((d, i) => (
+                <Cell key={i} fill={d.up ? UP : DOWN} fillOpacity={0.3} />
+              ))}
+            </Bar>
+            <Bar
+              yAxisId="price"
+              dataKey="wick"
+              shape={<Candlestick />}
+              isAnimationActive={false}
+            />
+
+            <ReferenceLine
+              yAxisId="price"
+              y={last.c}
+              stroke={last.up ? UP : DOWN}
+              strokeDasharray="2 3"
+              strokeOpacity={0.75}
+              label={
+                <LastPriceTag value={last.c} currency={currency} up={last.up} />
+              }
+            />
+          </ComposedChart>
+        </ResponsiveContainer>
+      </div>
     </div>
   );
 }

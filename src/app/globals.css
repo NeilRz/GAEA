@@ -671,14 +671,16 @@ table.data th.num { text-align: right; }
 .geom-tile.is-live:hover { transform: translateY(-1px); }
 .geom-tile.is-live .quote-delta { color: var(--glacial-bright); }
 
-/* ── candlestick tooltip ── */
+/* ── candlestick OHLC legend ── */
 
-.chart-tooltip .ohlc-grid {
-  display: grid; grid-template-columns: repeat(2, auto); gap: 2px 14px;
-  margin-top: 2px;
+.ohlc-legend {
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 14px;
+  font-family: var(--font-mono); font-size: 11px; color: var(--ink-2);
+  padding: 0 2px 8px;
 }
-.chart-tooltip .ohlc-cell { display: flex; gap: 6px; line-height: 1.7; }
-.chart-tooltip .ohlc-k { color: var(--ink-3); }
+.ohlc-date { color: var(--ink-3); letter-spacing: 0.04em; }
+.ohlc-pair { display: inline-flex; gap: 5px; white-space: nowrap; }
+.ohlc-k { color: var(--ink-3); }
 
 @media (max-width: 600px) {
   .term-head-row { flex-direction: column; }
