@@ -411,6 +411,39 @@ table.data th.num { text-align: right; }
 .verdict-banner.invalid .verdict-title { color: #e87a85; }
 .verdict-sub { margin: 1px 0 0; font-size: 12px; color: var(--ink-2); }
 
+/* ── tracker library ── */
+
+.lib-grid { display: grid; grid-template-columns: 232px 1fr; gap: 18px; align-items: start; }
+@media (max-width: 840px) { .lib-grid { grid-template-columns: 1fr; } }
+
+.folder-list { display: flex; flex-direction: column; gap: 4px; }
+.folder-btn {
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  width: 100%; padding: 8px 12px; border-radius: 8px; cursor: pointer;
+  background: transparent; border: 1px solid transparent; text-align: left;
+  font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.03em;
+  color: var(--ink-2); transition: background 0.15s var(--ease);
+}
+.folder-btn:hover { background: var(--panel-2); }
+.folder-btn.on { color: var(--ink); border-color: var(--line-strong); background: var(--panel-2); }
+.folder-btn .glyph { color: var(--ink-3); margin-right: 2px; }
+.folder-btn.on .glyph { color: var(--glacial-bright); }
+.folder-btn .count { color: var(--ink-3); font-size: 11px; }
+
+.lib-search {
+  width: 100%; padding: 9px 16px; border-radius: 999px;
+  font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.03em;
+  background: var(--bg); border: 1px solid var(--line-strong); color: var(--ink);
+}
+.lib-search::placeholder { color: var(--ink-3); }
+
+.folder-head td {
+  background: var(--bg-raised);
+  font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--ink-3); padding: 7px 14px;
+}
+.folder-head td b { color: var(--glacial-bright); font-weight: 500; }
+
 /* ── chart frame ── */
 
 .chart-frame { width: 100%; }
