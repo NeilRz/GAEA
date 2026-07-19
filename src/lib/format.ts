@@ -15,6 +15,8 @@ export function formatPrice(value: number, currency = "USD"): string {
 /** Sub-dollar crypto needs more places than a $147 equity does. */
 function decimals(v: number): string {
   const a = Math.abs(v);
+  if (a === 0) return "0"; // axis floor tick — "0.000000p" is just noise
+
   if (a >= 1000) return v.toLocaleString("en-US", { maximumFractionDigits: 2, minimumFractionDigits: 2 });
   if (a >= 1) return v.toFixed(2);
   if (a >= 0.01) return v.toFixed(4);

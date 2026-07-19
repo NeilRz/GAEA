@@ -7,6 +7,19 @@ import reserves from "@/data/reserves.json";
 import fields from "@/data/fields.json";
 import sites from "@/data/sites.json";
 import pipelines from "@/data/pipelines.json";
+import {
+  type BasemapMode,
+  DEFAULT_BASEMAP,
+  BASEMAP_LABELS,
+  SATELLITE_TILE_URL,
+  SATELLITE_ATTRIBUTION,
+  SATELLITE_TILE_SIZE,
+  SATELLITE_MAX_ZOOM,
+  DARK_SATELLITE_PAINT,
+  NATURAL_SATELLITE_PAINT,
+  ATMOSPHERE,
+  BOUNDARY_STYLE,
+} from "@/lib/map-config";
 
 const GROUPS = {
   oilgas: { color: "#e8a33d", label: "Oil & gas fields", hint: "supergiants, shale, LNG" },
@@ -177,6 +190,7 @@ export default function ReserveMap() {
   });
   const [terrain3d, setTerrain3d] = useState(false);
   const terrain3dRef = useRef(false);
+  const [basemap, setBasemap] = useState<BasemapMode>(DEFAULT_BASEMAP);
   const [fuel, setFuel] = useState("all");
   const [plantCount, setPlantCount] = useState<number | null>(null);
   const [query, setQuery] = useState("");
@@ -211,21 +225,40 @@ export default function ReserveMap() {
         version: 8,
         projection: { type: "globe" },
         glyphs: "https://demotiles.maplibre.org/font/{fontstack}/{range}.pbf",
-        sky: {
-          "sky-color": "#0b1a24", "horizon-color": "#16303d", "fog-color": "#0c1519",
-          "sky-horizon-blend": 0.6, "horizon-fog-blend": 0.6, "fog-ground-blend": 0.8,
-        },
+        sky: { ...ATMOSPHERE },
         sources: {
           carto: {
             type: "raster",
             tiles: [
-              "https://a.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}@2x.png",
-              "https://b.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}@2x.png",
-              "https://c.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}@2x.png",
+              "https://a.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}@2x.png",
+              "https://b.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}@2x.png",
+              "https://c.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}@2x.png",
             ],
             tileSize: 256,
             attribution:
               "© <a href='https://www.openstreetmap.org/copyright'>OpenStreetMap</a> contributors © <a href='https://carto.com/attributions'>CARTO</a> · terrain © <a href='https://registry.opendata.aws/terrain-tiles/'>Mapzen/AWS</a> · plants © <a href='https://datasets.wri.org/dataset/globalpowerplantdatabase'>WRI GPPD</a>",
+          },
+          satellite: {
+            type: "raster",
+            tiles: [SATELLITE_TILE_URL],
+            tileSize: SATELLITE_TILE_SIZE,
+            maxzoom: SATELLITE_MAX_ZOOM,
+            attribution: SATELLITE_ATTRIBUTION,
+          },
+          "carto-labels": {
+            type: "raster",
+            tiles: [
+              "https://a.basemaps.cartocdn.com/dark_only_labels/{z}/{x}/{y}@2x.png",
+              "https://b.basemaps.cartocdn.com/dark_only_labels/{z}/{x}/{y}@2x.png",
+              "https://c.basemaps.cartocdn.com/dark_only_labels/{z}/{x}/{y}@2x.png",
+            ],
+            tileSize: 256,
+          },
+          // MapLibre needs an absolute URL for geojson source strings — a
+          // bare path throws Invalid URL and aborts the entire style load.
+          boundaries: {
+            type: "geojson",
+            data: `${window.location.origin}/data/boundaries.geojson`,
           },
           dem: {
             type: "raster-dem",
@@ -233,7 +266,39 @@ export default function ReserveMap() {
             encoding: "terrarium", tileSize: 256, maxzoom: 10,
           },
         },
-        layers: [{ id: "carto", type: "raster", source: "carto" }],
+        layers: [
+          { id: "carto", type: "raster", source: "carto" },
+          {
+            id: "satellite",
+            type: "raster",
+            source: "satellite",
+            paint: {
+              ...DARK_SATELLITE_PAINT,
+              // Fade to the dark minimal base past the imagery's native zoom.
+              "raster-opacity": [
+                "interpolate", ["linear"], ["zoom"],
+                SATELLITE_MAX_ZOOM + 0.2, 1,
+                SATELLITE_MAX_ZOOM + 1.4, 0,
+              ],
+            },
+          },
+          {
+            id: "boundaries",
+            type: "line",
+            source: "boundaries",
+            paint: {
+              "line-color": BOUNDARY_STYLE.color,
+              "line-opacity": BOUNDARY_STYLE.opacity,
+              "line-width": BOUNDARY_STYLE.width,
+            },
+          },
+          {
+            id: "carto-labels",
+            type: "raster",
+            source: "carto-labels",
+            paint: { "raster-opacity": 0.88 },
+          },
+        ],
       },
       center: [-30, 45],
       zoom: 2.1,
@@ -409,6 +474,19 @@ export default function ReserveMap() {
     };
   }, []);
 
+  const applyBasemap = (mode: BasemapMode) => {
+    const map = mapRef.current;
+    setBasemap(mode);
+    if (!map || !map.getLayer("satellite")) return;
+    const satOn = mode !== "dark-minimal";
+    map.setLayoutProperty("satellite", "visibility", satOn ? "visible" : "none");
+    map.setLayoutProperty("boundaries", "visibility", satOn ? "visible" : "none");
+    const paint = mode === "satellite-natural" ? NATURAL_SATELLITE_PAINT : DARK_SATELLITE_PAINT;
+    for (const [k, v] of Object.entries(paint)) {
+      map.setPaintProperty("satellite", k, v);
+    }
+  };
+
   const setTerrainEnabled = (on: boolean) => {
     const map = mapRef.current;
     if (!map) return;
@@ -518,6 +596,19 @@ export default function ReserveMap() {
             ))}
           </div>
         )}
+
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 4, margin: "0 0 8px" }}>
+          {(Object.keys(BASEMAP_LABELS) as BasemapMode[]).map((m) => (
+            <button
+              key={m}
+              className={`dl-chip ${basemap === m ? "on" : ""}`}
+              style={{ fontSize: 10, padding: "2px 8px" }}
+              onClick={() => applyBasemap(m)}
+            >
+              {BASEMAP_LABELS[m]}
+            </button>
+          ))}
+        </div>
 
         <button
           className={`layer-toggle ${terrain3d ? "on" : ""}`}

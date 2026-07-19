@@ -150,6 +150,9 @@ export function CandleChart({
   const min = Math.min(...lows);
   const max = Math.max(...highs);
   const pad = (max - min) * 0.08 || max * 0.05 || 1;
+  // On a wide range (VEEE spans $1.50–$128 over 6m) the padding exceeds the
+  // low, and an axis tick reading "$-1.60" is nonsense for a price.
+  const floor = Math.max(0, min - pad);
 
   const maxVol = Math.max(...data.map((d) => d.v), 0);
 
@@ -176,7 +179,7 @@ export function CandleChart({
           <YAxis
             yAxisId="price"
             orientation="right"
-            domain={[min - pad, max + pad]}
+            domain={[floor, max + pad]}
             tick={axisTick}
             tickFormatter={(v: number) => formatPrice(v, currency)}
             axisLine={false}

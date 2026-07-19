@@ -620,6 +620,7 @@ table.data th.num { text-align: right; }
   align-items: baseline; text-align: left; cursor: pointer;
   background: var(--bg-raised); border: 1px solid var(--line);
   border-radius: 10px; padding: 12px 14px; font: inherit; color: inherit;
+  min-width: 0;
   transition: border-color 160ms var(--ease), background 160ms var(--ease),
               transform 160ms var(--ease);
 }
@@ -655,8 +656,14 @@ table.data th.num { text-align: right; }
 .geom-tile:hover { transform: none; }
 .geom-tile .quote-sym { color: var(--cream); }
 .geom-status {
-  font-size: 9.5px; letter-spacing: 0.1em; color: var(--warn);
-  text-align: right;
+  font-size: 8.5px; letter-spacing: 0.06em; color: var(--warn);
+  text-align: right; white-space: nowrap;
+}
+.geom-dash { color: var(--ink-3); }
+.geom-foot {
+  grid-column: 1 / -1; font-family: var(--font-mono); font-size: 9px;
+  letter-spacing: 0.06em; color: var(--ink-3); margin-top: 4px;
+  padding-top: 5px; border-top: 1px solid var(--line);
 }
 .geom-tile.is-live {
   cursor: pointer; border-style: solid; border-color: var(--glacial);

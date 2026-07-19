@@ -140,12 +140,16 @@ export async function fetchSeries(
   const last = candles[candles.length - 1];
   const price = num(m.regularMarketPrice) ?? last.c;
 
-  // Prefer the exchange's own previous close; fall back to the prior bar so
-  // crypto (which has no session boundary) still shows a 24h-ish delta.
+  // Prefer the exchange's own previous close, then the prior bar.
+  //
+  // `chartPreviousClose` is deliberately last: it is the close *before the
+  // requested window*, not before the last bar, so on a 5d request it yields
+  // a five-day change and on a 1y request a one-year change — both of which
+  // read as a daily move once rendered next to a % sign. It is only correct
+  // when the window holds a single bar.
   const previousClose =
     num(m.previousClose) ??
-    num(m.chartPreviousClose) ??
-    (candles.length > 1 ? candles[candles.length - 2].c : null);
+    (candles.length > 1 ? candles[candles.length - 2].c : num(m.chartPreviousClose));
 
   const change = previousClose === null ? null : price - previousClose;
   const changePct =

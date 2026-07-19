@@ -258,8 +258,9 @@ function GeomTile() {
     <div className="quote-tile geom-tile" aria-label="GEOM — not tradeable yet">
       <span className="quote-sym">GEOM</span>
       <span className="quote-venue">Solana</span>
-      <span className="quote-price geom-status">NOT TRADEABLE YET</span>
-      <span className="quote-delta dim">contract address TBA</span>
+      <span className="quote-price geom-dash">—</span>
+      <span className="quote-delta geom-status">NOT TRADEABLE YET</span>
+      <span className="geom-foot">contract address TBA</span>
     </div>
   );
 }
