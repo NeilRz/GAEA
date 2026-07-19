@@ -30,6 +30,63 @@ function shortSig(sig: string): string {
   return `${sig.slice(0, 8)}…${sig.slice(-8)}`;
 }
 
+/* Radial attestation burst — Pyth-style data halo in GEOM mineral colors.
+   Deterministic (no randomness) so server and client render identically. */
+function AttestationBurst() {
+  const COLORS = ["#5e8ba6", "#8fb4c9", "#c4a469", "#b26a4e", "#cbc3b1"];
+  const SPOKES = 60;
+  const spokes = Array.from({ length: SPOKES }, (_, i) => {
+    const angle = (i * 360) / SPOKES;
+    const segs = 2 + ((i * 7) % 3);
+    const rects = Array.from({ length: segs }, (_, j) => {
+      const h = (i * 73 + j * 137) % 97;
+      const r = 92 + ((h * 17) % 150);
+      const len = 10 + (h % 22);
+      const color = COLORS[(i + j * 3) % COLORS.length];
+      const opacity = 0.35 + ((h % 50) / 100);
+      return { r, len, color, opacity, key: j };
+    });
+    return { angle, rects, key: i };
+  });
+  return (
+    <svg
+      className="burst"
+      viewBox="0 0 560 560"
+      aria-hidden="true"
+      role="presentation"
+    >
+      {spokes.map((s) => (
+        <g key={s.key} transform={`rotate(${s.angle} 280 280)`}>
+          {s.rects.map((r) => (
+            <rect
+              key={r.key}
+              x={280 - 3}
+              y={280 - r.r - r.len}
+              width={6}
+              height={r.len}
+              rx={1.5}
+              fill={r.color}
+              opacity={r.opacity}
+            />
+          ))}
+        </g>
+      ))}
+      <circle cx={280} cy={280} r={54} fill="none" stroke="#2e4650" strokeWidth={1.2} />
+      <text
+        x={280}
+        y={285}
+        textAnchor="middle"
+        fill="#cbc3b1"
+        fontSize={13}
+        fontFamily="var(--font-mono)"
+        letterSpacing={3}
+      >
+        SHA-256
+      </text>
+    </svg>
+  );
+}
+
 export default function OraclePage() {
   const hashes = datasetHashes();
   const manifestHash = anchorManifestHash();
@@ -41,17 +98,35 @@ export default function OraclePage() {
 
   return (
     <main className="main">
-      <p className="eyebrow">MOD-05</p>
-      <h1 className="page-title">Oracle</h1>
-      <p className="page-lede">
-        Every dataset GEOM publishes is fingerprinted, signed by the oracle
-        key, and anchored on the Solana blockchain. Anyone — a counterparty, a
-        regulator, an allocator — can prove what GEOM published and when,
-        without trusting this website. A notarized data feed: nothing is
-        issued, deployed, or custodied through it.
-      </p>
+      <section className="oracle-hero">
+        <div>
+          <p className="eyebrow">MOD-05 · THE TRUST LAYER</p>
+          <h1>
+            Verification is public. <em>Forever.</em>
+          </h1>
+          <p className="sub">
+            Every dataset GEOM publishes is fingerprinted, signed by the
+            oracle key, and anchored on Solana. Anyone — a counterparty, a
+            regulator, an allocator — can prove what GEOM published and when.
+            No key, no account, no permission. A notarized data feed: nothing
+            is issued, deployed, or custodied through it.
+          </p>
+          <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
+            <a
+              className="btn primary big"
+              href="mailto:neil.richez@gmail.com?subject=GEOM%20Oracle%20API%20access%20request"
+            >
+              Request API access →
+            </a>
+            <a className="btn big" href="#verify">
+              Verify a dataset
+            </a>
+          </div>
+        </div>
+        <AttestationBurst />
+      </section>
 
-      <div style={{ display: "grid", gap: 20, marginTop: 24 }}>
+      <div style={{ display: "grid", gap: 20 }}>
         <section className="grid grid-4">
           <div className="panel stat-tile">
             <span className="stat-value">
@@ -134,7 +209,9 @@ export default function OraclePage() {
           </div>
         </section>
 
-        <AttestPanel datasets={hashes.map((h) => ({ id: h.id, title: h.title }))} />
+        <div id="verify" style={{ scrollMarginTop: 72 }}>
+          <AttestPanel datasets={hashes.map((h) => ({ id: h.id, title: h.title }))} />
+        </div>
 
         <section className="panel">
           <p className="panel-title">
@@ -282,22 +359,47 @@ export default function OraclePage() {
           </div>
         </section>
 
-        <section className="panel">
-          <p className="panel-title">API — verify independently</p>
-          <div className="codeblock">
-            <span className="k">GET</span> /api/datasets            <span className="v"># all dataset ids + digests</span>{"\n"}
-            <span className="k">GET</span> /api/datasets/:id        <span className="v"># raw canonical dataset</span>{"\n"}
-            <span className="k">GET</span> /api/attest/:id          <span className="v"># signed attestation (Ed25519)</span>
+        <section className="grid grid-2">
+          <div className="panel" style={{ display: "flex", flexDirection: "column" }}>
+            <p className="panel-title">
+              Public verification <span className="badge good">free forever</span>
+            </p>
+            <div className="codeblock" style={{ marginBottom: 14 }}>
+              <span className="k">GET</span> /api/datasets            <span className="v"># all dataset ids + digests</span>{"\n"}
+              <span className="k">GET</span> /api/datasets/:id        <span className="v"># raw canonical dataset</span>{"\n"}
+              <span className="k">GET</span> /api/attest/:id          <span className="v"># signed attestation (Ed25519)</span>
+            </div>
+            <p className="dim" style={{ fontSize: 13, marginBottom: 0 }}>
+              Verifying what GEOM published will never sit behind a paywall —
+              public verifiability is the point. Recompute each SHA-256 from
+              the raw dataset, check the Ed25519 signature against the
+              published signer, and confirm the manifest hash inside the
+              Solana memo. Three checks, zero trust in this server.
+            </p>
           </div>
-          <p className="dim" style={{ fontSize: 13, marginBottom: 0 }}>
-            Third parties can recompute each SHA-256 from the raw dataset,
-            verify the detached Ed25519 signature against the published signer
-            address, and confirm the manifest hash inside the Solana memo —
-            three checks, zero trust in this server. Anchoring runs via{" "}
-            <code className="mono">npm run anchor</code>. Roadmap: mainnet
-            anchoring per publication window, attestation history, third-party
-            data provider co-signatures.
-          </p>
+          <div className="panel" style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+            <p className="panel-title">
+              Commercial API access <span className="badge info">request</span>
+            </p>
+            <p className="dim" style={{ fontSize: 13, margin: 0 }}>
+              High-frequency polling, bulk history, webhook delivery on new
+              attestations and anchors, and third-party co-signature feeds are
+              offered under commercial terms as they ship. Verification stays
+              public; the firehose is the product.
+            </p>
+            <p className="dim" style={{ fontSize: 13, margin: 0 }}>
+              Roadmap: mainnet anchoring per publication window, attestation
+              history API, data-provider co-signatures.
+            </p>
+            <div style={{ marginTop: "auto" }}>
+              <a
+                className="btn primary big"
+                href="mailto:neil.richez@gmail.com?subject=GEOM%20Oracle%20API%20access%20request"
+              >
+                Request API access →
+              </a>
+            </div>
+          </div>
         </section>
       </div>
     </main>

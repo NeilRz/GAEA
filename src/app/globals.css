@@ -223,6 +223,31 @@ table.data th.num { text-align: right; }
 .btn.primary { background: var(--ink); border-color: var(--ink); color: var(--bg); font-weight: 700; }
 .btn.primary:hover { background: #ffffff; border-color: #ffffff; }
 .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.btn.big { font-size: 14px; padding: 14px 28px; letter-spacing: 0.03em; }
+
+/* ── oracle hero (pyth-style: declarative headline + radial burst) ── */
+
+.oracle-hero {
+  position: relative; overflow: hidden;
+  border: 1px solid var(--line); border-radius: 18px;
+  background: radial-gradient(ellipse 90% 120% at 78% 50%, #13222a 0%, var(--bg) 55%);
+  padding: 64px 44px;
+  margin-bottom: 24px;
+  display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+  align-items: center; gap: 24px;
+}
+@media (max-width: 860px) {
+  .oracle-hero { grid-template-columns: 1fr; padding: 40px 24px; }
+  .oracle-hero svg { max-width: 320px; margin: 0 auto; }
+}
+.oracle-hero h1 {
+  font-family: var(--font-serif); font-weight: 400;
+  font-size: clamp(38px, 5.4vw, 62px); line-height: 1.02;
+  letter-spacing: 0; margin: 12px 0 18px; max-width: 16ch;
+}
+.oracle-hero h1 em { font-style: italic; color: var(--glacial-bright); }
+.oracle-hero .sub { color: var(--ink-2); max-width: 52ch; font-size: 16px; margin: 0 0 28px; }
+.oracle-hero .burst { width: 100%; height: auto; display: block; }
 
 /* ── code blocks ── */
 
