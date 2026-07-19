@@ -1,37 +1,18 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { FOLDERS, type LibraryRow } from "@/lib/tracker-folders";
 
-export interface LibraryRow {
-  key: string;
-  symbol: string;
-  name: string;
-  issuer: string;
-  underlying: string;
-  chains: string;
-  folder: string;
-  status: { cls: string; label: string };
-  note: string;
-}
-
-const FOLDER_LABELS: Record<string, string> = {
-  "oil-backed": "oil-backed",
-  "commodity-gold": "commodity-gold",
-  "tokenized-equity": "tokenized-equity",
-  "context-rwa": "context-rwa",
-  "equity-watchlist": "equity-watchlist",
-};
+export type { LibraryRow };
 
 export default function TrackerLibrary({ rows }: { rows: LibraryRow[] }) {
   const [folder, setFolder] = useState<string>("all");
   const [query, setQuery] = useState("");
 
-  const folders = useMemo(() => {
-    const counts = new Map<string, number>();
-    rows.forEach((r) => counts.set(r.folder, (counts.get(r.folder) ?? 0) + 1));
-    return Object.keys(FOLDER_LABELS)
-      .filter((f) => counts.has(f))
-      .map((f) => ({ id: f, label: FOLDER_LABELS[f], count: counts.get(f)! }));
+  const counts = useMemo(() => {
+    const m = new Map<string, number>();
+    rows.forEach((r) => m.set(r.folder, (m.get(r.folder) ?? 0) + 1));
+    return m;
   }, [rows]);
 
   const filtered = useMemo(() => {
@@ -39,78 +20,74 @@ export default function TrackerLibrary({ rows }: { rows: LibraryRow[] }) {
     return rows.filter((r) => {
       if (folder !== "all" && r.folder !== folder) return false;
       if (!q) return true;
-      return [r.symbol, r.name, r.issuer, r.underlying, r.chains, r.note]
+      return [r.symbol, r.name, r.issuer, r.underlying, r.chains, r.note, r.folder]
         .join(" ")
         .toLowerCase()
         .includes(q);
     });
   }, [rows, folder, query]);
 
-  const grouped = useMemo(() => {
-    const order = Object.keys(FOLDER_LABELS).filter((f) =>
-      filtered.some((r) => r.folder === f)
-    );
-    return order.map((f) => ({
-      folder: f,
-      rows: filtered.filter((r) => r.folder === f),
-    }));
-  }, [filtered]);
+  const grouped = useMemo(
+    () =>
+      FOLDERS.filter((f) => filtered.some((r) => r.folder === f.id)).map(
+        (f) => ({
+          folder: f.id,
+          rows: filtered.filter((r) => r.folder === f.id),
+        })
+      ),
+    [filtered]
+  );
 
   return (
-    <div className="lib-grid">
-      <aside className="panel" style={{ padding: 14 }}>
-        <p className="panel-title" style={{ marginBottom: 10 }}>
-          Library
-        </p>
-        <div className="folder-list">
-          <button
-            className={`folder-btn ${folder === "all" ? "on" : ""}`}
-            onClick={() => setFolder("all")}
-          >
-            <span>
-              <span className="glyph">▾</span> all entries
-            </span>
-            <span className="count">{rows.length}</span>
-          </button>
-          {folders.map((f) => (
-            <button
-              key={f.id}
-              className={`folder-btn ${folder === f.id ? "on" : ""}`}
-              onClick={() => setFolder(folder === f.id ? "all" : f.id)}
-            >
-              <span>
-                <span className="glyph">{folder === f.id ? "▾" : "▸"}</span>{" "}
-                {f.label}
-              </span>
-              <span className="count">{f.count}</span>
-            </button>
-          ))}
-        </div>
-      </aside>
+    <section className="dl-section">
+      <div className="dl-head">
+        <span className="left">
+          <span className="tick" />
+          CATALOG :: {rows.length} ENTRIES
+        </span>
+        <span className="status">{filtered.length} matching</span>
+      </div>
 
-      <div style={{ display: "grid", gap: 12 }}>
-        <div style={{ display: "flex", gap: 10 }}>
+      <div style={{ padding: 12, display: "grid", gap: 10 }}>
+        <div style={{ display: "flex", gap: 8 }}>
           <input
             className="lib-search"
-            placeholder="filter by name, issuer, underlying…"
+            placeholder="filter by name, issuer, underlying, folder…"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             aria-label="Filter registry"
           />
-          {(query || folder !== "all") && (
-            <button
-              className="btn"
-              onClick={() => {
-                setQuery("");
-                setFolder("all");
-              }}
-            >
-              Clear
-            </button>
-          )}
+          <button
+            className="dl-chip"
+            style={{ flexShrink: 0 }}
+            onClick={() => {
+              setQuery("");
+              setFolder("all");
+            }}
+          >
+            CLEAR
+          </button>
         </div>
 
-        <div className="table-wrap">
+        <div className="dl-chips">
+          <button
+            className={`dl-chip ${folder === "all" ? "on" : ""}`}
+            onClick={() => setFolder("all")}
+          >
+            ALL <span className="n">· {rows.length}</span>
+          </button>
+          {FOLDERS.filter((f) => counts.has(f.id)).map((f) => (
+            <button
+              key={f.id}
+              className={`dl-chip ${folder === f.id ? "on" : ""}`}
+              onClick={() => setFolder(folder === f.id ? "all" : f.id)}
+            >
+              {f.id.toUpperCase()} <span className="n">· {counts.get(f.id)}</span>
+            </button>
+          ))}
+        </div>
+
+        <div className="table-wrap" style={{ borderRadius: 4 }}>
           <table className="data">
             <thead>
               <tr>
@@ -142,7 +119,7 @@ export default function TrackerLibrary({ rows }: { rows: LibraryRow[] }) {
           {folder === "all" ? "all folders" : `library/${folder}`}
         </p>
       </div>
-    </div>
+    </section>
   );
 }
 

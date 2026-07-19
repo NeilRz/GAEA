@@ -1,59 +1,23 @@
 {
   "meta": {
     "id": "tokenized-v1",
-    "title": "Tokenized oil & commodity RWA registry",
-    "note": "Seed registry. Entries compiled from public issuer documentation and require verification before publication. The headline finding is the gap itself: no tokenized crude oil product currently operates at institutional scale.",
+    "title": "Tokenized oil, minerals & rare-earth RWA registry",
+    "note": "Seed registry. Entries compiled from public issuer documentation and require verification before publication. The headline finding is the gap itself: no tokenized crude oil or rare-earth product currently operates at institutional scale.",
     "sources": ["Issuer documentation", "Public block explorers"],
-    "version": "0.1.0"
+    "version": "0.2.0"
   },
   "gap": {
     "oilEquityMarketCapUSD": 2100000000000,
     "oilEquityNote": "Approximate combined market capitalization of listed oil & gas majors (illustrative order of magnitude)",
     "tokenizedOilUSD": 0,
     "tokenizedCommodityRWAUSD": 1400000000,
-    "tokenizedCommodityNote": "Approximate live tokenized commodity value, dominated by gold products (PAXG, XAUT)"
+    "tokenizedCommodityNote": "Approximate live tokenized commodity value, dominated by gold products (PAXG, XAUT)",
+    "miningEquityMarketCapUSD": 2300000000000,
+    "miningEquityNote": "Approximate combined market capitalization of listed mining & materials majors (illustrative order of magnitude)",
+    "tokenizedRareEarthUSD": 0,
+    "rareEarthNote": "No tokenized rare-earth instrument exists at any scale — the second whitespace GEOM tracks"
   },
   "assets": [
-    {
-      "symbol": "PAXG",
-      "name": "Pax Gold",
-      "issuer": "Paxos",
-      "underlying": "Allocated gold (LBMA)",
-      "category": "commodity-gold",
-      "chains": ["Ethereum"],
-      "status": "live",
-      "relevance": "Benchmark for compliant commodity-backed token structure — the template a crude-backed token would follow"
-    },
-    {
-      "symbol": "XAUT",
-      "name": "Tether Gold",
-      "issuer": "Tether",
-      "underlying": "Allocated gold",
-      "category": "commodity-gold",
-      "chains": ["Ethereum"],
-      "status": "live",
-      "relevance": "Largest tokenized commodity by market value alongside PAXG"
-    },
-    {
-      "symbol": "—",
-      "name": "Tokenized oil-major equity wrappers",
-      "issuer": "Various (e.g. Backed / xStocks-style issuers)",
-      "underlying": "Listed oil & gas equities",
-      "category": "tokenized-equity",
-      "chains": ["Multiple"],
-      "status": "partial",
-      "relevance": "Equity wrapper programs exist but oil & gas coverage is thin and unverified — tracked as a coverage gap"
-    },
-    {
-      "symbol": "OUSG",
-      "name": "Ondo Short-Term US Govt Bond",
-      "issuer": "Ondo Finance",
-      "underlying": "US Treasuries",
-      "category": "context-rwa",
-      "chains": ["Ethereum"],
-      "status": "live",
-      "relevance": "Context: institutional RWA rails exist and are proven for treasuries — not yet applied to energy"
-    },
     {
       "symbol": "PTR",
       "name": "Petro",
@@ -72,18 +36,241 @@
       "category": "oil-backed",
       "chains": [],
       "status": "gap",
-      "relevance": "The whitespace GAEA targets: no verifiable, institutionally credible tokenized crude instrument exists today"
+      "relevance": "The primary whitespace GEOM targets: no verifiable, institutionally credible tokenized crude instrument exists today"
+    },
+    {
+      "symbol": "—",
+      "name": "Energy-asset tokenization pilots (e.g. PermianChain-style)",
+      "issuer": "Various early-stage platforms",
+      "underlying": "Wellbore interests, gas-to-compute offtake",
+      "category": "oil-backed",
+      "chains": ["Multiple"],
+      "status": "partial",
+      "relevance": "Pilot-scale platforms have tokenized upstream interests; none reached institutional scale or continuous disclosure"
+    },
+    {
+      "symbol": "PAXG",
+      "name": "Pax Gold",
+      "issuer": "Paxos",
+      "underlying": "Allocated gold (LBMA)",
+      "category": "commodity-gold",
+      "chains": ["Ethereum"],
+      "status": "live",
+      "relevance": "Benchmark for compliant commodity-backed token structure — the template a crude- or REE-backed token would follow"
+    },
+    {
+      "symbol": "XAUT",
+      "name": "Tether Gold",
+      "issuer": "Tether",
+      "underlying": "Allocated gold",
+      "category": "commodity-gold",
+      "chains": ["Ethereum"],
+      "status": "live",
+      "relevance": "Largest tokenized commodity by market value alongside PAXG"
+    },
+    {
+      "symbol": "KAU",
+      "name": "Kinesis Gold",
+      "issuer": "Kinesis",
+      "underlying": "Allocated gold (1g units)",
+      "category": "commodity-gold",
+      "chains": ["Kinesis chain"],
+      "status": "live",
+      "relevance": "Gram-denominated allocated gold with yield mechanics — alternative structure to PAXG/XAUT"
+    },
+    {
+      "symbol": "VNXAU",
+      "name": "VNX Gold",
+      "issuer": "VNX (Liechtenstein)",
+      "underlying": "Allocated gold (LBMA)",
+      "category": "commodity-gold",
+      "chains": ["Multiple EVM"],
+      "status": "live",
+      "relevance": "EU-regulated issuer under Liechtenstein token law — regulatory template relevant to any EU-listed resource token"
+    },
+    {
+      "symbol": "CGO",
+      "name": "Comtech Gold",
+      "issuer": "Comtech Gold (Dubai)",
+      "underlying": "Allocated gold (DMCC vaults)",
+      "category": "commodity-gold",
+      "chains": ["XDC"],
+      "status": "partial",
+      "relevance": "Gulf-jurisdiction gold token — regional precedent for commodity tokenization out of the UAE"
+    },
+    {
+      "symbol": "PMGT",
+      "name": "Perth Mint Gold Token",
+      "issuer": "Trovio / Perth Mint",
+      "underlying": "GoldPass certificates (government mint)",
+      "category": "commodity-gold",
+      "chains": ["Ethereum"],
+      "status": "defunct",
+      "relevance": "Cautionary precedent: even a government-mint-backed token wound down (2023) without institutional adoption"
+    },
+    {
+      "symbol": "DGX",
+      "name": "Digix Gold",
+      "issuer": "Digix",
+      "underlying": "Allocated gold (1g units)",
+      "category": "commodity-gold",
+      "chains": ["Ethereum"],
+      "status": "defunct",
+      "relevance": "Early (2018) gold token wound down 2023 — demonstrates redemption-model fragility without scale"
+    },
+    {
+      "symbol": "KAG",
+      "name": "Kinesis Silver",
+      "issuer": "Kinesis",
+      "underlying": "Allocated silver (1oz units)",
+      "category": "precious-metals",
+      "chains": ["Kinesis chain"],
+      "status": "live",
+      "relevance": "The main live tokenized-silver product — silver coverage is far thinner than gold"
+    },
+    {
+      "symbol": "AGX",
+      "name": "LODE Silver (AGX)",
+      "issuer": "LODE",
+      "underlying": "Vaulted silver",
+      "category": "precious-metals",
+      "chains": ["Multiple"],
+      "status": "partial",
+      "relevance": "Community silver-token project — tracked as structure precedent, custody verification pending"
+    },
+    {
+      "symbol": "—",
+      "name": "Tokenized platinum / palladium / PGMs",
+      "issuer": "None at institutional scale",
+      "underlying": "Platinum-group metals",
+      "category": "precious-metals",
+      "chains": [],
+      "status": "gap",
+      "relevance": "PGMs (auto catalysts, hydrogen) have no credible tokenized instrument — open whitespace"
+    },
+    {
+      "symbol": "U",
+      "name": "Uranium.io tokenized U3O8",
+      "issuer": "Uranium.io consortium",
+      "underlying": "Physical uranium (U3O8) via regulated depository",
+      "category": "uranium",
+      "chains": ["Tezos", "Etherlink"],
+      "status": "partial",
+      "relevance": "First physical-uranium tokenization with named custody — the closest live analog to what tokenized crude would require"
+    },
+    {
+      "symbol": "—",
+      "name": "Tokenized copper & nickel",
+      "issuer": "None at institutional scale",
+      "underlying": "LME-grade base metals",
+      "category": "base-metals",
+      "chains": [],
+      "status": "gap",
+      "relevance": "LME-scale physical markets with zero verified tokenization — base-metals whitespace mirrors crude"
+    },
+    {
+      "symbol": "—",
+      "name": "Tokenized lithium",
+      "issuer": "None verified",
+      "underlying": "Lithium carbonate / hydroxide offtake",
+      "category": "battery-metals",
+      "chains": [],
+      "status": "gap",
+      "relevance": "Strategic battery input with no on-chain instrument; offtake tokenization repeatedly announced, never verified"
+    },
+    {
+      "symbol": "—",
+      "name": "Tokenized cobalt & graphite",
+      "issuer": "None verified",
+      "underlying": "Battery-grade cobalt, graphite",
+      "category": "battery-metals",
+      "chains": [],
+      "status": "gap",
+      "relevance": "Supply-chain provenance pilots exist (ledger-tracking), but no asset-backed token — provenance ≠ tokenization"
+    },
+    {
+      "symbol": "—",
+      "name": "Tokenized rare earths (NdPr, Dy, Tb)",
+      "issuer": "None at any scale",
+      "underlying": "Separated rare-earth oxides",
+      "category": "rare-earths",
+      "chains": [],
+      "status": "gap",
+      "relevance": "The second whitespace GEOM targets: strategic REE demand, export-control pressure, and zero tokenized instruments"
+    },
+    {
+      "symbol": "—",
+      "name": "REE offtake / royalty tokenization pilots",
+      "issuer": "Various announced, none verified",
+      "underlying": "Rare-earth offtake agreements",
+      "category": "rare-earths",
+      "chains": [],
+      "status": "partial",
+      "relevance": "Announcements exist around REE offtake tokenization; none has produced a verifiable on-chain instrument"
+    },
+    {
+      "symbol": "—",
+      "name": "Tokenized oil-major equity wrappers",
+      "issuer": "Various (e.g. Backed / xStocks-style issuers)",
+      "underlying": "Listed oil & gas equities",
+      "category": "tokenized-equity",
+      "chains": ["Multiple"],
+      "status": "partial",
+      "relevance": "Equity wrapper programs exist but oil & gas coverage is thin and unverified — tracked as a coverage gap"
+    },
+    {
+      "symbol": "—",
+      "name": "Tokenized mining-major equity wrappers",
+      "issuer": "Various wrapper issuers",
+      "underlying": "Listed mining & materials equities",
+      "category": "tokenized-equity",
+      "chains": ["Multiple"],
+      "status": "partial",
+      "relevance": "Mining and REE equities are barely covered by wrapper programs — same coverage gap as oil majors"
+    },
+    {
+      "symbol": "OUSG",
+      "name": "Ondo Short-Term US Govt Bond",
+      "issuer": "Ondo Finance",
+      "underlying": "US Treasuries",
+      "category": "context-rwa",
+      "chains": ["Ethereum"],
+      "status": "live",
+      "relevance": "Context: institutional RWA rails exist and are proven for treasuries — not yet applied to energy or minerals"
+    },
+    {
+      "symbol": "BUIDL",
+      "name": "BlackRock USD Institutional Digital Liquidity Fund",
+      "issuer": "BlackRock / Securitize",
+      "underlying": "Cash, US Treasuries, repo",
+      "category": "context-rwa",
+      "chains": ["Ethereum", "Multiple"],
+      "status": "live",
+      "relevance": "Context: the largest asset manager runs tokenized funds at scale — institutional appetite is proven, resource assets remain unserved"
     }
   ],
   "watchlist": [
-    { "ticker": "XOM", "name": "Exxon Mobil", "listing": "NYSE", "tokenization": "none-verified" },
-    { "ticker": "CVX", "name": "Chevron", "listing": "NYSE", "tokenization": "none-verified" },
-    { "ticker": "SHEL", "name": "Shell", "listing": "NYSE/LSE", "tokenization": "none-verified" },
-    { "ticker": "TTE", "name": "TotalEnergies", "listing": "NYSE/Euronext", "tokenization": "none-verified" },
-    { "ticker": "BP", "name": "BP", "listing": "NYSE/LSE", "tokenization": "none-verified" },
-    { "ticker": "COP", "name": "ConocoPhillips", "listing": "NYSE", "tokenization": "none-verified" },
-    { "ticker": "OXY", "name": "Occidental Petroleum", "listing": "NYSE", "tokenization": "none-verified" },
-    { "ticker": "EQNR", "name": "Equinor", "listing": "NYSE/OSE", "tokenization": "none-verified" },
-    { "ticker": "TBA", "name": "GAEA NASDAQ partner companies", "listing": "NASDAQ", "tokenization": "pending-announcement" }
+    { "ticker": "XOM", "name": "Exxon Mobil", "listing": "NYSE", "sector": "oil", "tokenization": "none-verified" },
+    { "ticker": "CVX", "name": "Chevron", "listing": "NYSE", "sector": "oil", "tokenization": "none-verified" },
+    { "ticker": "SHEL", "name": "Shell", "listing": "NYSE/LSE", "sector": "oil", "tokenization": "none-verified" },
+    { "ticker": "TTE", "name": "TotalEnergies", "listing": "NYSE/Euronext", "sector": "oil", "tokenization": "none-verified" },
+    { "ticker": "BP", "name": "BP", "listing": "NYSE/LSE", "sector": "oil", "tokenization": "none-verified" },
+    { "ticker": "COP", "name": "ConocoPhillips", "listing": "NYSE", "sector": "oil", "tokenization": "none-verified" },
+    { "ticker": "OXY", "name": "Occidental Petroleum", "listing": "NYSE", "sector": "oil", "tokenization": "none-verified" },
+    { "ticker": "EQNR", "name": "Equinor", "listing": "NYSE/OSE", "sector": "oil", "tokenization": "none-verified" },
+    { "ticker": "TBA", "name": "GEOM NASDAQ partner companies", "listing": "NASDAQ", "sector": "oil", "tokenization": "pending-announcement" },
+    { "ticker": "MP", "name": "MP Materials", "listing": "NYSE", "sector": "mining", "tokenization": "none-verified" },
+    { "ticker": "LYC", "name": "Lynas Rare Earths", "listing": "ASX", "sector": "mining", "tokenization": "none-verified" },
+    { "ticker": "UUUU", "name": "Energy Fuels", "listing": "NYSE American", "sector": "mining", "tokenization": "none-verified" },
+    { "ticker": "CCJ", "name": "Cameco", "listing": "NYSE/TSX", "sector": "mining", "tokenization": "none-verified" },
+    { "ticker": "ALB", "name": "Albemarle", "listing": "NYSE", "sector": "mining", "tokenization": "none-verified" },
+    { "ticker": "SQM", "name": "Sociedad Química y Minera", "listing": "NYSE/Santiago", "sector": "mining", "tokenization": "none-verified" },
+    { "ticker": "FCX", "name": "Freeport-McMoRan", "listing": "NYSE", "sector": "mining", "tokenization": "none-verified" },
+    { "ticker": "BHP", "name": "BHP Group", "listing": "NYSE/ASX/LSE", "sector": "mining", "tokenization": "none-verified" },
+    { "ticker": "RIO", "name": "Rio Tinto", "listing": "NYSE/LSE/ASX", "sector": "mining", "tokenization": "none-verified" },
+    { "ticker": "GLEN", "name": "Glencore", "listing": "LSE", "sector": "mining", "tokenization": "none-verified" },
+    { "ticker": "VALE", "name": "Vale", "listing": "NYSE/B3", "sector": "mining", "tokenization": "none-verified" },
+    { "ticker": "NEM", "name": "Newmont", "listing": "NYSE", "sector": "mining", "tokenization": "none-verified" },
+    { "ticker": "GOLD", "name": "Barrick Gold", "listing": "NYSE/TSX", "sector": "mining", "tokenization": "none-verified" }
   ]
 }

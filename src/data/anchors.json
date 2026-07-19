@@ -5,6 +5,42 @@
   },
   "anchors": [
     {
+      "anchoredAt": "2026-07-19T13:34:56.000Z",
+      "cluster": "devnet",
+      "slot": 477390335,
+      "signature": "kp7vac13rras2NF6UUHSAkRubRrQ9yM6ykk7SgLQJq5uaZGnveKhM9Cd7QBiGaL4AV99Qq9j32Fo31bD8GN2UtN",
+      "signer": "DDBT4er8HAHoHvg7xWHfqBY3sdrDhD7uZJW8SctxD9hY",
+      "memo": "GAEA-ANCHOR-V1|b3b560c22c49b01db97da7866f0a8a22f723d43f1c5bf4ff1bc40edec9566e5e",
+      "manifestSha256": "b3b560c22c49b01db97da7866f0a8a22f723d43f1c5bf4ff1bc40edec9566e5e",
+      "datasets": [
+        {
+          "id": "briefs",
+          "version": "0.1.0",
+          "sha256": "f56fe26ba1f91d5c2cb3083061325de03153cee549fcf949adb9f1cb902fb1f3"
+        },
+        {
+          "id": "fields",
+          "version": "0.1.0",
+          "sha256": "389233ac5b6b5a66b7bef8bb5355625a93ba13f47d5ffc306015a094c7317abc"
+        },
+        {
+          "id": "market",
+          "version": "0.1.0",
+          "sha256": "3c8183d60603a682ab4bd8a5008ac1d7db5c824678d1f970dbb72c033cdedf9b"
+        },
+        {
+          "id": "reserves",
+          "version": "0.1.0",
+          "sha256": "72a9bff19c4030931bdab2dbf757cbba0340c92e1e37a75d8b26736e92f44632"
+        },
+        {
+          "id": "tokenized",
+          "version": "0.2.0",
+          "sha256": "015f48514dd188263f1517aafe665fa5c3d508e5c8ed4513597cd68fce8a086c"
+        }
+      ]
+    },
+    {
       "anchoredAt": "2026-07-17T15:50:44.000Z",
       "cluster": "devnet",
       "slot": 476940654,
