@@ -1,7 +1,10 @@
 {
   "meta": {
+    "id": "pipelines-v1",
     "title": "Major oil & gas trunk pipelines (approximate routes)",
-    "note": "Reference layer — schematic waypoint routes for orientation, not engineering alignments. Unsigned; not part of the attested dataset manifest."
+    "note": "Schematic waypoint routes for orientation, not engineering alignments. Compiled from public reporting; verify against operator disclosures before publication.",
+    "sources": ["Operator disclosures", "Public reporting"],
+    "version": "0.1.0"
   },
   "pipelines": [
     { "name": "Trans-Alaska (TAPS)", "kind": "oil", "status": "operating", "figure": "~0.5 Mb/d", "note": "Prudhoe Bay to Valdez, 1,288 km", "coords": [[-148.7, 70.3], [-149.0, 68.5], [-148.8, 66.5], [-147.7, 64.8], [-145.6, 63.0], [-146.35, 61.13]] },

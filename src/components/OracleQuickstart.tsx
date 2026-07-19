@@ -48,8 +48,10 @@ console.log(countries.length) // 23
 console.log(countries[0]);    // { iso: "VE", name: "Venezuela", reserves: 303, ... }
 
 // Same pattern for every dataset:
+//   /api/datasets/plants     — 34,936 power plants, all fuels (CC-BY WRI)
 //   /api/datasets/fields     — 43 oil & gas fields
 //   /api/datasets/sites      — 67 mines, REE deposits, nuclear assets
+//   /api/datasets/pipelines  — trunk pipeline routes
 //   /api/datasets/tokenized  — the tokenization registry
 //   /api/datasets/market     — market structure series`,
   },

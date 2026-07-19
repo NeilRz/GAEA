@@ -6,6 +6,8 @@ import fields from "@/data/fields.json";
 import tokenized from "@/data/tokenized.json";
 import market from "@/data/market.json";
 import sites from "@/data/sites.json";
+import plants from "@/data/plants.json";
+import pipelinesData from "@/data/pipelines.json";
 
 /**
  * GAEA Oracle v2 — verifiable data attestation, Solana-native.
@@ -54,6 +56,16 @@ export const DATASETS: Record<
     data: sites,
     title: sites.meta.title,
     version: sites.meta.version,
+  },
+  plants: {
+    data: plants,
+    title: plants.meta.title,
+    version: plants.meta.version,
+  },
+  pipelines: {
+    data: pipelinesData,
+    title: pipelinesData.meta.title,
+    version: pipelinesData.meta.version,
   },
 };
 

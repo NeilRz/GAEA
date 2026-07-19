@@ -311,10 +311,12 @@ export default function ReserveMap() {
       maxZoom: 12,
     });
     mapRef.current = map;
-    if (process.env.NODE_ENV !== "production") {
-      (window as unknown as Record<string, unknown>).__geomMap = map;
-    }
-    map.on("error", (e) => console.error("[GEOM map]", e.error?.message ?? e));
+    (window as unknown as Record<string, unknown>).__geomMap = map;
+    map.on("error", (e) => {
+      const w = window as unknown as { __geomMapErrors?: string[] };
+      (w.__geomMapErrors ??= []).push(String(e.error?.stack ?? e.error?.message ?? e));
+      console.error("[GEOM map]", e.error?.message ?? e);
+    });
     map.addControl(new maplibregl.NavigationControl({ showCompass: true, visualizePitch: true }), "top-right");
     map.addControl(new maplibregl.GlobeControl(), "top-right");
 
@@ -400,11 +402,21 @@ export default function ReserveMap() {
         map.on("mouseleave", id, () => (map.getCanvas().style.cursor = ""));
       }
 
-      // Power plants: lazy-load 35k points, split into typed clustered
-      // sources so every cluster carries its category icon + color.
-      fetch("/data/power-plants.geojson")
+      // Power plants: lazy-load the signed dataset (same bytes the oracle
+      // attests — /data/plants.json is the CDN copy of /api/datasets/plants),
+      // split into typed clustered sources so every cluster carries its
+      // category icon + color.
+      fetch("/data/plants.json")
         .then((r) => r.json())
-        .then((data: GeoJSON.FeatureCollection) => {
+        .then(
+          (ds: {
+            plants: Array<{ name: string; country: string; fuel: string; mw: number; lat: number; lng: number }>;
+          }) => {
+          const data = fc(
+            ds.plants.map((p) =>
+              point(p.lng, p.lat, { n: p.name, c: p.country, f: p.fuel, mw: p.mw })
+            )
+          );
           plantsDataRef.current = data;
           setPlantCount(data.features.length);
 
@@ -486,7 +498,10 @@ export default function ReserveMap() {
             }
           }
         })
-        .catch((e) => console.error("[GEOM map] plants load failed", e));
+        .catch((e) => {
+          (window as unknown as Record<string, unknown>).__geomPlantsError = String(e?.stack ?? e);
+          console.error("[GEOM map] plants load failed", e);
+        });
     });
 
     return () => {
