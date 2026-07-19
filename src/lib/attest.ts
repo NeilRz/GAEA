@@ -5,7 +5,7 @@ import reserves from "@/data/reserves.json";
 import fields from "@/data/fields.json";
 import tokenized from "@/data/tokenized.json";
 import market from "@/data/market.json";
-import briefs from "@/data/briefs.json";
+import sites from "@/data/sites.json";
 
 /**
  * GAEA Oracle v2 — verifiable data attestation, Solana-native.
@@ -50,10 +50,10 @@ export const DATASETS: Record<
     title: market.meta.title,
     version: market.meta.version,
   },
-  briefs: {
-    data: briefs,
-    title: briefs.meta.title,
-    version: briefs.meta.version,
+  sites: {
+    data: sites,
+    title: sites.meta.title,
+    version: sites.meta.version,
   },
 };
 

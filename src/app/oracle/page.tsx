@@ -100,7 +100,7 @@ export default function OraclePage() {
     <main className="main">
       <section className="oracle-hero">
         <div>
-          <p className="eyebrow">MOD-05 · THE TRUST LAYER</p>
+          <p className="eyebrow">MOD-04 · THE TRUST LAYER</p>
           <h1>
             Verification is public. <em>Forever.</em>
           </h1>

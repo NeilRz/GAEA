@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import ReserveMap from "@/components/ReserveMap";
 
 export const metadata: Metadata = {
-  title: "Reserve Map — GEOM",
+  title: "Physical Layer Map — GEOM",
   description:
-    "Interactive map of proven oil reserves, major fields, and Arctic energy assets.",
+    "3D globe of proven oil reserves, supergiant fields, mines, rare-earth deposits, and nuclear assets.",
 };
 
 export default function MapPage() {

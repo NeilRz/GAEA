@@ -43,7 +43,7 @@ const MODULES = [
     href: "/map",
     code: "MOD-01",
     title: "Reserve Map",
-    desc: "Interactive world map of proven reserves, supergiant fields, and Arctic energy assets — the physical layer, mapped.",
+    desc: "3D globe of proven reserves, supergiant fields, mines, rare-earth deposits, and nuclear assets — the physical layer, mapped.",
     status: "live",
     label: "Live",
   },
@@ -56,16 +56,8 @@ const MODULES = [
     label: "Live",
   },
   {
-    href: "/intel",
-    code: "MOD-03",
-    title: "Agentic Intel",
-    desc: "Structured weekly briefs and a hash-attested forecast ledger. Every forecast is timestamped and tamper-evident.",
-    status: "live",
-    label: "Format live",
-  },
-  {
     href: "/terminal",
-    code: "MOD-04",
+    code: "MOD-03",
     title: "Terminal",
     desc: "Read-only market structure: futures curve shape, crack spreads, inventory prints. Live feeds are the next milestone.",
     status: "warn",
@@ -73,7 +65,7 @@ const MODULES = [
   },
   {
     href: "/oracle",
-    code: "MOD-05",
+    code: "MOD-04",
     title: "Oracle",
     desc: "Signed SHA-256 attestations over every GEOM dataset, verifiable by anyone. The bridge from intelligence to settlement.",
     status: "live",
@@ -110,10 +102,10 @@ export default function Home() {
           The intelligence layer for <em>digital oil</em> capital markets.
         </h1>
         <p className="lede">
-          GEOM maps the world&apos;s oil, tracks what is — and isn&apos;t —
-          tokenized, publishes agentic research with a tamper-evident audit
-          trail, and signs every dataset it ships. Intelligence first;
-          settlement when the rules are written.
+          GEOM maps the world&apos;s oil, minerals, rare earths, and nuclear
+          assets, tracks what is — and isn&apos;t — tokenized, and signs every
+          dataset it ships. Intelligence first; settlement when the rules are
+          written.
         </p>
         <div style={{ display: "flex", gap: 12, flexWrap: "wrap", position: "relative" }}>
           <Link href="/map" className="btn primary">
@@ -177,7 +169,7 @@ export default function Home() {
             </Link>
           ))}
           <div className="module-card" style={{ borderStyle: "dashed" }}>
-            <span className="module-num">MOD-06</span>
+            <span className="module-num">MOD-05</span>
             <h3>Flows & Indices</h3>
             <p>
               AIS tanker flows, Northern Sea Route transit tracking, and the
@@ -204,7 +196,7 @@ export default function Home() {
           <div>
             <p style={{ margin: 0, fontWeight: 600, fontSize: 14 }}>Everything attested</p>
             <p className="dim" style={{ margin: "4px 0 0", fontSize: 13 }}>
-              Every dataset, brief, and forecast is hashed and signed. If GEOM
+              Every dataset GEOM ships is hashed and signed. If GEOM
               publishes it, anyone can prove what was said and when.
             </p>
           </div>

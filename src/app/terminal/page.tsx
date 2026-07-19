@@ -15,7 +15,7 @@ export const metadata: Metadata = {
 export default function TerminalPage() {
   return (
     <main className="main">
-      <p className="eyebrow">MOD-04</p>
+      <p className="eyebrow">MOD-03</p>
       <h1 className="page-title">Terminal</h1>
       <p className="page-lede">
         Read-only market structure. The terminal reads the shape of the market
