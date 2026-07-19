@@ -1,27 +1,31 @@
 @import "tailwindcss";
 
-/* ── GAEA design tokens ─────────────────────────────────────────────
-   Arctic operations terminal: dark-committed. Ink navy surfaces,
-   glacial blue + crude amber accents, IBM Plex data typography.
-   Chart categorical order (validated for CVD on #0A1220):
-   blue → amber → teal → violet → rose. Never cycle.               */
+/* ── GEOM design tokens (matched to geom.org) ───────────────────────
+   Arctic terminal on the GEOM brand system: "night" blue-green
+   surfaces, ice/glacier blues, warm mineral accents (sandstone,
+   terracotta, carbonate), Instrument Serif display headlines,
+   Space Mono data labels, expanded-sans logotype.
+   Chart categorical order (validated for CVD on #0A1220, bg now
+   #0C1519 — same luminance class): blue → amber → teal → violet
+   → rose. Never cycle.                                            */
 
 :root {
-  --bg: #0a1220;
-  --bg-raised: #0e1828;
-  --panel: #111e33;
-  --panel-2: #16253d;
-  --line: #1e2f4a;
-  --line-strong: #2b4066;
+  --bg: #0c1519;        /* night */
+  --bg-raised: #10191e;
+  --panel: #121d23;
+  --panel-2: #182730;
+  --line: #1f2e35;
+  --line-strong: #2e4650;
 
-  --ink: #e4edf7;
-  --ink-2: #9fb2c9;
-  --ink-3: #64778f;
+  --ink: #edf1f3;       /* snow */
+  --ink-2: #b9c6ce;     /* sky */
+  --ink-3: #7e97a6;     /* shadowblue */
 
-  --glacial: #3e90cb;
-  --glacial-bright: #6fb7e8;
-  --amber: #c67c1b;
-  --amber-bright: #e8a33d;
+  --glacial: #5e8ba6;         /* ice */
+  --glacial-bright: #8fb4c9;  /* glacier */
+  --amber: #b26a4e;           /* terracotta */
+  --amber-bright: #c4a469;    /* sandstone */
+  --cream: #cbc3b1;           /* carbonate — logotype */
 
   --c1: #3e90cb; /* categorical 1 — blue   */
   --c2: #c67c1b; /* categorical 2 — amber  */
@@ -30,12 +34,21 @@
   --c5: #cc5b7e; /* categorical 5 — rose   */
 
   --good: #2ba57e;
-  --warn: #c67c1b;
+  --warn: #c4a469;
   --critical: #cc4a57;
 
-  --font-display: var(--font-archivo), sans-serif;
-  --font-body: var(--font-plex-sans), sans-serif;
-  --font-mono: var(--font-plex-mono), monospace;
+  --ease: cubic-bezier(0.19, 0.72, 0.18, 1);
+}
+
+/* Font stacks live on body, not :root — next/font attaches its
+   --font-archivo/--font-instrument/--font-space-mono variables to <body>,
+   and a var() referencing them from :root is invalid there (html is
+   outside their scope), which silently kills the whole font-family. */
+body {
+  --font-display: var(--font-archivo), Impact, "Arial Narrow Bold", sans-serif;
+  --font-serif: var(--font-instrument), Georgia, "Times New Roman", serif;
+  --font-body: -apple-system, system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: var(--font-space-mono), ui-monospace, "SF Mono", Menlo, Consolas, monospace;
 }
 
 * { box-sizing: border-box; }
@@ -57,7 +70,7 @@ body {
 
 a { color: inherit; text-decoration: none; }
 
-::selection { background: rgba(62, 144, 203, 0.35); }
+::selection { background: rgba(94, 139, 166, 0.35); }
 
 :focus-visible {
   outline: 2px solid var(--glacial-bright);
@@ -73,7 +86,7 @@ a { color: inherit; text-decoration: none; }
   display: flex; align-items: center; gap: 28px;
   padding: 0 24px; height: 56px;
   border-bottom: 1px solid var(--line);
-  background: rgba(10, 18, 32, 0.85);
+  background: rgba(12, 21, 25, 0.85);
   backdrop-filter: blur(12px);
   position: sticky; top: 0; z-index: 50;
 }
@@ -81,8 +94,8 @@ a { color: inherit; text-decoration: none; }
 .brand { display: flex; align-items: baseline; gap: 10px; }
 .brand-mark {
   font-family: var(--font-display);
-  font-weight: 800; font-size: 19px; letter-spacing: 0.14em;
-  color: var(--ink);
+  font-weight: 800; font-size: 19px; letter-spacing: 0.18em;
+  color: var(--cream);
 }
 .brand-mark .deg { color: var(--glacial-bright); }
 .brand-sub {
@@ -117,10 +130,11 @@ a { color: inherit; text-decoration: none; }
 }
 
 .page-title {
-  font-family: var(--font-display); font-weight: 800;
-  font-size: clamp(26px, 4vw, 38px); letter-spacing: -0.01em;
-  line-height: 1.1; margin: 6px 0 10px;
+  font-family: var(--font-serif); font-weight: 400;
+  font-size: clamp(32px, 4.6vw, 46px); letter-spacing: 0;
+  line-height: 1.05; margin: 6px 0 10px;
 }
+.page-title em { font-style: italic; color: var(--glacial-bright); }
 
 .page-lede { color: var(--ink-2); max-width: 68ch; margin: 0 0 8px; }
 
@@ -132,7 +146,7 @@ a { color: inherit; text-decoration: none; }
 
 .panel {
   background: var(--panel); border: 1px solid var(--line);
-  border-radius: 10px; padding: 20px;
+  border-radius: 14px; padding: 20px;
 }
 
 .panel-title {
@@ -150,7 +164,7 @@ a { color: inherit; text-decoration: none; }
 
 .stat-tile { display: flex; flex-direction: column; gap: 2px; }
 .stat-value {
-  font-family: var(--font-mono); font-size: 26px; font-weight: 600;
+  font-family: var(--font-mono); font-size: 26px; font-weight: 700;
   letter-spacing: -0.02em; color: var(--ink);
 }
 .stat-value .unit { font-size: 14px; color: var(--ink-3); margin-left: 4px; }
@@ -169,11 +183,11 @@ a { color: inherit; text-decoration: none; }
 .badge::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--ink-3); }
 .badge.good { color: #5fd4ae; border-color: rgba(43, 165, 126, 0.4); }
 .badge.good::before { background: var(--good); }
-.badge.warn { color: #e8a33d; border-color: rgba(198, 124, 27, 0.4); }
+.badge.warn { color: #d6bc85; border-color: rgba(196, 164, 105, 0.4); }
 .badge.warn::before { background: var(--warn); }
 .badge.critical { color: #e87a85; border-color: rgba(204, 74, 87, 0.4); }
 .badge.critical::before { background: var(--critical); }
-.badge.info { color: var(--glacial-bright); border-color: rgba(62, 144, 203, 0.4); }
+.badge.info { color: var(--glacial-bright); border-color: rgba(94, 139, 166, 0.4); }
 .badge.info::before { background: var(--glacial); }
 .badge.plain::before { display: none; }
 
@@ -192,7 +206,7 @@ table.data th {
 }
 table.data td { padding: 10px 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
 table.data tr:last-child td { border-bottom: none; }
-table.data tr:hover td { background: rgba(62, 144, 203, 0.05); }
+table.data tr:hover td { background: rgba(94, 139, 166, 0.06); }
 table.data td.num { font-family: var(--font-mono); text-align: right; }
 table.data th.num { text-align: right; }
 
@@ -201,13 +215,13 @@ table.data th.num { text-align: right; }
 .btn {
   display: inline-flex; align-items: center; gap: 8px;
   font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.04em;
-  padding: 9px 16px; border-radius: 7px; cursor: pointer;
+  padding: 9px 18px; border-radius: 999px; cursor: pointer;
   border: 1px solid var(--line-strong); background: var(--panel-2); color: var(--ink);
-  transition: border-color 0.15s, background 0.15s;
+  transition: border-color 0.15s var(--ease), background 0.15s var(--ease);
 }
 .btn:hover { border-color: var(--glacial); background: var(--panel); }
-.btn.primary { background: var(--glacial); border-color: var(--glacial); color: #071018; font-weight: 600; }
-.btn.primary:hover { background: var(--glacial-bright); border-color: var(--glacial-bright); }
+.btn.primary { background: var(--ink); border-color: var(--ink); color: var(--bg); font-weight: 700; }
+.btn.primary:hover { background: #ffffff; border-color: #ffffff; }
 .btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
 /* ── code blocks ── */
@@ -219,7 +233,7 @@ table.data th.num { text-align: right; }
   color: var(--ink-2); white-space: pre;
 }
 .codeblock .k { color: var(--glacial-bright); }
-.codeblock .v { color: #e8a33d; }
+.codeblock .v { color: var(--amber-bright); }
 
 /* ── data provenance note ── */
 
@@ -234,8 +248,8 @@ table.data th.num { text-align: right; }
 
 .hero {
   position: relative; overflow: hidden;
-  border: 1px solid var(--line); border-radius: 14px;
-  background: linear-gradient(180deg, #0c1626 0%, var(--bg) 100%);
+  border: 1px solid var(--line); border-radius: 18px;
+  background: linear-gradient(180deg, #111d23 0%, var(--bg) 100%);
   padding: 56px 40px 48px;
   margin-bottom: 28px;
 }
@@ -246,12 +260,12 @@ table.data th.num { text-align: right; }
 }
 
 .hero h1 {
-  font-family: var(--font-display); font-weight: 800;
-  font-size: clamp(30px, 5.2vw, 54px); line-height: 1.04;
-  letter-spacing: -0.015em; margin: 14px 0 16px; max-width: 21ch;
+  font-family: var(--font-serif); font-weight: 400;
+  font-size: clamp(36px, 6vw, 64px); line-height: 1.02;
+  letter-spacing: 0; margin: 14px 0 16px; max-width: 22ch;
   position: relative;
 }
-.hero h1 em { font-style: normal; color: var(--glacial-bright); }
+.hero h1 em { font-style: italic; color: var(--glacial-bright); }
 .hero p.lede { position: relative; color: var(--ink-2); max-width: 62ch; font-size: 16px; margin: 0 0 26px; }
 
 .coord-ticker {
@@ -275,8 +289,8 @@ table.data th.num { text-align: right; }
   color: var(--ink-3);
 }
 .module-card h3 {
-  font-family: var(--font-display); font-weight: 700; font-size: 17px;
-  margin: 0; letter-spacing: 0.01em;
+  font-family: var(--font-serif); font-weight: 400; font-size: 21px;
+  margin: 0; letter-spacing: 0;
 }
 .module-card p { margin: 0; font-size: 13px; color: var(--ink-2); }
 .module-status { margin-top: auto; padding-top: 10px; }
@@ -289,7 +303,7 @@ table.data th.num { text-align: right; }
 .map-panel {
   position: absolute; top: 16px; left: 16px; z-index: 10;
   width: 300px; max-height: calc(100% - 32px); overflow-y: auto;
-  background: rgba(13, 22, 38, 0.92); backdrop-filter: blur(10px);
+  background: rgba(13, 23, 28, 0.92); backdrop-filter: blur(10px);
   border: 1px solid var(--line-strong); border-radius: 10px; padding: 16px;
 }
 @media (max-width: 700px) {
@@ -317,7 +331,7 @@ table.data th.num { text-align: right; }
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5) !important;
 }
 .maplibregl-popup-tip { border-top-color: var(--line-strong) !important; border-bottom-color: var(--line-strong) !important; }
-.popup-title { font-family: var(--font-display); font-weight: 700; font-size: 14px; margin-bottom: 2px; }
+.popup-title { font-family: var(--font-serif); font-weight: 400; font-size: 17px; margin-bottom: 2px; }
 .popup-kv { font-family: var(--font-mono); font-size: 11px; color: var(--ink-2); line-height: 1.7; }
 .popup-kv b { color: var(--ink); font-weight: 500; }
 
@@ -327,7 +341,7 @@ table.data th.num { text-align: right; }
   background: var(--panel); border: 1px solid var(--line); border-radius: 10px;
   padding: 26px 28px; max-width: 780px;
 }
-.brief h2 { font-family: var(--font-display); font-size: 22px; font-weight: 700; margin: 0 0 4px; }
+.brief h2 { font-family: var(--font-serif); font-size: 28px; font-weight: 400; margin: 0 0 4px; }
 .brief h3 {
   font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.14em;
   text-transform: uppercase; color: var(--glacial-bright); margin: 22px 0 8px;
@@ -365,8 +379,8 @@ table.data th.num { text-align: right; }
   color: var(--glacial-bright);
 }
 .step h4 {
-  font-family: var(--font-display); font-weight: 700; font-size: 15px;
-  margin: 0; letter-spacing: 0.01em;
+  font-family: var(--font-serif); font-weight: 400; font-size: 20px;
+  margin: 0; letter-spacing: 0;
 }
 .step p { margin: 0; font-size: 13px; color: var(--ink-2); }
 
@@ -391,7 +405,7 @@ table.data th.num { text-align: right; }
 .verdict-banner.valid .verdict-mark { background: rgba(43, 165, 126, 0.18); color: #5fd4ae; }
 .verdict-banner.invalid .verdict-mark { background: rgba(204, 74, 87, 0.18); color: #e87a85; }
 .verdict-title {
-  font-family: var(--font-display); font-weight: 700; font-size: 15px; margin: 0;
+  font-family: var(--font-serif); font-weight: 400; font-size: 19px; margin: 0;
 }
 .verdict-banner.valid .verdict-title { color: #5fd4ae; }
 .verdict-banner.invalid .verdict-title { color: #e87a85; }

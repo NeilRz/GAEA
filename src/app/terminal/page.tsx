@@ -7,7 +7,7 @@ import {
 } from "@/components/charts";
 
 export const metadata: Metadata = {
-  title: "Terminal — GAEA",
+  title: "Terminal — GEOM",
   description:
     "Read-only oil market structure: futures curve, crack spreads, inventories.",
 };

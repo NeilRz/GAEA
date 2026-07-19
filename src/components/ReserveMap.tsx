@@ -17,7 +17,7 @@ type LayerKey = keyof typeof COLORS;
 const LAYER_DEFS: Array<{ key: LayerKey; label: string; hint: string }> = [
   { key: "reserves", label: "Proven reserves", hint: "circle area = billion bbl" },
   { key: "fields", label: "Major fields", hint: "supergiants & key basins" },
-  { key: "arctic", label: "Arctic assets", hint: "GAEA coverage focus" },
+  { key: "arctic", label: "Arctic assets", hint: "GEOM coverage focus" },
 ];
 
 function countriesGeoJSON(): GeoJSON.FeatureCollection {

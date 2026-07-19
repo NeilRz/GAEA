@@ -3,7 +3,7 @@ import briefs from "@/data/briefs.json";
 import { canonicalize, sha256Hex } from "@/lib/attest";
 
 export const metadata: Metadata = {
-  title: "Agentic Intel — GAEA",
+  title: "Agentic Intel — GEOM",
   description:
     "Agent-generated market briefs and a hash-attested forecast ledger.",
 };
@@ -17,7 +17,7 @@ export default function IntelPage() {
       <p className="eyebrow">MOD-03</p>
       <h1 className="page-title">Agentic Intel</h1>
       <p className="page-lede">
-        GAEA&apos;s agent stack produces structured briefs and probabilistic
+        GEOM&apos;s agent stack produces structured briefs and probabilistic
         forecasts. Every published item is canonicalized, hashed, and signed by
         the oracle before release — so the record of what was said, and when,
         is tamper-evident. No recommendations, no price targets: intelligence

@@ -3,7 +3,7 @@ import tokenized from "@/data/tokenized.json";
 import { TokenizationGapChart } from "@/components/charts";
 
 export const metadata: Metadata = {
-  title: "Tokenization Tracker — GAEA",
+  title: "Tokenization Tracker — GEOM",
   description: "Registry of tokenized oil and commodity real-world assets.",
 };
 

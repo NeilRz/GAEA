@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Archivo, IBM_Plex_Sans, IBM_Plex_Mono } from "next/font/google";
+import { Archivo, Instrument_Serif, Space_Mono } from "next/font/google";
 import Nav from "@/components/Nav";
 import "./globals.css";
 
@@ -9,22 +9,23 @@ const archivo = Archivo({
   weight: ["500", "700", "800"],
 });
 
-const plexSans = IBM_Plex_Sans({
+const instrumentSerif = Instrument_Serif({
   subsets: ["latin"],
-  variable: "--font-plex-sans",
-  weight: ["400", "500", "600"],
+  variable: "--font-instrument",
+  weight: "400",
+  style: ["normal", "italic"],
 });
 
-const plexMono = IBM_Plex_Mono({
+const spaceMono = Space_Mono({
   subsets: ["latin"],
-  variable: "--font-plex-mono",
-  weight: ["400", "500", "600"],
+  variable: "--font-space-mono",
+  weight: ["400", "700"],
 });
 
 export const metadata: Metadata = {
-  title: "GAEA — Greenland Arctic Energy Association",
+  title: "GEOM — Real assets from the far north",
   description:
-    "The intelligence layer for digital oil capital markets. Reserves mapping, tokenization tracking, agentic research, and verifiable data attestation.",
+    "GEOM turns scattered energy data into one live map: reserves, tokenization tracking, agentic research, and verifiable data attestation.",
 };
 
 export default function RootLayout({
@@ -33,13 +34,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${archivo.variable} ${plexSans.variable} ${plexMono.variable}`}
+        className={`${archivo.variable} ${instrumentSerif.variable} ${spaceMono.variable}`}
       >
         <div className="shell">
           <Nav />
           {children}
           <footer className="footer">
-            <span>GAEA — GREENLAND ARCTIC ENERGY ASSOCIATION</span>
+            <span>GEOM — REAL ASSETS FROM THE FAR NORTH</span>
             <span>INTELLIGENCE LAYER · V1 PROTOTYPE</span>
             <span style={{ marginLeft: "auto" }}>
               DATA IS INFORMATIONAL ONLY — NOT INVESTMENT ADVICE

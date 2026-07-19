@@ -5,9 +5,9 @@ import anchors from "@/data/anchors.json";
 import AttestPanel from "@/components/AttestPanel";
 
 export const metadata: Metadata = {
-  title: "Oracle — GAEA",
+  title: "Oracle — GEOM",
   description:
-    "Signed SHA-256 attestations over GAEA datasets, anchored on Solana, verifiable by anyone.",
+    "Signed SHA-256 attestations over GEOM datasets, anchored on Solana, verifiable by anyone.",
 };
 
 interface AnchorRecord {
@@ -44,9 +44,9 @@ export default function OraclePage() {
       <p className="eyebrow">MOD-05</p>
       <h1 className="page-title">Oracle</h1>
       <p className="page-lede">
-        Every dataset GAEA publishes is fingerprinted, signed by the oracle
+        Every dataset GEOM publishes is fingerprinted, signed by the oracle
         key, and anchored on the Solana blockchain. Anyone — a counterparty, a
-        regulator, an allocator — can prove what GAEA published and when,
+        regulator, an allocator — can prove what GEOM published and when,
         without trusting this website. A notarized data feed: nothing is
         issued, deployed, or custodied through it.
       </p>
@@ -128,7 +128,7 @@ export default function OraclePage() {
               <p>
                 Each publication window, the manifest of all digests is written
                 to the Solana ledger in a signed Memo transaction — a public,
-                permanent timestamp no one can edit, including GAEA.
+                permanent timestamp no one can edit, including GEOM.
               </p>
             </div>
           </div>

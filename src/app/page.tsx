@@ -4,7 +4,7 @@ import fields from "@/data/fields.json";
 import tokenized from "@/data/tokenized.json";
 import { datasetHashes } from "@/lib/attest";
 
-/* Polar graticule — the GAEA signature mark. Concentric latitude rings and
+/* Polar graticule — the GEOM signature mark. Concentric latitude rings and
    meridians as seen looking down at the pole. */
 function Graticule() {
   const rings = [60, 105, 150, 195, 240];
@@ -16,7 +16,7 @@ function Graticule() {
       preserveAspectRatio="xMaxYMin slice"
       aria-hidden="true"
     >
-      <g transform="translate(760, 40)" stroke="#2b4066" fill="none">
+      <g transform="translate(760, 40)" stroke="#2e4650" fill="none">
         {rings.map((r) => (
           <circle key={r} r={r} strokeWidth="1" opacity={0.7 - r / 500} />
         ))}
@@ -31,8 +31,8 @@ function Graticule() {
             opacity="0.35"
           />
         ))}
-        <circle r={150} stroke="#3e90cb" strokeWidth="1.2" strokeDasharray="3 5" opacity="0.8" />
-        <circle r={3} fill="#6fb7e8" stroke="none" />
+        <circle r={150} stroke="#5e8ba6" strokeWidth="1.2" strokeDasharray="3 5" opacity="0.8" />
+        <circle r={3} fill="#8fb4c9" stroke="none" />
       </g>
     </svg>
   );
@@ -75,7 +75,7 @@ const MODULES = [
     href: "/oracle",
     code: "MOD-05",
     title: "Oracle",
-    desc: "Signed SHA-256 attestations over every GAEA dataset, verifiable by anyone. The bridge from intelligence to settlement.",
+    desc: "Signed SHA-256 attestations over every GEOM dataset, verifiable by anyone. The bridge from intelligence to settlement.",
     status: "live",
     label: "Live",
   },
@@ -110,7 +110,7 @@ export default function Home() {
           The intelligence layer for <em>digital oil</em> capital markets.
         </h1>
         <p className="lede">
-          GAEA maps the world&apos;s oil, tracks what is — and isn&apos;t —
+          GEOM maps the world&apos;s oil, tracks what is — and isn&apos;t —
           tokenized, publishes agentic research with a tamper-evident audit
           trail, and signs every dataset it ships. Intelligence first;
           settlement when the rules are written.
@@ -146,7 +146,7 @@ export default function Home() {
           <span className="stat-value">
             $0<span className="unit">tokenized crude</span>
           </span>
-          <span className="stat-label">The market GAEA is built for</span>
+          <span className="stat-label">The market GEOM is built for</span>
           <span className="stat-note">{tokenized.assets.length} adjacent assets in registry</span>
         </div>
         <div className="panel stat-tile">
@@ -181,7 +181,7 @@ export default function Home() {
             <h3>Flows & Indices</h3>
             <p>
               AIS tanker flows, Northern Sea Route transit tracking, and the
-              GAEA Digital Oil Index family. Next on the roadmap.
+              GEOM Digital Oil Index family. Next on the roadmap.
             </p>
             <span className="module-status">
               <span className="badge">Planned</span>
@@ -196,7 +196,7 @@ export default function Home() {
           <div>
             <p style={{ margin: 0, fontWeight: 600, fontSize: 14 }}>Data, not advice</p>
             <p className="dim" style={{ margin: "4px 0 0", fontSize: 13 }}>
-              GAEA publishes verifiable market intelligence. It does not issue
+              GEOM publishes verifiable market intelligence. It does not issue
               recommendations, price targets, or investment advice — by design,
               not disclaimer.
             </p>
@@ -204,7 +204,7 @@ export default function Home() {
           <div>
             <p style={{ margin: 0, fontWeight: 600, fontSize: 14 }}>Everything attested</p>
             <p className="dim" style={{ margin: "4px 0 0", fontSize: 13 }}>
-              Every dataset, brief, and forecast is hashed and signed. If GAEA
+              Every dataset, brief, and forecast is hashed and signed. If GEOM
               publishes it, anyone can prove what was said and when.
             </p>
           </div>

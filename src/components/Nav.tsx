@@ -17,10 +17,8 @@ export default function Nav() {
   return (
     <header className="topbar">
       <Link href="/" className="brand">
-        <span className="brand-mark">
-          GAEA<span className="deg">°</span>
-        </span>
-        <span className="brand-sub">Greenland Arctic Energy Association</span>
+        <span className="brand-mark">GEOM</span>
+        <span className="brand-sub">Real assets from the far north</span>
       </Link>
       <nav className="nav" aria-label="Primary">
         {LINKS.map((l) => (
