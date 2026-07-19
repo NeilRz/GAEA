@@ -520,6 +520,43 @@ table.data th.num { text-align: right; }
 }
 .folder-head td b { color: var(--glacial-bright); font-weight: 500; }
 
+/* ── oracle developer quick-start ── */
+
+.qs-intro {
+  display: flex; justify-content: space-between; align-items: flex-end;
+  gap: 24px; flex-wrap: wrap; margin-bottom: 14px;
+}
+.qs-title {
+  font-family: var(--font-serif); font-weight: 400;
+  font-size: clamp(24px, 3.2vw, 34px); line-height: 1.08; margin: 6px 0 0;
+}
+.qs-title em { font-style: italic; color: var(--glacial-bright); }
+
+.qs-win { border: 1px solid var(--line-strong); border-radius: 12px; background: var(--panel); overflow: hidden; }
+.qs-head {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  flex-wrap: wrap; padding: 8px 12px;
+  border-bottom: 1px solid var(--line-strong); background: var(--bg-raised);
+  font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--ink);
+}
+.qs-head .left { display: flex; align-items: center; gap: 10px; }
+.qs-head .tick { width: 4px; height: 14px; background: var(--glacial-bright); }
+.qs-tabs { display: flex; gap: 6px; flex-wrap: wrap; text-transform: none; letter-spacing: 0; }
+
+.qs-body { position: relative; background: var(--bg); }
+.qs-code {
+  margin: 0; padding: 16px 18px; overflow: auto; max-height: 460px;
+  font-family: var(--font-mono); font-size: 12.5px; line-height: 1.75;
+  color: var(--ink-2); white-space: pre;
+}
+.qs-code .tk-c { color: var(--ink-3); }
+.qs-code .tk-k { color: var(--glacial-bright); }
+.qs-code .tk-s { color: var(--amber-bright); }
+.qs-code .tk-w { color: var(--glacial); }
+.qs-code .tk-n { color: #d6bc85; }
+.qs-copy { position: absolute; top: 10px; right: 12px; }
+
 /* ── chart frame ── */
 
 .chart-frame { width: 100%; }

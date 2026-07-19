@@ -3,6 +3,7 @@ import { datasetHashes, anchorManifestHash, getSigner } from "@/lib/attest";
 import bs58 from "bs58";
 import anchors from "@/data/anchors.json";
 import AttestPanel from "@/components/AttestPanel";
+import OracleQuickstart from "@/components/OracleQuickstart";
 
 export const metadata: Metadata = {
   title: "Oracle — GEOM",
@@ -401,6 +402,8 @@ export default function OraclePage() {
             </table>
           </div>
         </section>
+
+        <OracleQuickstart />
 
         <section className="panel">
           <p className="panel-title">
