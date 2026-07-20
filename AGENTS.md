@@ -6,9 +6,11 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 # GEOM app — guide for agents & collaborators
 
-This repo is the **GEOM application** (map, tracker, terminal, oracle) that
-lives behind the "Enter" button on the brand site (geom.org). Production:
-https://gaea-gray.vercel.app — deployed on Vercel.
+This repo now hosts **both the GEOM brand site and the GEOM application**. The
+marketing landing is the homepage (`/`); the application (map, tracker,
+terminal, oracle) sits behind the "Enter" button, which targets `/overview`.
+Production: https://gaea-gray.vercel.app, deployed on Vercel; the geom.org
+brand domain is being pointed at this project.
 
 Read `README.md` for the product/API overview. This file is the working
 contract: stack facts, hard invariants, and gotchas that have already cost
@@ -81,6 +83,43 @@ Gotcha: the `--font-*` stacks are declared on `body`, **not** `:root` —
 next/font attaches its variables to `<body>`, and a `var()` referencing them
 from `:root` silently invalidates the whole `font-family`.
 
+## Marketing site (landing + corporate pages)
+
+The public brand pages were ported verbatim from the signed-off static
+geom.org site and kept pixel-identical, so they render as raw HTML, not
+idiomatic React. Treat them as one self-contained unit.
+
+- **Routes.** `/` is the landing (`src/components/geom/GeomLanding.tsx`, a
+  client component). `/news`, `/investors`, `/terms`, `/privacy` are static
+  corporate pages. Neil's original overview is preserved at `/overview`, which
+  is where "Enter" lands.
+- **How they render.** Each page injects an exact HTML string
+  (`src/components/geom/landingHtml.ts`, `corpHtml.ts`) via
+  `dangerouslySetInnerHTML` inside a scoped wrapper. The landing's original
+  vanilla scripts (pump scroll-scrub, hero video fade-loop, scroll reveals,
+  nav-on-scroll) run as one cleaned-up effect in GeomLanding. To change landing
+  copy, edit the source and re-port, or edit the JSON-encoded string in
+  `landingHtml.ts`.
+- **CSS is wrapper-scoped.** `geom-site.css` is scoped under `.geom-site`,
+  `geom-corp.css` under `.geom-corp`. These fragments reuse generic class
+  names, so the scoping is what stops them leaking onto the app, and the app
+  globals leaking onto them. Ten class names collided with the globals and were
+  renamed with `gs-`/`gc-` prefixes (hero, eyebrow, grid, lede, mono, n, k, v,
+  nav, brand, on). Do not un-prefix them or add unscoped rules for these
+  fragments.
+- **Gotcha: `overflow-x: clip`, not `hidden`.** `.geom-site` uses
+  `overflow-x: clip`. `hidden` turns the wrapper into a scroll container and
+  silently breaks the pump's `position: sticky` (its stationary scroll-scrub).
+- **Chrome.** `Nav` and `SiteFooter` return `null` on the marketing routes;
+  the app top bar and footer only appear on the app routes. The marketing pages
+  carry their own header and footer.
+- **Assets** live in `public/`: `seq/` (120-frame WebP pump sequence),
+  `fonts/`, `img/` (hero + chapter posters), `partners/`, and the hero and
+  chapter background videos as both `.mp4` and `.webm` (VP9).
+- **No em-dashes in any brand-facing copy** (titles, meta, page text). It is a
+  hard brand rule on the marketing side; the app footer and app page titles
+  still use them and have not been swept.
+
 ## Map gotchas (src/components/ReserveMap.tsx)
 
 - GeoJSON source URLs in the style must be **absolute**
@@ -101,14 +140,20 @@ from `:root` silently invalidates the whole `font-family`.
 ## Repo map
 
 ```
-src/app/            routes: / (overview), /map, /tracker, /terminal, /oracle
+src/app/            marketing: / (landing), /overview, /news, /investors,
+                    /terms, /privacy · app: /map, /tracker, /terminal, /oracle
 src/app/api/        datasets, attest, quotes route handlers
+src/app/*.css       globals.css (app) + geom-site.css / geom-corp.css (scoped
+                    marketing styles)
+src/components/geom/ GeomLanding + landingHtml.ts / corpHtml.ts (ported brand site)
 src/components/     ReserveMap (globe), TrackerLibrary, MarketBoard,
-                    CandleChart, AttestPanel, OracleQuickstart, Nav, charts
+                    CandleChart, AttestPanel, OracleQuickstart, Nav,
+                    SiteFooter, charts
 src/lib/            attest.ts (oracle core), map-config, map-icons,
                     tracker-folders, quotes/board/format (terminal)
 src/data/           SIGNED datasets (see invariants) + anchors.json history
 public/data/        CDN copies: plants.json (signed twin), boundaries.geojson
+public/             seq/ (pump frames), fonts/, img/, partners/, brand videos
 scripts/anchor.ts   Solana Memo anchoring (npm run anchor)
 ```
 
