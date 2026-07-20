@@ -226,7 +226,7 @@ export default function GeomLanding() {
 
     /* ── nav reveals once scrolled past the hero ── */
     (() => {
-      const nav = root.querySelector<HTMLElement>(".nav");
+      const nav = root.querySelector<HTMLElement>(".gs-nav");
       const hero = root.querySelector<HTMLElement>("#top");
       if (!nav || !hero) return;
       const upd = () => {

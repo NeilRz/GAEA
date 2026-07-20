@@ -17,18 +17,18 @@
 .geom-corp .wrap{max-width:1080px;margin:0 auto;padding:0 clamp(20px,5vw,48px)}
 .geom-corp .top{position:sticky;top:0;z-index:20;background:rgba(242,245,246,.82);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
 .geom-corp .top .wrap{display:flex;align-items:center;justify-content:space-between;height:66px}
-.geom-corp .brand{font-family:var(--wm);font-weight:900;font-stretch:125%;font-size:22px;letter-spacing:.04em;color:var(--night)}
+.geom-corp .gc-brand{font-family:var(--wm);font-weight:900;font-stretch:125%;font-size:22px;letter-spacing:.04em;color:var(--night)}
 .geom-corp .topnav{display:flex;gap:26px;align-items:center}
 .geom-corp .topnav a{font-family:var(--mono);font-size:12.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--slate);transition:color .2s}
-.geom-corp .topnav a:hover, .geom-corp .topnav a.on{color:var(--basin)}
+.geom-corp .topnav a:hover, .geom-corp .topnav a.gc-on{color:var(--basin)}
 .geom-corp .topnav .enter{padding:8px 16px;border:1px solid var(--night);border-radius:999px;color:var(--night)}
 .geom-corp .topnav .enter:hover{background:var(--night);color:var(--snow)}
 @media(max-width:720px){.geom-corp .topnav a:not(.enter){display:none}}
 .geom-corp .phead{padding:clamp(52px,9vh,104px) 0 clamp(30px,5vh,54px);border-bottom:1px solid var(--line)}
-.geom-corp .eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.32em;text-transform:uppercase;color:var(--ice)}
+.geom-corp .gc-eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.32em;text-transform:uppercase;color:var(--ice)}
 .geom-corp h1.title{font-family:var(--serif);font-weight:400;font-size:clamp(38px,7vw,76px);line-height:1.02;letter-spacing:-.01em;margin-top:14px}
 .geom-corp h1.title em{font-style:italic;color:var(--basin)}
-.geom-corp .lede{margin-top:20px;max-width:60ch;font-size:clamp(16px,1.6vw,19px);color:#33424c}
+.geom-corp .gc-lede{margin-top:20px;max-width:60ch;font-size:clamp(16px,1.6vw,19px);color:#33424c}
 .geom-corp section.blk{padding:clamp(40px,6vh,72px) 0;border-bottom:1px solid var(--line)}
 .geom-corp h2.h{font-family:var(--serif);font-weight:400;font-size:clamp(26px,3.4vw,40px);line-height:1.08;margin-bottom:8px}
 .geom-corp h3.hh{font-family:var(--wm);font-weight:900;font-stretch:125%;font-size:15px;letter-spacing:.02em;text-transform:uppercase;color:var(--night);margin:26px 0 8px}
