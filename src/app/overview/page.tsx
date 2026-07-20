@@ -73,7 +73,7 @@ const MODULES = [
   },
 ];
 
-export default function Home() {
+export default function Overview() {
   const hashes = datasetHashes();
   const arcticCount = fields.fields.filter((f) => f.arctic).length;
   const totalReserves = Math.round(
