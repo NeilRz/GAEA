@@ -31,7 +31,9 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 22
+          # Node 24 ships npm 11 — must match the npm generation that wrote
+          # package-lock.json, or `npm ci` rejects nested optional deps.
+          node-version: 24
           cache: npm
 
       - run: npm ci
