@@ -5,6 +5,57 @@
   },
   "anchors": [
     {
+      "anchoredAt": "2026-07-20T01:04:11.000Z",
+      "cluster": "devnet",
+      "slot": 477503221,
+      "signature": "3s3pzbBJDKGVxLd9bUdkn63cXLGLk4w9sXdevQpaYbAVkc58ceuJEDTG9vwaKrQz76kqaz2Nd9Anbb9DW57gR6JA",
+      "signer": "DDBT4er8HAHoHvg7xWHfqBY3sdrDhD7uZJW8SctxD9hY",
+      "memo": "GAEA-ANCHOR-V1|e6da15ac9f629d4ddc593d60632c5c2b2486de6d574ccb4df9a2d51efc3de76a",
+      "manifestSha256": "e6da15ac9f629d4ddc593d60632c5c2b2486de6d574ccb4df9a2d51efc3de76a",
+      "datasets": [
+        {
+          "id": "eia",
+          "version": "2026-07-10",
+          "sha256": "172c8661cdf9ee565b61b6362f6876e579762da036abf322b185b15be6e33ef8"
+        },
+        {
+          "id": "fields",
+          "version": "0.2.0",
+          "sha256": "04d3248d82dadc3f732c48eea2fcb82566761d358f381f75878bd881f8f37c2f"
+        },
+        {
+          "id": "market",
+          "version": "0.1.0",
+          "sha256": "3c8183d60603a682ab4bd8a5008ac1d7db5c824678d1f970dbb72c033cdedf9b"
+        },
+        {
+          "id": "pipelines",
+          "version": "0.1.0",
+          "sha256": "c960522062f9483dcc02d7ba2b3b065e8f340343a43169885f86bac8fb3b2293"
+        },
+        {
+          "id": "plants",
+          "version": "0.1.0",
+          "sha256": "1a36985e7126351722f57f4b971e859cd51f1354a219ae242c31bb1dbf2f0cf9"
+        },
+        {
+          "id": "reserves",
+          "version": "0.1.0",
+          "sha256": "72a9bff19c4030931bdab2dbf757cbba0340c92e1e37a75d8b26736e92f44632"
+        },
+        {
+          "id": "sites",
+          "version": "0.1.0",
+          "sha256": "0df77f7d1c9d2cd09318ddb5739ee6b8ac44fc2b7eba6e72a03c0e00ea41e9aa"
+        },
+        {
+          "id": "tokenized",
+          "version": "0.2.0",
+          "sha256": "015f48514dd188263f1517aafe665fa5c3d508e5c8ed4513597cd68fce8a086c"
+        }
+      ]
+    },
+    {
       "anchoredAt": "2026-07-19T16:52:05.000Z",
       "cluster": "devnet",
       "slot": 477422620,

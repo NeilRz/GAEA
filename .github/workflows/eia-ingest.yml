@@ -1,0 +1,62 @@
+# Weekly EIA ingest → attest → anchor → deploy.
+#
+# WPSR releases Wednesdays ~10:30 ET; we ingest Wednesday evening UTC with a
+# Friday catch-up for holiday-delayed releases. If the data changed, the job
+# re-anchors the dataset manifest on Solana and pushes the new dataset +
+# anchor history to main — which triggers the Vercel production deploy.
+# A push with no data change never happens (ingest is byte-deterministic).
+#
+# Secrets: EIA_API_KEY (eia.gov key), ORACLE_SIGNER_KEY (Solana secret key).
+# Optional repo variable: SOLANA_CLUSTER (defaults to devnet until launch).
+name: EIA weekly ingest
+
+on:
+  schedule:
+    - cron: "30 21 * * 3" # Wed 21:30 UTC — after the WPSR release
+    - cron: "0 12 * * 5"  # Fri 12:00 UTC — catch-up for delayed releases
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: eia-ingest
+  cancel-in-progress: false
+
+jobs:
+  ingest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Ingest EIA WPSR series
+        run: npm run ingest:eia
+        env:
+          EIA_API_KEY: ${{ secrets.EIA_API_KEY }}
+
+      - name: Detect dataset change
+        id: diff
+        run: echo "changed=$(git status --porcelain src/data/eia.json | wc -l)" >> "$GITHUB_OUTPUT"
+
+      - name: Anchor manifest on Solana
+        if: steps.diff.outputs.changed != '0'
+        run: npm run anchor
+        env:
+          ORACLE_SIGNER_KEY: ${{ secrets.ORACLE_SIGNER_KEY }}
+          SOLANA_CLUSTER: ${{ vars.SOLANA_CLUSTER || 'devnet' }}
+
+      - name: Commit and push (triggers Vercel deploy)
+        if: steps.diff.outputs.changed != '0'
+        run: |
+          git config user.name "geom-oracle-bot"
+          git config user.email "geom-oracle-bot@users.noreply.github.com"
+          git add src/data/eia.json src/data/anchors.json
+          git commit -m "EIA WPSR ingest: week ending $(node -p "require('./src/data/eia.json').meta.version")"
+          git push

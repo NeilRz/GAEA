@@ -36,7 +36,7 @@ function shortSig(sig: string): string {
 const PUBLIC_BASE = "https://gaea-gray.vercel.app";
 
 const VERIFY_SCRIPT = `// verify.mjs — checks a GEOM dataset from your own machine.
-// Usage:  node verify.mjs reserves     (or fields, market, sites, tokenized)
+// Usage:  node verify.mjs reserves     (any id from /api/datasets, e.g. eia)
 import { createHash } from "node:crypto";
 import nacl from "tweetnacl";
 import bs58 from "bs58";

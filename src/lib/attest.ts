@@ -8,6 +8,7 @@ import market from "@/data/market.json";
 import sites from "@/data/sites.json";
 import plants from "@/data/plants.json";
 import pipelinesData from "@/data/pipelines.json";
+import eia from "@/data/eia.json";
 
 /**
  * GAEA Oracle v2 — verifiable data attestation, Solana-native.
@@ -66,6 +67,11 @@ export const DATASETS: Record<
     data: pipelinesData,
     title: pipelinesData.meta.title,
     version: pipelinesData.meta.version,
+  },
+  eia: {
+    data: eia,
+    title: eia.meta.title,
+    version: eia.meta.version,
   },
 };
 

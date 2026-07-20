@@ -7,7 +7,8 @@
     "build": "next build --webpack",
     "start": "next start",
     "lint": "eslint",
-    "anchor": "tsx scripts/anchor.ts"
+    "anchor": "tsx scripts/anchor.ts",
+    "ingest:eia": "tsx scripts/ingest-eia.ts"
   },
   "dependencies": {
     "bs58": "^6.0.0",
