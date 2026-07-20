@@ -19,6 +19,22 @@ Production: **https://gaea-gray.vercel.app** · Brand site: **https://geom.org**
 | **Terminal** | `/terminal` | Live candlestick board, 16 instruments (partner equities, tokenized RWAs, energy, minerals, benchmarks), 60 s refresh via `/api/quotes` proxy |
 | **Oracle** | `/oracle` | The trust layer: SHA-256 + Ed25519 attestations over every dataset, anchored on Solana, verifiable in-browser or from anyone's machine |
 
+## Linking from the brand site (the "Enter" button)
+
+The brand site's Enter button should link to the app root
+(`https://gaea-gray.vercel.app`, or `/map` to land on the globe). Cleanest
+setup: point a subdomain like `app.geom.org` at this Vercel project (one DNS
+record + `vercel domains add`), so the button never exposes a vercel.app URL.
+
+The app is fully self-contained — no shared state or auth with the brand
+site is required. If the brand site wants to *embed* data (fetch the API
+cross-origin from geom.org) rather than link, CORS headers need enabling
+first — ask before assuming.
+
+**Working on this codebase?** Read `AGENTS.md` first — it lists hard
+invariants (signed datasets, protocol strings, webpack-only builds,
+deploy-on-push) that are easy to violate accidentally.
+
 ## For frontend integration (the API)
 
 Base URL: `https://gaea-gray.vercel.app` (or your own deployment).

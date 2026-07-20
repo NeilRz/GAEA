@@ -2,10 +2,6 @@
  *  Basemaps, atmosphere, and semantic-zoom thresholds live here so the
  *  map component stays free of magic numbers. */
 
-export type BasemapMode = "dark-satellite" | "dark-minimal" | "satellite-natural";
-
-export const DEFAULT_BASEMAP: BasemapMode = "dark-satellite";
-
 /** NASA GIBS Blue Marble (shaded relief + bathymetry) — public domain,
  *  no API key, max native zoom 8. A licensed provider (Esri, MapTiler,
  *  Mapbox satellite) can be configured via env without code changes. */
@@ -37,13 +33,6 @@ export const DARK_SATELLITE_PAINT = {
   "raster-contrast": 0.16,
 } as const;
 
-export const NATURAL_SATELLITE_PAINT = {
-  "raster-saturation": -0.05,
-  "raster-brightness-max": 0.95,
-  "raster-brightness-min": 0,
-  "raster-contrast": 0.02,
-} as const;
-
 /** Native MapLibre sky/atmosphere. Rendered by the engine, so the rim is
  *  always aligned with the globe silhouette at any pitch/zoom/resize. */
 export const ATMOSPHERE = {
@@ -62,7 +51,8 @@ export const BOUNDARY_STYLE = {
   width: 0.7,
 } as const;
 
-/** Phase 4 will consume these; defined centrally now per spec. */
+/** Not consumed yet — reserved for the planned semantic-zoom system
+ *  (global / regional / local display modes). Safe to build against. */
 export type SemanticZoomMode = "global" | "regional" | "local";
 export const SEMANTIC_ZOOM = {
   globalMaxZoom: 2.8,
@@ -74,9 +64,3 @@ export function semanticMode(zoom: number): SemanticZoomMode {
   if (zoom <= SEMANTIC_ZOOM.regionalMaxZoom) return "regional";
   return "local";
 }
-
-export const BASEMAP_LABELS: Record<BasemapMode, string> = {
-  "dark-satellite": "Dark satellite",
-  "dark-minimal": "Dark minimal",
-  "satellite-natural": "Natural",
-};
