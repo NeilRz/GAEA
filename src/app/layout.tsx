@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Archivo, Instrument_Serif, Space_Mono } from "next/font/google";
 import Nav from "@/components/Nav";
+import SiteFooter from "@/components/SiteFooter";
 import "./globals.css";
 
 const archivo = Archivo({
@@ -39,13 +40,7 @@ export default function RootLayout({
         <div className="shell">
           <Nav />
           {children}
-          <footer className="footer">
-            <span>GEOM — REAL ASSETS FROM THE FAR NORTH</span>
-            <span>INTELLIGENCE LAYER · V1 PROTOTYPE</span>
-            <span style={{ marginLeft: "auto" }}>
-              DATA IS INFORMATIONAL ONLY — NOT INVESTMENT ADVICE
-            </span>
-          </footer>
+          <SiteFooter />
         </div>
       </body>
     </html>

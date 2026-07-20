@@ -4,15 +4,19 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const LINKS = [
-  { href: "/", label: "Overview" },
+  { href: "/overview", label: "Overview" },
   { href: "/map", label: "Map" },
   { href: "/tracker", label: "Tracker" },
   { href: "/terminal", label: "Terminal" },
   { href: "/oracle", label: "Oracle" },
 ];
 
+// The marketing site (landing + corporate pages) supplies its own chrome.
+const MARKETING = new Set(["/", "/news", "/investors", "/terms", "/privacy"]);
+
 export default function Nav() {
   const pathname = usePathname();
+  if (MARKETING.has(pathname)) return null;
   return (
     <header className="topbar">
       <Link href="/" className="brand">

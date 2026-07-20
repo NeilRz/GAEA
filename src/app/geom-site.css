@@ -1,0 +1,256 @@
+/* GEOM landing styles, ported from the static site and scoped under .geom-site */
+@font-face{font-family:"ArchivoExp";src:url(/fonts/archivoexp-700.woff2) format('woff2');font-weight:700 900;font-stretch:125%;font-display:block}
+@font-face{font-family:"SpaceMonoE";src:url(/fonts/spacemonoe-400.woff2) format('woff2');font-weight:400;font-display:swap}
+@font-face{font-family:"SpaceMonoE";src:url(/fonts/spacemonoe-700.woff2) format('woff2');font-weight:700;font-display:swap}
+@font-face{font-family:"InstrumentSerif";src:url(/fonts/instrumentserif-400.woff2) format('woff2');font-weight:400 700;font-style:normal;font-display:swap}
+@font-face{font-family:"InstrumentSerif";src:url(/fonts/instrumentserif-400-italic.woff2) format('woff2');font-weight:400 700;font-style:italic;font-display:swap}
+.geom-site{
+    --night:#0C1519; --ink:#16232B; --slate:#3C4C57; --slate-2:#5B6B75;
+    --ice:#5E8BA6; --glacier:#8FB4C9;
+    --redbed:#8F4632; --terracotta:#B26A4E; --sandstone:#C4A469; --carbonate:#CBC3B1;
+    --shale:#2C2D31; --dyke:#20242A;
+    --sky:#B9C6CE; --snow:#EDF1F3; --paper:#F2F5F6; --line:#CBD5DA;
+    --shadowblue:#7E97A6;
+    --ease:cubic-bezier(.19,.72,.18,1);
+    --disp:"ArchivoExp",Impact,"Arial Narrow Bold",system-ui,sans-serif;
+    --serif:"InstrumentSerif",Georgia,"Times New Roman",serif;
+    --mono:"SpaceMonoE",ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+    --body:-apple-system,system-ui,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+.geom-site *{margin:0;padding:0;box-sizing:border-box}
+.geom-site{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+.geom-site{font-family:var(--body);background:var(--night);color:var(--ink);line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+.geom-site .mono{font-family:var(--mono)}
+.geom-site ::selection{background:var(--ice);color:#fff}
+.geom-site a{color:inherit;text-decoration:none}
+.geom-site :focus-visible{outline:2px solid var(--ice);outline-offset:4px}
+.geom-site img{max-width:100%}
+.geom-site .wrap{max-width:1160px;margin:0 auto;padding:0 clamp(22px,5vw,72px)}
+.geom-site /* ===== floating chrome ===== */
+  .brandmark{position:fixed;top:calc(19px + env(safe-area-inset-top,0px));left:clamp(20px,5vw,64px);z-index:9;
+    font-family:var(--disp);font-weight:900;font-variation-settings:"wght" 900,"wdth" 125;
+    font-size:clamp(17px,4.6vw,20px);letter-spacing:.02em;color:#fff;mix-blend-mode:difference}
+.geom-site .nav{position:fixed;top:calc(16px + env(safe-area-inset-top,0px));left:50%;transform:translateX(-50%);z-index:9;display:flex;align-items:center;gap:4px;
+    padding:6px 6px 6px 18px;border-radius:999px;
+    background:rgba(9,16,21,.82);backdrop-filter:blur(18px) saturate(1.2);-webkit-backdrop-filter:blur(18px) saturate(1.2);
+    border:1px solid rgba(255,255,255,.13);box-shadow:0 10px 44px rgba(0,0,0,.34)}
+.geom-site .nav a{font-family:var(--body);font-size:13px;letter-spacing:.01em;color:#C4D2DA;padding:8px 14px;border-radius:999px;transition:color .25s,background .25s}
+.geom-site .nav a:not(.enter):hover{color:#fff;background:rgba(255,255,255,.06)}
+.geom-site .nav .enter{display:inline-flex;align-items:center;gap:7px;background:#F4F7F8;color:#0C1519;font-weight:600;padding:9px 15px;border-radius:999px;transition:background .3s var(--ease),box-shadow .3s var(--ease)}
+.geom-site .nav .enter .arw{display:inline-block;transition:transform .3s var(--ease)}
+.geom-site .nav .enter:hover{background:#fff;box-shadow:0 0 0 4px rgba(255,255,255,.08)}
+.geom-site .nav .enter:hover .arw{transform:translate(2px,-2px)}
+.geom-site /* Enter stays persistent: nav is hidden over the hero and reveals once scrolled past */
+  .nav{opacity:0;transform:translateX(-50%) translateY(-14px);pointer-events:none;transition:opacity .45s var(--ease),transform .45s var(--ease)}
+.geom-site .nav.show{opacity:1;transform:translateX(-50%) translateY(0);pointer-events:auto}
+.geom-site .hero-enter{display:inline-flex;align-items:center;gap:9px;margin-top:clamp(30px,5vh,54px);background:#F4F7F8;color:#0C1519;font-weight:600;font-size:clamp(15px,1.5vw,17px);padding:15px 32px;border-radius:999px;text-decoration:none;box-shadow:0 12px 44px rgba(0,0,0,.3);transition:background .3s var(--ease),box-shadow .3s var(--ease),transform .3s var(--ease)}
+.geom-site .hero-enter .arw{display:inline-block;transition:transform .3s var(--ease)}
+.geom-site .hero-enter:hover{background:#fff;box-shadow:0 16px 54px rgba(0,0,0,.38)}
+.geom-site .hero-enter:hover .arw{transform:translate(2px,-2px)}
+@media(max-width:560px){.geom-site .nav{padding:5px 5px 5px 13px;gap:1px}
+.geom-site .nav a{padding:8px 11px;font-size:12.5px}}
+@media(max-width:360px){.geom-site .nav a:first-child{display:none}}
+.geom-site /* ================= HERO ================= */
+  .hero{position:relative;height:100vh;height:100svh;min-height:600px;overflow:hidden;
+    background:radial-gradient(130% 110% at 50% -10%,#123044 0%,#0b1a26 42%,#060e15 100%)}
+.geom-site .grain{position:absolute;inset:0;z-index:2;pointer-events:none;opacity:.34;mix-blend-mode:soft-light}
+.geom-site .grain svg{width:100%;height:100%}
+.geom-site .stack{position:relative;z-index:4;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;text-align:center;padding:0 22px clamp(70px,13vh,150px);will-change:transform}
+.geom-site .eyebrow{font-family:var(--mono);font-size:clamp(9.5px,2.6vw,12.5px);letter-spacing:.34em;text-transform:uppercase;color:var(--ice);margin-bottom:clamp(16px,3vh,30px)}
+.geom-site .wordmark{font-family:var(--disp);font-weight:900;font-variation-settings:"wght" 900,"wdth" 125;
+    font-size:clamp(62px,16.5vw,220px);line-height:.82;letter-spacing:.005em;color:var(--night)}
+.geom-site .tagline{font-family:var(--serif);font-weight:400;max-width:22ch;margin-top:clamp(22px,4vh,44px);
+    font-size:clamp(20px,5.4vw,30px);line-height:1.28;letter-spacing:.005em;color:var(--slate)}
+.geom-site .tagline em{font-style:italic;color:var(--night)}
+.geom-site .subtag{font-family:var(--body);margin-top:15px;font-size:clamp(12.5px,3.4vw,14.5px);letter-spacing:.03em;color:var(--slate)}
+.geom-site .cue{position:absolute;bottom:calc(22px + env(safe-area-inset-bottom,0px));z-index:5;font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--slate);opacity:.85}
+.geom-site .cue.l{left:clamp(20px,5vw,64px)}
+.geom-site .cue.r{right:clamp(20px,5vw,64px);display:flex;align-items:center;gap:9px}
+.geom-site .cue.r::after{content:"";width:1px;height:20px;background:var(--slate);animation:blink 2.6s ease-in-out infinite}
+@media(max-width:420px){.geom-site .cue.r{display:none}}
+.geom-site /* hero media: still B is the poster/base; video layers on top when present */
+  .hero-photo{position:absolute;inset:0;z-index:0;background:#0b1620 center 46%/cover no-repeat;
+    background-image:url(/img/geom-hero-photo.jpg)}
+.geom-site .bg-vid{position:absolute;inset:0;z-index:1;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .8s ease}
+.geom-site .bg-vid.playing{opacity:1}
+.geom-site .hero .bg-vid{object-position:center 46%}
+.geom-site /* ===== second chapter (A video) ===== */
+  .chapter{position:relative;min-height:92svh;overflow:hidden;background:#070f16;display:flex;align-items:center}
+.geom-site .chapter-photo{position:absolute;inset:0;z-index:0;background:#070f16 center 50%/cover no-repeat;background-image:url(/img/geom-chapter-photo.jpg)}
+.geom-site .chapter .bg-vid{object-position:center 50%}
+.geom-site .chapter-grade{position:absolute;inset:0;z-index:2;pointer-events:none;
+    background:linear-gradient(90deg,rgba(6,12,18,.75) 0%,rgba(6,12,18,.44) 42%,rgba(6,12,18,.14) 100%),
+      linear-gradient(180deg,rgba(6,12,18,.4),transparent 26%,transparent 72%,rgba(6,12,18,.5))}
+.geom-site .chapter-content{position:relative;z-index:3;max-width:1160px;margin:0 auto;padding:clamp(80px,12vh,140px) clamp(22px,5vw,72px);width:100%}
+.geom-site .chapter-content .eyebrow-c{font-family:var(--mono);font-size:12px;letter-spacing:.34em;text-transform:uppercase;color:var(--glacier);text-shadow:0 1px 10px rgba(6,12,18,.85)}
+.geom-site .chapter-content h2{font-family:var(--serif);font-weight:500;font-size:clamp(34px,7vw,82px);line-height:1.03;color:#F6FAFB;margin:18px 0 0;max-width:14ch;text-shadow:0 2px 24px rgba(6,12,18,.7);text-wrap:balance}
+.geom-site .chapter-content h2 em{font-style:italic;color:var(--glacier)}
+.geom-site .chapter-content p{margin-top:24px;max-width:46ch;font-size:clamp(15px,1.5vw,18px);line-height:1.7;color:#DCE6EB;text-shadow:0 1px 12px rgba(6,12,18,.8)}
+.geom-site .chapter-cta{display:inline-flex;align-items:center;gap:8px;margin-top:34px;background:rgba(255,255,255,.08);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.22);color:#fff;font-size:14px;padding:12px 22px;border-radius:999px;transition:background .3s}
+.geom-site .chapter-cta:hover{background:rgba(255,255,255,.16)}
+.geom-site .chapter-cta .arw{display:inline-block;transition:transform .3s var(--ease)}
+.geom-site .chapter-cta:hover .arw{transform:translate(2px,-2px)}
+.geom-site /* ===== 3D rig scroll-scrub ===== */
+  .rig{position:relative;height:160vh;background:#060d13}
+.geom-site .rig-sticky{position:sticky;top:0;height:100svh;overflow:hidden}
+.geom-site #rig-canvas{position:absolute;inset:0;z-index:0;width:100%;height:100%;display:block}
+.geom-site .rig-fallback{position:absolute;inset:0;z-index:0;pointer-events:none;background:radial-gradient(130% 110% at 50% 38%,#123044 0%,#0b1a26 46%,#060e15 100%)}
+.geom-site .rig-vignette{position:absolute;inset:0;z-index:1;pointer-events:none;background:radial-gradient(125% 96% at 50% 42%,transparent 50%,rgba(3,7,11,.62) 100%)}
+.geom-site .rig-overlay{position:absolute;left:50%;transform:translateX(-50%);bottom:0;z-index:2;pointer-events:none;width:100%;max-width:1160px;padding:clamp(40px,9vh,96px) clamp(22px,5vw,72px)}
+.geom-site .rig-overlay .eyebrow-c{font-family:var(--mono);font-size:12px;letter-spacing:.34em;text-transform:uppercase;color:var(--glacier)}
+.geom-site .rig-overlay h2{font-family:var(--serif);font-weight:500;font-size:clamp(30px,5.5vw,60px);line-height:1.04;color:#F6FAFB;margin:16px 0 0;max-width:16ch;text-wrap:balance}
+.geom-site .rig-overlay h2 em{font-style:italic;color:var(--glacier)}
+.geom-site .rig-overlay p{margin-top:16px;max-width:44ch;font-size:clamp(14px,1.4vw,16px);color:#C3D3DB}
+.geom-site .rig-overlay .eyebrow-c, .geom-site .rig-overlay h2, .geom-site .rig-overlay p{text-shadow:0 1px 16px rgba(4,9,13,.75)}
+@media(max-width:760px){.geom-site .rig{height:175vh}
+.geom-site .rig-overlay{padding-bottom:clamp(30px,7vh,64px)}
+.geom-site .rig-overlay h2{font-size:clamp(30px,8.5vw,46px);max-width:18ch}
+.geom-site .rig-overlay p{max-width:34ch}
+.geom-site .rig-sticky::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
+      background:linear-gradient(180deg,rgba(6,13,19,0) 45%,rgba(6,13,19,.72) 100%)}}
+.geom-site .hero-grade{position:absolute;inset:0;z-index:2;pointer-events:none;
+    background:
+      linear-gradient(180deg,rgba(6,12,18,.30) 0%,rgba(6,12,18,0) 20%,rgba(6,12,18,0) 40%,rgba(6,12,18,.5) 80%,rgba(6,12,18,.74) 100%),
+      radial-gradient(125% 100% at 50% 26%,transparent 52%,rgba(6,12,18,.4) 100%)}
+.geom-site .hero .eyebrow{color:#E0ECF2}
+.geom-site .hero .wordmark{color:#FFFFFF}
+.geom-site .wm-sub{color:#fff;text-align:center;font-family:var(--body);font-weight:600;font-size:clamp(10px,1.1vw,13px);letter-spacing:.14em;text-transform:uppercase;margin:0 auto clamp(2px,.6vh,10px);text-shadow:0 2px 16px rgba(6,12,18,.6)}
+.geom-site .hero .tagline{color:#EDF4F8}
+.geom-site .hero .tagline em{color:#fff}
+.geom-site .hero .subtag{color:#CFDEE7}
+.geom-site .hero .cue{color:#E4EDF2}
+.geom-site .hero .cue.r::after{background:#E4EDF2}
+.geom-site /* ================= FLIP ================= */
+  .flip{background:var(--night);color:var(--snow);padding:clamp(76px,13vh,168px) 0;position:relative}
+.geom-site .flip .eyebrow-s{font-family:var(--mono);font-size:12px;letter-spacing:.34em;text-transform:uppercase;color:var(--glacier)}
+.geom-site .flip h2{font-family:var(--serif);font-weight:500;font-size:clamp(33px,7vw,74px);line-height:1.03;letter-spacing:0;margin:20px 0 0;max-width:16ch;color:var(--snow);text-wrap:balance}
+.geom-site .flip h2 em{font-style:italic;color:var(--glacier)}
+.geom-site .flip .lede{margin-top:26px;max-width:54ch;font-size:clamp(15px,1.5vw,18px);line-height:1.75;color:#ADBEC7}
+.geom-site .flip .lede b{color:var(--snow);font-weight:600}
+.geom-site .register{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;margin-top:clamp(44px,7vh,88px);
+    background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.14);border-radius:16px;overflow:hidden;
+    backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);box-shadow:0 24px 70px rgba(0,0,0,.3)}
+.geom-site .register .cell{display:block;text-decoration:none;cursor:pointer;background:rgba(12,21,25,.5);padding:26px 22px;transition:background .35s var(--ease)}
+.geom-site .register .cell:hover{background:rgba(22,35,43,.72)}
+.geom-site .register .cash-cell .n{color:var(--glacier)}
+.geom-site .register .n{font-family:var(--serif);font-weight:500;font-size:clamp(25px,3.6vw,42px);color:var(--snow);line-height:1;letter-spacing:.005em}
+.geom-site .register .k{font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--glacier);margin-top:14px}
+@media(max-width:900px){.geom-site .register{grid-template-columns:repeat(2,1fr)}
+.geom-site .register .cash-cell{grid-column:1 / -1;text-align:center}}
+@media(max-width:600px){.geom-site .register{grid-template-columns:repeat(2,1fr)}}
+.geom-site /* ================= IDEA ================= */
+  .idea{background:var(--paper);padding:clamp(76px,13vh,158px) 0}
+.geom-site .idea .big{font-family:var(--serif);font-weight:500;font-size:clamp(30px,6.4vw,66px);line-height:1.06;letter-spacing:0;color:var(--night);max-width:20ch;text-wrap:balance}
+.geom-site .idea .big em{font-style:italic;color:var(--redbed)}
+.geom-site .idea p{margin-top:26px;max-width:58ch;font-size:clamp(15px,1.2vw,17px);color:var(--slate)}
+.geom-site .idea p strong{color:var(--night);font-weight:600}
+.geom-site .mark-graphic{margin-top:clamp(52px,9vh,96px);position:relative;height:1px;background:var(--line);border:0;opacity:1}
+.geom-site .mark-graphic::before{content:"";position:absolute;top:-8px;left:38%;width:2px;height:18px;background:var(--dyke)}
+.geom-site .mark-graphic::after{content:"HORIZON · LEDGER · BLOCK BOUNDARY";position:absolute;top:15px;right:0;
+    font-family:var(--mono);font-size:10px;letter-spacing:.18em;color:var(--slate-2)}
+.geom-site /* ================= PROOF ================= */
+  .proof{background:var(--snow);padding:clamp(74px,13vh,146px) 0}
+.geom-site .sec-head{display:flex;align-items:baseline;gap:16px;margin-bottom:clamp(36px,6vh,68px);flex-wrap:wrap}
+.geom-site .sec-head .eyebrow-s{font-family:var(--mono);font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:var(--ice)}
+.geom-site .sec-head h2{font-family:var(--serif);font-weight:500;font-size:clamp(28px,5.6vw,54px);line-height:1.05;color:var(--night);letter-spacing:0;text-wrap:balance}
+.geom-site .sec-head h2 em{font-style:italic;color:var(--redbed)}
+.geom-site .cols{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+@media(max-width:1000px){.geom-site .cols{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.geom-site .cols{grid-template-columns:1fr}}
+.geom-site .cell2{background:var(--paper);padding:30px 26px 34px;transition:background .35s var(--ease)}
+.geom-site .cell2:hover{background:#FBFCFC}
+.geom-site .cell2 .t{font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--ice);margin-bottom:16px;display:flex;gap:12px;align-items:center}
+.geom-site .cell2 .t::before{content:"";width:11px;height:1px;background:var(--redbed)}
+.geom-site .cell2 h3{font-family:var(--serif);font-weight:500;font-size:clamp(21px,2.2vw,27px);color:var(--night);letter-spacing:0;line-height:1.1}
+.geom-site .cell2 p{margin-top:13px;font-size:14.5px;color:var(--slate)}
+.geom-site /* ================= BACKING ================= */
+  .backing{background:var(--paper);padding:clamp(74px,13vh,146px) 0}
+.geom-site .facts{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+@media(max-width:760px){.geom-site .facts{grid-template-columns:repeat(2,1fr)}}
+.geom-site .fact{background:var(--snow);padding:28px 24px;transition:background .35s var(--ease)}
+.geom-site .fact:hover{background:#FBFCFC}
+.geom-site .fact .k{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--slate)}
+.geom-site .fact .v{font-family:var(--serif);font-weight:500;font-size:clamp(29px,3.6vw,44px);color:var(--night);margin-top:11px;letter-spacing:0;line-height:1}
+.geom-site .fact .d{font-size:12.5px;color:var(--slate-2);margin-top:9px;font-family:var(--mono);letter-spacing:.02em}
+.geom-site .nav .cash{font-family:var(--mono);font-size:12px;letter-spacing:.02em;color:var(--glacier);padding:8px 12px;border-radius:999px;transition:color .25s,background .25s}
+@media(max-width:720px){.geom-site .nav{display:none}}
+.geom-site .nav .cash:hover{color:#fff;background:rgba(255,255,255,.06)}
+.geom-site .partners{background:var(--paper);padding:clamp(60px,10vh,112px) 0}
+.geom-site .partners .sec-head{flex-direction:column;align-items:center;text-align:center;gap:10px}
+.geom-site .plogos{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;max-width:1020px;margin:0 auto}
+@media(max-width:760px){.geom-site .plogos{grid-template-columns:1fr;max-width:440px;margin:0 auto}}
+.geom-site .pcard{display:flex;flex-direction:column;align-items:center;gap:18px;background:#fff;border:1px solid rgba(12,21,25,.08);border-radius:16px;padding:34px 24px 26px;box-shadow:0 10px 30px rgba(12,21,25,.05);transition:transform .3s var(--ease),box-shadow .3s var(--ease)}
+.geom-site .pcard:hover{transform:translateY(-3px);box-shadow:0 18px 46px rgba(12,21,25,.09)}
+.geom-site .pchip{display:flex;align-items:center;justify-content:center;height:52px;width:100%}
+.geom-site .pchip:hover{opacity:1;transform:translateY(-2px)}
+.geom-site .pchip img{max-width:100%;max-height:52px;object-fit:contain;display:block}
+.geom-site .plinks{display:flex;gap:20px;justify-content:center}
+.geom-site .plinks a{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ice);transition:color .25s}
+.geom-site .plinks a:hover{color:var(--redbed)}
+.geom-site .pnote{margin-top:34px;font-family:var(--mono);font-size:11.5px;letter-spacing:.1em;color:var(--slate-2);text-align:center}
+.geom-site /* ================= CLOSE ================= */
+  .close{background:var(--night);color:var(--snow);padding:clamp(84px,15vh,188px) 0 clamp(56px,9vh,96px);text-align:center;position:relative;overflow:hidden}
+.geom-site .close::before{content:"";position:absolute;inset:0;pointer-events:none;mix-blend-mode:screen;
+    background:radial-gradient(50% 60% at 50% 120%,rgba(94,139,166,.22),rgba(94,139,166,0) 70%)}
+.geom-site .close .cmark{position:relative;font-family:var(--disp);font-weight:900;font-variation-settings:"wght" 900,"wdth" 125;font-size:clamp(66px,17vw,236px);line-height:.8;letter-spacing:.01em;color:var(--snow)}
+.geom-site .close .cbar{position:relative;width:min(360px,64vw);height:1px;background:var(--glacier);margin:clamp(22px,4vh,40px) auto 0}
+.geom-site .close .cbar::before{content:"";position:absolute;top:-8px;left:50%;width:2px;height:17px;background:var(--glacier)}
+.geom-site .close .ccoord{position:relative;font-family:var(--mono);font-size:clamp(10px,2.6vw,12px);letter-spacing:.2em;color:#7E90A0;margin-top:22px}
+.geom-site /* footer */
+  .foot{background:var(--night);color:var(--snow);border-top:1px solid rgba(255,255,255,.09);padding:clamp(44px,7vh,72px) 0}
+.geom-site .foot .grid{display:flex;justify-content:space-between;gap:26px;flex-wrap:wrap;align-items:flex-start}
+.geom-site .disc{max-width:60ch;font-size:12.5px;line-height:1.65;color:#8296A1}
+.geom-site .disc b{color:#C4D2DA;font-weight:600}
+.geom-site .foot .fl{display:flex;gap:22px}
+.geom-site .foot .fl a{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#8296A1}
+.geom-site .foot .fl a:hover{color:var(--glacier)}
+.geom-site /* ===== progressive-enhancement motion (only under .anim, .geom-site content is visible without JS) ===== */
+  .anim .brandmark{opacity:0;animation:fadein 1s var(--ease) .4s forwards}
+.geom-site.anim .eyebrow{opacity:0;transform:translateY(14px);animation:rise 1.1s var(--ease) .6s forwards}
+.geom-site.anim .wordmark{opacity:0;transform:translateY(42px);filter:blur(16px);animation:emerge 1.7s var(--ease) .8s forwards}
+.geom-site.anim .tagline{opacity:0;transform:translateY(14px);animation:rise 1.2s var(--ease) 1.2s forwards}
+.geom-site.anim .subtag{opacity:0;transform:translateY(14px);animation:rise 1.2s var(--ease) 1.45s forwards}
+.geom-site.anim .cue{opacity:0;animation:cuein 1s var(--ease) 1.7s forwards}
+.geom-site.anim .hero-photo{opacity:0;animation:fadein 1.4s var(--ease) forwards}
+.geom-site.anim .reveal>*{opacity:0;transform:translateY(36px);filter:blur(6px);transition:opacity .9s var(--ease),transform .9s var(--ease),filter .9s var(--ease)}
+.geom-site.anim .reveal.in>*{opacity:1;transform:none;filter:blur(0)}
+.geom-site.anim .reveal.in>*:nth-child(2){transition-delay:.09s}
+.geom-site.anim .reveal.in>*:nth-child(3){transition-delay:.18s}
+.geom-site.anim .reveal.in>*:nth-child(4){transition-delay:.27s}
+.geom-site.anim .reveal.in>*:nth-child(5){transition-delay:.36s}
+.geom-site.anim .reveal.in>*:nth-child(6){transition-delay:.45s}
+.geom-site /* stat/card grids: stagger each cell in on scroll */
+  .anim .register.reveal>.cell, .geom-site.anim .facts.reveal>.fact, .geom-site.anim .cols.reveal>.cell2{transition-delay:0s}
+.geom-site.anim .register.reveal.in>.cell:nth-child(2), .geom-site.anim .facts.reveal.in>.fact:nth-child(2), .geom-site.anim .cols.reveal.in>.cell2:nth-child(2){transition-delay:.1s}
+.geom-site.anim .register.reveal.in>.cell:nth-child(3), .geom-site.anim .facts.reveal.in>.fact:nth-child(3), .geom-site.anim .cols.reveal.in>.cell2:nth-child(3){transition-delay:.2s}
+.geom-site.anim .register.reveal.in>.cell:nth-child(4), .geom-site.anim .facts.reveal.in>.fact:nth-child(4){transition-delay:.3s}
+@keyframes emerge{to{opacity:1;transform:none;filter:blur(0)}}
+@keyframes rise{to{opacity:1;transform:none}}
+@keyframes fadein{to{opacity:1}}
+@keyframes cuein{to{opacity:.85}}
+@keyframes navin{from{opacity:0;transform:translateX(-50%) translateY(-12px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+@keyframes aurain{to{opacity:.92}}
+@keyframes blink{0%,100%{opacity:.3;transform:scaleY(.55)}50%{opacity:1;transform:scaleY(1)}}
+@media(prefers-reduced-motion:reduce){.geom-site *{animation:none!important;transition:none!important}
+.geom-site .brandmark, .geom-site .eyebrow, .geom-site .wordmark, .geom-site .tagline, .geom-site .subtag, .geom-site .reveal>*{opacity:1!important;transform:none!important;filter:none!important}
+.geom-site .cue{opacity:.85!important}
+.geom-site .hero-photo{opacity:1!important}
+.geom-site .nav{opacity:1!important;transform:translateX(-50%)!important;pointer-events:auto!important}}
+.geom-site .pmeta{font-family:var(--mono);font-size:11px;letter-spacing:.03em;line-height:1.55;color:var(--slate-2);text-align:center;margin-top:2px}
+.geom-site .structure{background:var(--paper);padding:clamp(64px,11vh,120px) 0}
+.geom-site .struct-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;margin-top:clamp(28px,5vh,50px)}
+@media(max-width:760px){.geom-site .struct-grid{grid-template-columns:1fr}}
+.geom-site .scard{background:#fff;border:1px solid rgba(12,21,25,.08);border-radius:16px;padding:32px 30px}
+.geom-site .scard .sn{font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--ice);margin-bottom:12px}
+.geom-site .scard h3{font-family:var(--serif);font-weight:400;font-size:clamp(22px,2.6vw,30px);line-height:1.1;color:var(--night);margin-bottom:10px}
+.geom-site .scard p{color:#33424c;font-size:15.5px;line-height:1.6}
+.geom-site .sstub{display:inline-block;font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--redbed);border:1px dashed var(--redbed);border-radius:5px;padding:2px 7px;margin-left:6px;vertical-align:middle}
+.geom-site .join{background:var(--paper);padding:clamp(48px,8vh,96px) 0 clamp(64px,11vh,120px)}
+.geom-site .join-box{background:var(--night);color:var(--snow);border-radius:22px;padding:clamp(40px,6vw,72px);text-align:center}
+.geom-site .join-box h2{font-family:var(--serif);font-weight:400;font-size:clamp(30px,4.6vw,52px);line-height:1.04;color:var(--snow)}
+.geom-site .join-box h2 em{font-style:italic;color:var(--glacier)}
+.geom-site .join-box p{max-width:52ch;margin:18px auto 0;color:#b8c6cf;font-size:16px;line-height:1.6}
+.geom-site .join-box .cta{display:inline-flex;align-items:center;gap:8px;margin-top:30px;background:var(--snow);color:var(--night);font-weight:600;padding:14px 26px;border-radius:999px;font-size:15px;text-decoration:none}
+.geom-site .join-box .cta:hover{background:#fff}
+.geom-site .join-box .jmeta{font-family:var(--mono);font-size:12px;letter-spacing:.1em;color:var(--glacier);margin-top:22px;text-transform:uppercase}
+.geom-site .foot .fbase{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-top:34px;padding-top:22px;border-top:1px solid rgba(255,255,255,.1);font-family:var(--mono);font-size:11.5px;color:#7d8f9b;letter-spacing:.04em}
