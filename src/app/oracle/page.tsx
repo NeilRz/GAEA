@@ -158,7 +158,7 @@ export default function OraclePage() {
           <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
             <a
               className="btn primary big"
-              href="mailto:neil.richez@gmail.com?subject=GEOM%20Oracle%20API%20access%20request"
+              href="mailto:request@geom.org?subject=GEOM%20Oracle%20API%20access%20request"
             >
               Request API access →
             </a>
@@ -504,7 +504,7 @@ export default function OraclePage() {
             <div style={{ marginTop: "auto" }}>
               <a
                 className="btn primary big"
-                href="mailto:neil.richez@gmail.com?subject=GEOM%20Oracle%20API%20access%20request"
+                href="mailto:request@geom.org?subject=GEOM%20Oracle%20API%20access%20request"
               >
                 Request API access →
               </a>
