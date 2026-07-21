@@ -1,13 +1,17 @@
 import type { Metadata } from "next";
-import { Archivo, Instrument_Serif, Space_Mono } from "next/font/google";
+import { Instrument_Serif, Space_Mono } from "next/font/google";
+import localFont from "next/font/local";
 import Nav from "@/components/Nav";
 import SiteFooter from "@/components/SiteFooter";
 import "./globals.css";
 
-const archivo = Archivo({
-  subsets: ["latin"],
+/* Same expanded Archivo file the marketing wordmark uses, so the app
+   logotype and the geom.org brandmark are the identical glyphs. */
+const archivo = localFont({
+  src: "../../public/fonts/archivoexp-700.woff2",
   variable: "--font-archivo",
-  weight: ["500", "700", "800"],
+  weight: "700 900",
+  declarations: [{ prop: "font-stretch", value: "125%" }],
 });
 
 const instrumentSerif = Instrument_Serif({
