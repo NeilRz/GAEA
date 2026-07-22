@@ -33,7 +33,7 @@ const GROUPS = {
 
 type GroupKey = keyof typeof GROUPS;
 
-/** Typed power-plant groups — each gets its own clustered source so its
+/** Typed power-plant groups, each gets its own clustered source so its
  *  clusters carry the category's icon and color instead of a generic
  *  number circle. */
 const PLANT_GROUPS = [
@@ -259,7 +259,7 @@ export default function ReserveMap() {
             ],
             tileSize: 256,
           },
-          // MapLibre needs an absolute URL for geojson source strings — a
+          // MapLibre needs an absolute URL for geojson source strings, a
           // bare path throws Invalid URL and aborts the entire style load.
           boundaries: {
             type: "geojson",
@@ -329,7 +329,7 @@ export default function ReserveMap() {
       });
 
       map.addSource("pipelines", { type: "geojson", data: fc(pipelineFeatures()) });
-      // line-dasharray is not data-driven in MapLibre — two layers instead.
+      // line-dasharray is not data-driven in MapLibre, two layers instead.
       map.addLayer({
         id: "pipelines", type: "line", source: "pipelines",
         filter: ["==", ["get", "status"], "operating"],
@@ -403,7 +403,7 @@ export default function ReserveMap() {
       }
 
       // Power plants: lazy-load the signed dataset (same bytes the oracle
-      // attests — /data/plants.json is the CDN copy of /api/datasets/plants),
+      // attests, /data/plants.json is the CDN copy of /api/datasets/plants),
       // split into typed clustered sources so every cluster carries its
       // category icon + color.
       fetch("/data/plants.json")
@@ -635,7 +635,7 @@ export default function ReserveMap() {
             3D terrain
             <br />
             <span className="dimmer" style={{ fontSize: 10 }}>
-              {terrain3d ? "on — right-drag to tilt" : "off — flat globe (faster)"}
+              {terrain3d ? "on, right-drag to tilt" : "off, flat globe (faster)"}
             </span>
           </span>
         </button>

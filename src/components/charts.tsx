@@ -209,7 +209,7 @@ export function TokenizationGapChart() {
   ];
   const max = Math.sqrt(Math.max(...rows.map((r) => r.value)));
   const fmt = (n: number) =>
-    n >= 1000 ? `$${(n / 1000).toFixed(1)}T` : n === 0 ? "$0 — the gap" : `$${n.toFixed(1)}B`;
+    n >= 1000 ? `$${(n / 1000).toFixed(1)}T` : n === 0 ? "$0, the gap" : `$${n.toFixed(1)}B`;
   return (
     <div className="chart-frame">
       {rows.map((r) => (

@@ -10,10 +10,10 @@ export default function SiteFooter() {
   if (MARKETING.has(pathname)) return null;
   return (
     <footer className="footer">
-      <span>GEOM — REAL ASSETS FROM THE FAR NORTH</span>
+      <span>GEOM, REAL ASSETS FROM THE FAR NORTH</span>
       <span>INTELLIGENCE LAYER · V1 PROTOTYPE</span>
       <span style={{ marginLeft: "auto" }}>
-        DATA IS INFORMATIONAL ONLY — NOT INVESTMENT ADVICE
+        DATA IS INFORMATIONAL ONLY, NOT INVESTMENT ADVICE
       </span>
     </footer>
   );

@@ -103,7 +103,7 @@ export default function TrackerLibrary({ rows }: { rows: LibraryRow[] }) {
               {filtered.length === 0 && (
                 <tr>
                   <td colSpan={6} className="dim" style={{ fontSize: 13 }}>
-                    No entries match — clear the filter or pick another folder.
+                    No entries match, clear the filter or pick another folder.
                   </td>
                 </tr>
               )}

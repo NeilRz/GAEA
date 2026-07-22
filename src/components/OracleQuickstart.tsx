@@ -38,7 +38,7 @@ const TABS: Array<{ id: string; label: string; lang: "json" | "js" | "sh"; code:
     id: "fetch",
     label: "Fetch it",
     lang: "js",
-    code: `// Any language, no key, no account — it's just HTTPS + JSON.
+    code: `// Any language, no key, no account, it's just HTTPS + JSON.
 const res = await fetch("${BASE}/api/datasets/reserves");
 const { meta, countries } = await res.json();
 
@@ -48,12 +48,12 @@ console.log(countries.length) // 23
 console.log(countries[0]);    // { iso: "VE", name: "Venezuela", reserves: 303, ... }
 
 // Same pattern for every dataset:
-//   /api/datasets/plants     — 34,936 power plants, all fuels (CC-BY WRI)
-//   /api/datasets/fields     — 43 oil & gas fields
-//   /api/datasets/sites      — 67 mines, REE deposits, nuclear assets
-//   /api/datasets/pipelines  — trunk pipeline routes
-//   /api/datasets/tokenized  — the tokenization registry
-//   /api/datasets/market     — market structure series`,
+//   /api/datasets/plants      34,936 power plants, all fuels (CC-BY WRI)
+//   /api/datasets/fields      43 oil & gas fields
+//   /api/datasets/sites       67 mines, REE deposits, nuclear assets
+//   /api/datasets/pipelines   trunk pipeline routes
+//   /api/datasets/tokenized   the tokenization registry
+//   /api/datasets/market      market structure series`,
   },
   {
     id: "attest",
@@ -67,17 +67,17 @@ console.log(countries[0]);    // { iso: "VE", name: "Venezuela", reserves: 303, 
   "dataset": "reserves",
   "version": "0.1.0",
 
-  // SHA-256 fingerprint of the canonical dataset bytes —
-  // change one digit anywhere and this changes completely:
+  // SHA-256 fingerprint of the canonical dataset bytes.
+  // Change one digit anywhere and this changes completely:
   "sha256": "72a9bff19c4030931bdab2dbf757cbba0340c92e1e37a75d8b26736e92f44632",
 
   // What the oracle key actually signs:
   "message": "GAEA-ATTEST-V2|reserves|0.1.0|72a9bff1...",
 
-  // The oracle's public key — same address that anchors on Solana:
+  // The oracle's public key, same address that anchors on Solana:
   "signer": "DDBT4er8HAHoHvg7xWHfqBY3sdrDhD7uZJW8SctxD9hY",
 
-  // 64-byte Ed25519 signature (base58) — unforgeable without the key:
+  // 64-byte Ed25519 signature (base58), unforgeable without the key:
   "signature": "4qQDWb54koVY6ea1rvUQHPrEycpdwHgg45iWnFpe...",
   "signedAt": "2026-07-19T14:21:14.100Z"
 }`,
@@ -87,7 +87,7 @@ console.log(countries[0]);    // { iso: "VE", name: "Venezuela", reserves: 303, 
     label: "Verify it",
     lang: "js",
     code: `// The check is ~5 lines with any Ed25519 library. Your machine
-// does the math — this server is not part of the verdict.
+// does the math, this server is not part of the verdict.
 import nacl from "tweetnacl";
 import bs58 from "bs58";
 
@@ -105,7 +105,7 @@ console.log(ok ? "signature valid" : "DO NOT TRUST");
   },
 ];
 
-/* Tiny regex tokenizer — comments, keys, strings, keywords, numbers.
+/* Tiny regex tokenizer, comments, keys, strings, keywords, numbers.
    Not a real parser; just enough for readable highlighting. */
 function highlight(code: string): React.ReactNode[] {
   const pattern =
@@ -140,7 +140,7 @@ export default function OracleQuickstart() {
       setCopied(true);
       setTimeout(() => setCopied(false), 1500);
     } catch {
-      /* clipboard unavailable — ignore */
+      /* clipboard unavailable, ignore */
     }
   };
 
@@ -154,7 +154,7 @@ export default function OracleQuickstart() {
           </h2>
         </div>
         <p className="dim" style={{ fontSize: 14, maxWidth: "44ch", margin: 0 }}>
-          Every dataset is the same JSON — a <span className="mono" style={{ fontSize: 12 }}>meta</span>{" "}
+          Every dataset is the same JSON, a <span className="mono" style={{ fontSize: 12 }}>meta</span>{" "}
           block, then the records. Integrating takes a few lines of any
           language and no credentials.
         </p>

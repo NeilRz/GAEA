@@ -92,7 +92,7 @@ function Candlestick(props: {
   );
 }
 
-/** Price tag pinned to the right axis at the last close — the marker every
+/** Price tag pinned to the right axis at the last close, the marker every
  *  terminal puts there so you can find the current print instantly. */
 function LastPriceTag({
   viewBox,
@@ -169,25 +169,25 @@ export function CandleChart({
   const maxVol = Math.max(...data.map((d) => d.v), 0);
   const last = data[data.length - 1];
   // Colour the last-price tag against the previous *close*, not this bar's
-  // open — otherwise a green "+6.97%" header sits next to a red tag whenever
+  // open, otherwise a green "+6.97%" header sits next to a red tag whenever
   // the session opened above where it closed.
   const priorClose = data.length > 1 ? data[data.length - 2].c : null;
   const lastUp = priorClose === null ? last.up : last.c >= priorClose;
 
-  // The legend reads the hovered bar, falling back to the latest — so the
+  // The legend reads the hovered bar, falling back to the latest, so the
   // OHLC line is always populated rather than blank until you mouse over.
   const active = hover != null && data[hover] ? data[hover] : last;
   const prev = hover != null && hover > 0 ? data[hover - 1] : data[data.length - 2];
   const barChangePct =
     prev && prev.c !== 0 ? ((active.c - prev.c) / prev.c) * 100 : null;
 
-  // Thin out ticks so the axis never crowds — roughly six labels at any width.
+  // Thin out ticks so the axis never crowds, roughly six labels at any width.
   const step = Math.max(1, Math.ceil(data.length / 6));
   const ticks = data.filter((_, i) => i % step === 0).map((d) => d.t);
 
   /* The crosshair is driven off the plot geometry rather than Recharts'
      tooltip: in v3 the cursor only renders while the tooltip is active, and a
-     tooltip that renders nothing never activates — so a hidden tooltip gives
+     tooltip that renders nothing never activates, so a hidden tooltip gives
      no cursor. The grid element's box *is* the plot rect, which is all the
      geometry needed to snap to a bar. */
   function pointAt(clientX: number) {
@@ -302,7 +302,7 @@ export function CandleChart({
               width={82}
             />
             {/* Volume rides a hidden axis scaled so it occupies the bottom
-                ~18% — the conventional overlay footprint, close enough to a
+                ~18%, the conventional overlay footprint, close enough to a
                 separate pane without stealing height from price. */}
             <YAxis yAxisId="vol" domain={[0, maxVol > 0 ? maxVol * 5.5 : 1]} hide />
 

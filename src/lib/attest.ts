@@ -11,7 +11,7 @@ import pipelinesData from "@/data/pipelines.json";
 import eia from "@/data/eia.json";
 
 /**
- * GAEA Oracle v2 — verifiable data attestation, Solana-native.
+ * GAEA Oracle v2, verifiable data attestation, Solana-native.
  *
  * Every dataset is canonicalized (recursively sorted keys), hashed with
  * SHA-256, and the digest is signed by the GAEA oracle key (Ed25519, a
@@ -133,7 +133,7 @@ export interface Attestation {
   version: string;
   sha256: string;
   message: string;
-  /** Base58 Ed25519 public key — the oracle's Solana address. */
+  /** Base58 Ed25519 public key, the oracle's Solana address. */
   signer: string;
   /** Base58 detached Ed25519 signature over the UTF-8 message bytes. */
   signature: string;

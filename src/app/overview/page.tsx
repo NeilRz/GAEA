@@ -4,7 +4,7 @@ import fields from "@/data/fields.json";
 import tokenized from "@/data/tokenized.json";
 import { datasetHashes } from "@/lib/attest";
 
-/* Polar graticule — the GEOM signature mark. Concentric latitude rings and
+/* Polar graticule, the GEOM signature mark. Concentric latitude rings and
    meridians as seen looking down at the pole. */
 function Graticule() {
   const rings = [60, 105, 150, 195, 240];
@@ -43,7 +43,7 @@ const MODULES = [
     href: "/map",
     code: "MOD-01",
     title: "Reserve Map",
-    desc: "3D globe of proven reserves, supergiant fields, mines, rare-earth deposits, and nuclear assets — the physical layer, mapped.",
+    desc: "3D globe of proven reserves, supergiant fields, mines, rare-earth deposits, and nuclear assets, the physical layer, mapped.",
     status: "live",
     label: "Live",
   },
@@ -103,7 +103,7 @@ export default function Overview() {
         </h1>
         <p className="lede">
           GEOM maps the world&apos;s oil, minerals, rare earths, and nuclear
-          assets, tracks what is — and isn&apos;t — tokenized, and signs every
+          assets, tracks what is, and isn&apos;t, tokenized, and signs every
           dataset it ships. Intelligence first; settlement when the rules are
           written.
         </p>
@@ -189,7 +189,7 @@ export default function Overview() {
             <p style={{ margin: 0, fontWeight: 600, fontSize: 14 }}>Data, not advice</p>
             <p className="dim" style={{ margin: "4px 0 0", fontSize: 13 }}>
               GEOM publishes verifiable market intelligence. It does not issue
-              recommendations, price targets, or investment advice — by design,
+              recommendations, price targets, or investment advice, by design,
               not disclaimer.
             </p>
           </div>

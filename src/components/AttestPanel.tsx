@@ -55,7 +55,7 @@ export default function AttestPanel({
 
   return (
     <div className="panel">
-      <p className="panel-title">Live demo — request & verify an attestation</p>
+      <p className="panel-title">Live demo, request & verify an attestation</p>
       <p className="dim" style={{ fontSize: 13, marginTop: -6, marginBottom: 14 }}>
         Pick a dataset. The oracle signs its fingerprint on the server; your
         browser then checks the signature itself, locally.
@@ -70,7 +70,7 @@ export default function AttestPanel({
         >
           {datasets.map((d) => (
             <option key={d.id} value={d.id}>
-              {d.id} — {d.title}
+              {d.id}, {d.title}
             </option>
           ))}
         </select>
@@ -81,7 +81,7 @@ export default function AttestPanel({
 
       {error && (
         <p className="dim" style={{ fontSize: 13 }}>
-          Request failed: {error}. Try again — the signer runs on the API
+          Request failed: {error}. Try again, the signer runs on the API
           route.
         </p>
       )}
@@ -94,7 +94,7 @@ export default function AttestPanel({
               <div>
                 <p className="verdict-title">Signature valid</p>
                 <p className="verdict-sub">
-                  Ed25519 signature verified locally in your browser — not by
+                  Ed25519 signature verified locally in your browser, not by
                   this server.
                 </p>
               </div>
@@ -106,7 +106,7 @@ export default function AttestPanel({
               <div>
                 <p className="verdict-title">Signature mismatch</p>
                 <p className="verdict-sub">
-                  The signature does not match the signer key — do not trust
+                  The signature does not match the signer key, do not trust
                   this attestation.
                 </p>
               </div>
@@ -139,7 +139,7 @@ export default function AttestPanel({
             <span className="v">
               <span className="hash">
                 {att.signer}
-                {att.devSigner ? "  (dev key — set ORACLE_SIGNER_KEY in production)" : ""}
+                {att.devSigner ? "  (dev key, set ORACLE_SIGNER_KEY in production)" : ""}
               </span>
             </span>
           </div>

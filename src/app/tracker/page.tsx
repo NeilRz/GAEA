@@ -8,7 +8,7 @@ import TrackerLibrary from "@/components/TrackerLibrary";
 import { FOLDERS, type LibraryRow } from "@/lib/tracker-folders";
 
 export const metadata: Metadata = {
-  title: "Tokenization Tracker — GEOM",
+  title: "Tokenization Tracker · GEOM",
   description:
     "Registry of tokenized oil, minerals, and rare-earth real-world assets.",
 };
@@ -71,7 +71,7 @@ export default function TrackerPage() {
   const signer = bs58.encode(getSigner().keypair.publicKey);
   const signerShort = `${signer.slice(0, 6)}…${signer.slice(-4)}`;
 
-  // Fixed cosmetic latencies — the boot log is theatre, the counts are real.
+  // Fixed cosmetic latencies, the boot log is theatre, the counts are real.
   const bootMs = [21, 9, 14, 32, 11, 8, 26, 12, 7, 18, 15];
 
   return (
@@ -79,7 +79,7 @@ export default function TrackerPage() {
       <div className="dl-bar" style={{ marginBottom: 18 }}>
         <span>
           <span className="tick" />
-          <b>GEOM RESOURCE DATA LAYER</b> — TRACKER · v{tokenized.meta.version}
+          <b>GEOM RESOURCE DATA LAYER</b>, TRACKER · v{tokenized.meta.version}
         </span>
         <span style={{ display: "flex", gap: 14, alignItems: "center" }}>
           <span>SHA-256 ATTESTED · SOLANA-ANCHORED</span>
@@ -96,8 +96,8 @@ export default function TrackerPage() {
       <p className="eyebrow">MOD-02</p>
       <h1 className="page-title">Tokenization Tracker</h1>
       <p className="page-lede">
-        What resource exposure actually exists on-chain today — oil,{" "}
-        <em>minerals, and rare earths</em> — organized as a library. The
+        What resource exposure actually exists on-chain today, oil,{" "}
+        <em>minerals, and rare earths</em>, organized as a library. The
         headline finding is the whitespace: tokenized crude and tokenized rare
         earths at institutional scale are both{" "}
         <strong style={{ color: "var(--ink)" }}>zero</strong>.
@@ -262,7 +262,7 @@ export default function TrackerPage() {
       </div>
 
       <p className="provenance">
-        {tokenized.meta.note} · Informational only — nothing on this page is a
+        {tokenized.meta.note} · Informational only, nothing on this page is a
         solicitation or investment advice.
       </p>
     </main>

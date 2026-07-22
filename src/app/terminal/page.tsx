@@ -8,7 +8,7 @@ import {
 import { MarketBoard } from "@/components/MarketBoard";
 
 export const metadata: Metadata = {
-  title: "Terminal — GEOM",
+  title: "Terminal · GEOM",
   description:
     "Live candlestick board: partner equities, tokenized real-world assets, energy, minerals and benchmarks.",
 };
@@ -19,7 +19,7 @@ export default function TerminalPage() {
       <p className="eyebrow">MOD-03</p>
       <h1 className="page-title">Terminal</h1>
       <p className="page-lede">
-        Live market structure across the instruments we track — partner
+        Live market structure across the instruments we track, partner
         equities, tokenized real-world assets, the energy complex, critical
         minerals, and the benchmarks underneath all of them. The terminal reads
         the shape of the market. It does not call price, and nothing here is
@@ -34,19 +34,19 @@ export default function TerminalPage() {
       <section className="panel" style={{ marginTop: 28 }}>
         <p className="chart-title">Structural series</p>
         <p className="chart-sub">
-          Curve, cracks and inventories — the shape behind the tape. These three
+          Curve, cracks and inventories, the shape behind the tape. These three
           remain{" "}
           <strong style={{ color: "var(--ink)" }}>illustrative samples</strong>;
           exchange and vendor feed integration is the next milestone.
         </p>
         <p style={{ margin: "8px 0 4px" }}>
-          <span className="badge warn">Sample data — not live quotes</span>
+          <span className="badge warn">Sample data, not live quotes</span>
         </p>
       </section>
 
       <div className="grid grid-2">
         <section className="panel" style={{ gridColumn: "1 / -1" }}>
-          <p className="chart-title">Futures curve — WTI vs Brent</p>
+          <p className="chart-title">Futures curve, WTI vs Brent</p>
           <p className="chart-sub">
             USD/bbl by contract month · {market.futuresCurve.asOfLabel}
           </p>
@@ -71,7 +71,7 @@ export default function TerminalPage() {
 
       <p className="provenance">
         Live quotes proxied from the Yahoo Finance chart API (unofficial,
-        delayed, unlicensed) and cached 60s — market colour, not a trading feed.
+        delayed, unlicensed) and cached 60s, market colour, not a trading feed.
         Structural series: {market.meta.note}
       </p>
     </main>

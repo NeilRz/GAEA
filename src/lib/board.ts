@@ -1,6 +1,6 @@
 /* The terminal's instrument board.
    Plain module (no "use client") so both the server page and the client
-   components can import it — a const array exported from a "use client"
+   components can import it, a const array exported from a "use client"
    module is not consumable server-side. */
 
 export interface Instrument {
@@ -10,7 +10,7 @@ export interface Instrument {
   label: string;
   /** Venue, for the second line */
   venue: string;
-  /** Why it is on our board — one clause, factual, no view */
+  /** Why it is on our board, one clause, factual, no view */
   note: string;
 }
 
@@ -32,19 +32,19 @@ export const BOARD: BoardGroup[] = [
         symbol: "VEEE",
         label: "VEEE",
         venue: "Nasdaq CM",
-        note: "Twin Vee PowerCats — combining with USFM Corporation; Disko-Nuussuaq Ni-Cu-Co-PGE, NYSE American listing expected on close.",
+        note: "Twin Vee PowerCats, combining with USFM Corporation; Disko-Nuussuaq Ni-Cu-Co-PGE, NYSE American listing expected on close.",
       },
       {
         symbol: "80M.L",
         label: "80M",
         venue: "LSE AIM",
-        note: "80 Mile plc — operator at Disko-Nuussuaq, West Greenland; USFM funding a US$30m earn-in. Quoted in pence.",
+        note: "80 Mile plc, operator at Disko-Nuussuaq, West Greenland; USFM funding a US$30m earn-in. Quoted in pence.",
       },
       {
         symbol: "GLND",
         label: "GLND",
         venue: "Nasdaq GM",
-        note: "Greenland Energy — Jameson Land Basin, East Greenland; drilling programme planned October 2026.",
+        note: "Greenland Energy, Jameson Land Basin, East Greenland; drilling programme planned October 2026.",
       },
     ],
   },
@@ -52,48 +52,48 @@ export const BOARD: BoardGroup[] = [
     id: "tokenized",
     title: "Tokenized real-world assets",
     blurb:
-      "The on-chain wrappers for commodity and treasury exposure — the market our oracle attests into.",
+      "The on-chain wrappers for commodity and treasury exposure, the market our oracle attests into.",
     instruments: [
       {
         symbol: "ONDO-USD",
         label: "ONDO",
         venue: "Crypto",
-        note: "Ondo Finance — tokenized treasuries and equities; USOon wraps the United States Oil Fund.",
+        note: "Ondo Finance, tokenized treasuries and equities; USOon wraps the United States Oil Fund.",
       },
       {
         symbol: "PAXG-USD",
         label: "PAXG",
         venue: "Crypto",
-        note: "Paxos Gold — one token, one allocated troy ounce. Half of the tokenized-commodity float.",
+        note: "Paxos Gold, one token, one allocated troy ounce. Half of the tokenized-commodity float.",
       },
       {
         symbol: "XAUT-USD",
         label: "XAUT",
         venue: "Crypto",
-        note: "Tether Gold — the other half. Together with PAXG, roughly three-quarters of tokenized commodities.",
+        note: "Tether Gold, the other half. Together with PAXG, roughly three-quarters of tokenized commodities.",
       },
     ],
   },
   {
     id: "energy",
     title: "Energy",
-    blurb: "The producers and the service layer — the equity side of the barrel.",
+    blurb: "The producers and the service layer, the equity side of the barrel.",
     instruments: [
-      { symbol: "XOM", label: "XOM", venue: "NYSE", note: "ExxonMobil — integrated major." },
-      { symbol: "CVX", label: "CVX", venue: "NYSE", note: "Chevron — integrated major." },
-      { symbol: "OXY", label: "OXY", venue: "NYSE", note: "Occidental — Permian-weighted independent." },
-      { symbol: "SLB", label: "SLB", venue: "NYSE", note: "SLB — oilfield services, a lead indicator on activity." },
+      { symbol: "XOM", label: "XOM", venue: "NYSE", note: "ExxonMobil, integrated major." },
+      { symbol: "CVX", label: "CVX", venue: "NYSE", note: "Chevron, integrated major." },
+      { symbol: "OXY", label: "OXY", venue: "NYSE", note: "Occidental, Permian-weighted independent." },
+      { symbol: "SLB", label: "SLB", venue: "NYSE", note: "SLB, oilfield services, a lead indicator on activity." },
     ],
   },
   {
     id: "minerals",
     title: "Minerals & rare earths",
     blurb:
-      "The critical-minerals complex the tracker expanded into — the same supply story as Disko-Nuussuaq.",
+      "The critical-minerals complex the tracker expanded into, the same supply story as Disko-Nuussuaq.",
     instruments: [
-      { symbol: "MP", label: "MP", venue: "NYSE", note: "MP Materials — Mountain Pass, the US rare-earth position." },
-      { symbol: "FCX", label: "FCX", venue: "NYSE", note: "Freeport-McMoRan — copper, the electrification bellwether." },
-      { symbol: "ALB", label: "ALB", venue: "NYSE", note: "Albemarle — lithium." },
+      { symbol: "MP", label: "MP", venue: "NYSE", note: "MP Materials, Mountain Pass, the US rare-earth position." },
+      { symbol: "FCX", label: "FCX", venue: "NYSE", note: "Freeport-McMoRan, copper, the electrification bellwether." },
+      { symbol: "ALB", label: "ALB", venue: "NYSE", note: "Albemarle, lithium." },
     ],
   },
   {
@@ -103,7 +103,7 @@ export const BOARD: BoardGroup[] = [
     instruments: [
       { symbol: "CL=F", label: "WTI", venue: "NYMEX", note: "WTI crude, front month." },
       { symbol: "BZ=F", label: "Brent", venue: "ICE", note: "Brent crude, front month." },
-      { symbol: "GC=F", label: "Gold", venue: "COMEX", note: "Gold, front month — the settlement reference for PAXG and XAUT." },
+      { symbol: "GC=F", label: "Gold", venue: "COMEX", note: "Gold, front month, the settlement reference for PAXG and XAUT." },
     ],
   },
 ];
@@ -114,7 +114,7 @@ export function findInstrument(symbol: string): Instrument | undefined {
   return ALL_INSTRUMENTS.find((i) => i.symbol === symbol);
 }
 
-/** Default selection when the terminal opens — our own partner cluster. */
+/** Default selection when the terminal opens, our own partner cluster. */
 export const DEFAULT_SYMBOL = "VEEE";
 
 export interface RangeOption {
@@ -142,7 +142,7 @@ export const DEFAULT_RANGE = "6m";
 export const GEOM_TOKEN = {
   symbol: "GEOM",
   name: "GEOM",
-  /** Solana mint. Empty until launch — do not fill with a placeholder. */
+  /** Solana mint. Empty until launch, do not fill with a placeholder. */
   contractAddress: "",
   /** Jupiter builds the swap route from the mint once it exists. */
   jupiterUrl(mint: string) {

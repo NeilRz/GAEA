@@ -29,7 +29,7 @@ interface SeriesPayload {
 
 /** Last completed load, tagged with the request it answered. Comparing its
  *  key against the current selection derives `loading` without a setState
- *  in the effect body — and lets the previous chart stay on screen, dimmed,
+ *  in the effect body, and lets the previous chart stay on screen, dimmed,
  *  instead of collapsing to a spinner on every range change. */
 interface LoadResult {
   key: string;
@@ -72,7 +72,7 @@ export function MarketBoard() {
         );
       })
       .catch((e: Error) => {
-        // A failed refresh is not fatal — the last good prices stay up.
+        // A failed refresh is not fatal, the last good prices stay up.
         if (e.name !== "AbortError") console.warn("[terminal] quote refresh failed", e);
       });
   }, []);
@@ -255,7 +255,7 @@ function GeomTile() {
   }
 
   return (
-    <div className="quote-tile geom-tile" aria-label="GEOM — not tradeable yet">
+    <div className="quote-tile geom-tile" aria-label="GEOM, not tradeable yet">
       <span className="quote-sym">GEOM</span>
       <span className="quote-venue">Solana</span>
       <span className="quote-price geom-dash">—</span>

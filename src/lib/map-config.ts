@@ -2,7 +2,7 @@
  *  Basemaps, atmosphere, and semantic-zoom thresholds live here so the
  *  map component stays free of magic numbers. */
 
-/** NASA GIBS Blue Marble (shaded relief + bathymetry) — public domain,
+/** NASA GIBS Blue Marble (shaded relief + bathymetry), public domain,
  *  no API key, max native zoom 8. A licensed provider (Esri, MapTiler,
  *  Mapbox satellite) can be configured via env without code changes. */
 export const SATELLITE_TILE_URL =
@@ -51,7 +51,7 @@ export const BOUNDARY_STYLE = {
   width: 0.7,
 } as const;
 
-/** Not consumed yet — reserved for the planned semantic-zoom system
+/** Not consumed yet, reserved for the planned semantic-zoom system
  *  (global / regional / local display modes). Safe to build against. */
 export type SemanticZoomMode = "global" | "regional" | "local";
 export const SEMANTIC_ZOOM = {

@@ -6,7 +6,7 @@ export const revalidate = 60;
 
 /** GET /api/quotes/<symbol>?range=6m
  *
- *  Full OHLC series for one instrument. `symbol` must be on the board —
+ *  Full OHLC series for one instrument. `symbol` must be on the board;
  *  the allowlist keeps this from becoming an open proxy to Yahoo. */
 export async function GET(
   request: Request,

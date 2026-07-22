@@ -3,14 +3,14 @@
    is proxied through /api/quotes/*. No API key, one response shape for
    equities, crypto and futures alike.
 
-   This is an unofficial endpoint — fine for a read-only market view,
+   This is an unofficial endpoint, fine for a read-only market view,
    not a licensed feed. Anything load-bearing should move to a vendor
    contract before it backs a commercial claim. */
 
 const YF = "https://query1.finance.yahoo.com/v8/finance/chart";
 const UA = "Mozilla/5.0 (compatible; GEOM-Terminal/1.0)";
 
-/** Cache window in seconds — quotes are market colour, not a trading feed. */
+/** Cache window in seconds, quotes are market colour, not a trading feed. */
 export const QUOTE_TTL = 60;
 
 export interface Candle {
@@ -79,7 +79,7 @@ function str(v: unknown, fallback: string): string {
 /**
  * Fetch one symbol's OHLC series.
  *
- * @param symbol Yahoo symbol — "VEEE", "80M.L", "ONDO-USD", "CL=F"
+ * @param symbol Yahoo symbol, "VEEE", "80M.L", "ONDO-USD", "CL=F"
  * @param range  "1mo" | "3mo" | "6mo" | "1y" | "5y"
  * @param interval "1d" | "1wk" | "60m" …
  */
@@ -123,7 +123,7 @@ export async function fetchSeries(
   const stamps = result.timestamp ?? [];
   const q = result.indicators?.quote?.[0] ?? {};
 
-  // Yahoo pads the arrays with nulls for halted / untraded bars — drop them
+  // Yahoo pads the arrays with nulls for halted / untraded bars, drop them
   // rather than plotting a gap the eye reads as a price move.
   const candles: Candle[] = [];
   for (let i = 0; i < stamps.length; i++) {
@@ -144,7 +144,7 @@ export async function fetchSeries(
   //
   // `chartPreviousClose` is deliberately last: it is the close *before the
   // requested window*, not before the last bar, so on a 5d request it yields
-  // a five-day change and on a 1y request a one-year change — both of which
+  // a five-day change and on a 1y request a one-year change, both of which
   // read as a daily move once rendered next to a % sign. It is only correct
   // when the window holds a single bar.
   const previousClose =

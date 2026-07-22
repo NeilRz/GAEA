@@ -1,7 +1,7 @@
 /* Display formatting for the terminal. Shared by the ticker strip and the
    chart so a price reads identically in both places. */
 
-/** London lines (80M.L) quote in pence, not pounds — never prefix them with $. */
+/** London lines (80M.L) quote in pence, not pounds, never prefix them with $. */
 export function formatPrice(value: number, currency = "USD"): string {
   if (!Number.isFinite(value)) return "—";
 
@@ -15,7 +15,7 @@ export function formatPrice(value: number, currency = "USD"): string {
 /** Sub-dollar crypto needs more places than a $147 equity does. */
 function decimals(v: number): string {
   const a = Math.abs(v);
-  if (a === 0) return "0"; // axis floor tick — "0.000000p" is just noise
+  if (a === 0) return "0"; // axis floor tick, "0.000000p" is just noise
 
   if (a >= 1000) return v.toLocaleString("en-US", { maximumFractionDigits: 2, minimumFractionDigits: 2 });
   if (a >= 1) return v.toFixed(2);

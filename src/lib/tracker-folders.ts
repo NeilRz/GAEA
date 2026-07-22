@@ -1,6 +1,6 @@
 /** Library folders for the tokenization tracker, in display order.
  *  Shared by the server page (boot log, tiles, shelves) and the client
- *  catalog — must stay a plain module (no "use client") so both sides
+ *  catalog, must stay a plain module (no "use client") so both sides
  *  get the real array. */
 
 export interface LibraryRow {
@@ -22,7 +22,7 @@ export const FOLDERS: Array<{ id: string; desc: string }> = [
   },
   {
     id: "commodity-gold",
-    desc: "The proven template — allocated-gold tokens are the largest live tokenized commodity class, with its own defunct cautionary tales.",
+    desc: "The proven template, allocated-gold tokens are the largest live tokenized commodity class, with its own defunct cautionary tales.",
   },
   {
     id: "precious-metals",
@@ -30,7 +30,7 @@ export const FOLDERS: Array<{ id: string; desc: string }> = [
   },
   {
     id: "uranium",
-    desc: "Physical U3O8 tokenization — the closest live analog to what a tokenized resource with real custody must look like.",
+    desc: "Physical U3O8 tokenization, the closest live analog to what a tokenized resource with real custody must look like.",
   },
   {
     id: "base-metals",
@@ -38,11 +38,11 @@ export const FOLDERS: Array<{ id: string; desc: string }> = [
   },
   {
     id: "battery-metals",
-    desc: "Lithium, cobalt, graphite — strategic demand, provenance pilots only, no asset-backed token.",
+    desc: "Lithium, cobalt, graphite, strategic demand, provenance pilots only, no asset-backed token.",
   },
   {
     id: "rare-earths",
-    desc: "NdPr, dysprosium, terbium. No tokenized instrument exists at any scale — the second whitespace GEOM tracks.",
+    desc: "NdPr, dysprosium, terbium. No tokenized instrument exists at any scale, the second whitespace GEOM tracks.",
   },
   {
     id: "tokenized-equity",
@@ -50,7 +50,7 @@ export const FOLDERS: Array<{ id: string; desc: string }> = [
   },
   {
     id: "context-rwa",
-    desc: "Institutional RWA rails proven for treasuries and funds — context for what resource assets still lack.",
+    desc: "Institutional RWA rails proven for treasuries and funds, context for what resource assets still lack.",
   },
   {
     id: "watchlist-oil-equity",

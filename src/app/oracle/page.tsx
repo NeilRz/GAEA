@@ -6,7 +6,7 @@ import AttestPanel from "@/components/AttestPanel";
 import OracleQuickstart from "@/components/OracleQuickstart";
 
 export const metadata: Metadata = {
-  title: "Oracle — GEOM",
+  title: "Oracle · GEOM",
   description:
     "Signed SHA-256 attestations over GEOM datasets, anchored on Solana, verifiable by anyone.",
 };
@@ -35,7 +35,7 @@ function shortSig(sig: string): string {
 // from a stranger's machine, so these are absolute, not relative.
 const PUBLIC_BASE = "https://gaea-gray.vercel.app";
 
-const VERIFY_SCRIPT = `// verify.mjs — checks a GEOM dataset from your own machine.
+const VERIFY_SCRIPT = `// verify.mjs, checks a GEOM dataset from your own machine.
 // Usage:  node verify.mjs reserves     (any id from /api/datasets, e.g. eia)
 import { createHash } from "node:crypto";
 import nacl from "tweetnacl";
@@ -60,8 +60,8 @@ const canon = (v) =>
       .join(",") + "}";
 const hash = createHash("sha256").update(canon(data), "utf8").digest("hex");
 console.log(hash === att.sha256
-  ? "OK   hash matches — the data you hold is what was attested"
-  : "FAIL hash mismatch — do not trust this data");
+  ? "OK   hash matches, the data you hold is what was attested"
+  : "FAIL hash mismatch, do not trust this data");
 
 // 3. Verify the Ed25519 signature against the oracle's public key
 const ok = nacl.sign.detached.verify(
@@ -70,11 +70,11 @@ const ok = nacl.sign.detached.verify(
   bs58.decode(att.signer)
 );
 console.log(ok
-  ? "OK   signature valid — signed by " + att.signer
-  : "FAIL invalid signature — do not trust this attestation");
+  ? "OK   signature valid, signed by " + att.signer
+  : "FAIL invalid signature, do not trust this attestation");
 `;
 
-/* Radial attestation burst — Pyth-style data halo in GEOM mineral colors.
+/* Radial attestation burst, Pyth-style data halo in GEOM mineral colors.
    Deterministic (no randomness) so server and client render identically. */
 function AttestationBurst() {
   const COLORS = ["#5e8ba6", "#8fb4c9", "#c4a469", "#b26a4e", "#cbc3b1"];
@@ -146,12 +146,12 @@ export default function OraclePage() {
         <div>
           <p className="eyebrow">MOD-04 · THE TRUST LAYER</p>
           <h1>
-            Verification is public. <em>Forever.</em>
+            Verification is public, <em>and permanent.</em>
           </h1>
           <p className="sub">
             Every dataset GEOM publishes is fingerprinted, signed by the
-            oracle key, and anchored on Solana. Anyone — a counterparty, a
-            regulator, an allocator — can prove what GEOM published and when.
+            oracle key, and anchored on Solana. Anyone, a counterparty, a
+            regulator, an allocator, can prove what GEOM published and when.
             No key, no account, no permission. A notarized data feed: nothing
             is issued, deployed, or custodied through it.
           </p>
@@ -221,32 +221,32 @@ export default function OraclePage() {
           <p className="panel-title">How it works</p>
           <div className="grid grid-3">
             <div className="step">
-              <span className="step-num">STEP 01 — FINGERPRINT</span>
+              <span className="step-num">STEP 01 · FINGERPRINT</span>
               <h4>Hash</h4>
               <p>
                 Each dataset is canonicalized (keys recursively sorted) and
-                reduced to a SHA-256 digest — a unique fingerprint. Change one
+                reduced to a SHA-256 digest, a unique fingerprint. Change one
                 digit anywhere and the fingerprint changes completely.
               </p>
             </div>
             <div className="step">
-              <span className="step-num">STEP 02 — SIGN</span>
+              <span className="step-num">STEP 02 · SIGN</span>
               <h4>Sign</h4>
               <p>
                 The oracle key signs{" "}
                 <code className="mono" style={{ fontSize: 11, color: "var(--glacial-bright)" }}>
                   GAEA-ATTEST-V2|dataset|version|hash
                 </code>{" "}
-                with Ed25519. Verification runs in your own browser — you never
+                with Ed25519. Verification runs in your own browser, you never
                 have to take this page&apos;s word for it.
               </p>
             </div>
             <div className="step">
-              <span className="step-num">STEP 03 — ANCHOR</span>
+              <span className="step-num">STEP 03 · ANCHOR</span>
               <h4>Anchor on Solana</h4>
               <p>
                 Each publication window, the manifest of all digests is written
-                to the Solana ledger in a signed Memo transaction — a public,
+                to the Solana ledger in a signed Memo transaction, a public,
                 permanent timestamp no one can edit, including GEOM.
               </p>
             </div>
@@ -292,7 +292,7 @@ export default function OraclePage() {
                   <span className="v">
                     <span className="hash">
                       {signerAddress}
-                      {dev ? "  (dev key — set ORACLE_SIGNER_KEY in production)" : ""}
+                      {dev ? "  (dev key, set ORACLE_SIGNER_KEY in production)" : ""}
                     </span>
                   </span>
                 </div>
@@ -410,7 +410,7 @@ export default function OraclePage() {
             Verify from your own machine <span className="badge good">free forever</span>
           </p>
           <p className="dim" style={{ fontSize: 13, marginTop: -6, marginBottom: 18 }}>
-            The demo above runs in this page — but the whole point is that you
+            The demo above runs in this page, but the whole point is that you
             don&apos;t need this page. Anyone with{" "}
             <a
               href="https://nodejs.org"
@@ -426,10 +426,10 @@ export default function OraclePage() {
 
           <div style={{ display: "grid", gap: 18 }}>
             <div>
-              <span className="step-num">STEP 01 — LOOK AROUND</span>
+              <span className="step-num">STEP 01 · LOOK AROUND</span>
               <p className="dim" style={{ fontSize: 13, margin: "6px 0 8px" }}>
                 Open a terminal. List the published datasets, then fetch one
-                with its signed attestation — plain HTTPS, readable JSON:
+                with its signed attestation, plain HTTPS, readable JSON:
               </p>
               <div className="codeblock">
                 <span className="k">curl</span> {PUBLIC_BASE}/api/datasets{"            "}<span className="v"># all dataset ids + digests</span>{"\n"}
@@ -439,7 +439,7 @@ export default function OraclePage() {
             </div>
 
             <div>
-              <span className="step-num">STEP 02 — SET UP (ONCE)</span>
+              <span className="step-num">STEP 02 · SET UP (ONCE)</span>
               <p className="dim" style={{ fontSize: 13, margin: "6px 0 8px" }}>
                 In an empty folder, install the two open-source crypto
                 libraries the verifier uses (the same ones this page uses):
@@ -450,13 +450,13 @@ export default function OraclePage() {
             </div>
 
             <div>
-              <span className="step-num">STEP 03 — VERIFY</span>
+              <span className="step-num">STEP 03 · VERIFY</span>
               <p className="dim" style={{ fontSize: 13, margin: "6px 0 8px" }}>
                 Save this as <code className="mono" style={{ fontSize: 12 }}>verify.mjs</code>{" "}
                 in the same folder and run{" "}
                 <code className="mono" style={{ fontSize: 12 }}>node verify.mjs reserves</code>.
                 It downloads the data, recomputes the fingerprint, and checks
-                the signature — entirely on your machine:
+                the signature, entirely on your machine:
               </p>
               <div className="codeblock">{VERIFY_SCRIPT}</div>
             </div>
@@ -466,7 +466,7 @@ export default function OraclePage() {
             Two <span className="mono" style={{ fontSize: 12 }}>OK</span> lines
             prove the data you downloaded is byte-for-byte what the oracle key
             signed. To also prove <em>when</em> it was published, compare the
-            manifest hash in the Solana memo transaction above — three checks,
+            manifest hash in the Solana memo transaction above, three checks,
             zero trust in this server.
           </p>
         </section>
@@ -482,8 +482,8 @@ export default function OraclePage() {
               <span className="k">GET</span> /api/attest/:id          <span className="v"># signed attestation (Ed25519)</span>
             </div>
             <p className="dim" style={{ fontSize: 13, marginBottom: 0 }}>
-              Verifying what GEOM published will never sit behind a paywall —
-              public verifiability is the point. These three endpoints are all
+              Verifying what GEOM published will never sit behind a paywall.
+              Public verifiability is the point. These three endpoints are all
               a verifier needs, from curl, a browser, or any language.
             </p>
           </div>
