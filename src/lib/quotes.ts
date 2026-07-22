@@ -79,7 +79,7 @@ function str(v: unknown, fallback: string): string {
 /**
  * Fetch one symbol's OHLC series.
  *
- * @param symbol Yahoo symbol, "VEEE", "80M.L", "ONDO-USD", "CL=F"
+ * @param symbol Yahoo symbol, "80M.L", "GLND", "ONDO-USD", "CL=F"
  * @param range  "1mo" | "3mo" | "6mo" | "1y" | "5y"
  * @param interval "1d" | "1wk" | "60m" …
  */

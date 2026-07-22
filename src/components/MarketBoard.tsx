@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { CandleChart } from "@/components/CandleChart";
+import { PriceChart } from "@/components/PriceChart";
 import type { Candle, QuoteMeta } from "@/lib/quotes";
 import {
   BOARD,
@@ -177,7 +177,7 @@ export function MarketBoard() {
               transition: "opacity 160ms var(--ease)",
             }}
           >
-            <CandleChart
+            <PriceChart
               candles={series.candles}
               currency={series.meta.currency}
             />

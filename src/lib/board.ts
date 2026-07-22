@@ -29,12 +29,6 @@ export const BOARD: BoardGroup[] = [
       "Listed vehicles behind the Greenland licence positions we track. Prices are the market's, not ours.",
     instruments: [
       {
-        symbol: "VEEE",
-        label: "VEEE",
-        venue: "Nasdaq CM",
-        note: "Twin Vee PowerCats, combining with USFM Corporation; Disko-Nuussuaq Ni-Cu-Co-PGE, NYSE American listing expected on close.",
-      },
-      {
         symbol: "80M.L",
         label: "80M",
         venue: "LSE AIM",
@@ -115,7 +109,7 @@ export function findInstrument(symbol: string): Instrument | undefined {
 }
 
 /** Default selection when the terminal opens, our own partner cluster. */
-export const DEFAULT_SYMBOL = "VEEE";
+export const DEFAULT_SYMBOL = "80M.L";
 
 export interface RangeOption {
   id: string;
