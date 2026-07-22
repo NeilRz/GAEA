@@ -30,6 +30,8 @@
   .brandmark{position:fixed;top:calc(19px + env(safe-area-inset-top,0px));left:clamp(20px,5vw,64px);z-index:9;
     font-family:var(--disp);font-weight:900;font-variation-settings:"wght" 900,"wdth" 125;
     font-size:clamp(17px,4.6vw,20px);letter-spacing:.02em;color:#fff;mix-blend-mode:difference}
+  .geom-site .brandmark{display:flex;flex-direction:column;align-items:flex-start;gap:4px;line-height:1}
+  .geom-site .brandmark-sub{font-family:var(--mono);font-weight:400;font-variation-settings:normal;font-size:clamp(7px,0.68vw,8.5px);letter-spacing:.12em;text-transform:uppercase;white-space:nowrap}
 .geom-site .gs-nav{position:fixed;top:calc(16px + env(safe-area-inset-top,0px));left:50%;transform:translateX(-50%);z-index:9;display:flex;align-items:center;gap:4px;
     padding:6px 6px 6px 18px;border-radius:999px;
     background:rgba(9,16,21,.82);backdrop-filter:blur(18px) saturate(1.2);-webkit-backdrop-filter:blur(18px) saturate(1.2);

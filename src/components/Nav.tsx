@@ -5,10 +5,10 @@ import { usePathname } from "next/navigation";
 
 const LINKS = [
   { href: "/overview", label: "Overview" },
+  { href: "/oracle", label: "Oracle" },
   { href: "/map", label: "Map" },
   { href: "/tracker", label: "Tracker" },
   { href: "/terminal", label: "Terminal" },
-  { href: "/oracle", label: "Oracle" },
 ];
 
 // The marketing site (landing + corporate pages) supplies its own chrome.
