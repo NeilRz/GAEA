@@ -4,6 +4,8 @@ import bs58 from "bs58";
 import anchors from "@/data/anchors.json";
 import AttestPanel from "@/components/AttestPanel";
 import OracleQuickstart from "@/components/OracleQuickstart";
+import DatasetCatalog from "@/components/oracle/DatasetCatalog";
+import { catalogRows } from "@/lib/oracle-catalog";
 
 export const metadata: Metadata = {
   title: "Oracle · GEOM",
@@ -142,7 +144,7 @@ export default function OraclePage() {
 
   return (
     <main className="main">
-      <section className="oracle-hero">
+      <section className="oracle-hero slim">
         <div>
           <p className="eyebrow">MOD-04 · THE TRUST LAYER</p>
           <h1>
@@ -216,6 +218,8 @@ export default function OraclePage() {
             </span>
           </div>
         </section>
+
+        <DatasetCatalog rows={catalogRows()} />
 
         <section className="panel">
           <p className="panel-title">How it works</p>
@@ -359,48 +363,6 @@ export default function OraclePage() {
               )}
             </>
           )}
-        </section>
-
-        <section>
-          <p className="panel-title">Current dataset digests</p>
-          <div className="table-wrap">
-            <table className="data">
-              <thead>
-                <tr>
-                  <th>Dataset</th>
-                  <th>Version</th>
-                  <th>SHA-256 (canonical JSON)</th>
-                  <th>Raw</th>
-                </tr>
-              </thead>
-              <tbody>
-                {hashes.map((h) => (
-                  <tr key={h.id}>
-                    <td>
-                      <span className="mono" style={{ color: "var(--ink)" }}>{h.id}</span>
-                      <br />
-                      <span className="dim" style={{ fontSize: 12 }}>{h.title}</span>
-                    </td>
-                    <td className="mono dim">v{h.version}</td>
-                    <td className="mono dim" style={{ fontSize: 11, wordBreak: "break-all" }}>
-                      {h.sha256}
-                    </td>
-                    <td>
-                      <a
-                        className="mono"
-                        style={{ color: "var(--glacial-bright)", fontSize: 12 }}
-                        href={`/api/datasets/${h.id}`}
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        /api/datasets/{h.id}
-                      </a>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
         </section>
 
         <OracleQuickstart />
