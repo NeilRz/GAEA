@@ -30,11 +30,11 @@ export type ModuleKey = "overview" | "map" | "terminal" | "oracle";
 /* The oracle explorer is the app's landing surface, Pyth-style. */
 const DEFAULT_VIEW: ModuleKey = "oracle";
 
-const MODULES: Array<{ key: ModuleKey; code: string; label: string; desc: string }> = [
-  { key: "oracle", code: "01", label: "Explore", desc: "attested datasets & tokenization registry" },
-  { key: "map", code: "02", label: "Map", desc: "the physical layer, mapped" },
-  { key: "terminal", code: "03", label: "Terminal", desc: "market structure, read-only" },
-  { key: "overview", code: "04", label: "Status", desc: "attestation proof & developer access" },
+const MODULES: Array<{ key: ModuleKey; label: string; desc: string }> = [
+  { key: "oracle", label: "Explore", desc: "attested datasets & tokenization registry" },
+  { key: "map", label: "Map", desc: "the physical layer, mapped" },
+  { key: "terminal", label: "Terminal", desc: "market structure, read-only" },
+  { key: "overview", label: "Status", desc: "attestation proof & developer access" },
 ];
 
 export interface AnchorRecord {
@@ -193,8 +193,7 @@ export default function GeomApp({ data }: { data: AppData }) {
                 onClick={() => setView(m.key)}
                 aria-current={view === m.key ? "page" : undefined}
               >
-                <span className="gapp-navcode">{m.code}</span>
-                <span>{m.label}</span>
+                {m.label}
               </button>
             ))}
           </nav>
@@ -210,7 +209,6 @@ export default function GeomApp({ data }: { data: AppData }) {
 
         <div className="gapp-main">
           <div className="gapp-top">
-            <span className="t-code">MOD-{activeModule.code}</span>
             <span className="t-title">{activeModule.label}</span>
             <span className="t-desc">{activeModule.desc}</span>
             <span className="t-right">

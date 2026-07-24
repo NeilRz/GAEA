@@ -18,7 +18,6 @@ function shortSig(sig: string): string {
 
 const MODULE_ROWS: Array<{
   key: ModuleKey;
-  code: string;
   title: string;
   desc: string;
   status: "live" | "warn";
@@ -26,7 +25,6 @@ const MODULE_ROWS: Array<{
 }> = [
   {
     key: "oracle",
-    code: "01",
     title: "Explore",
     desc: "Signed datasets and the tokenization registry, one catalog, filterable",
     status: "live",
@@ -34,7 +32,6 @@ const MODULE_ROWS: Array<{
   },
   {
     key: "map",
-    code: "02",
     title: "Map",
     desc: "3D globe: reserves, fields, mines, rare earths, nuclear, 34,936 plants",
     status: "live",
@@ -42,7 +39,6 @@ const MODULE_ROWS: Array<{
   },
   {
     key: "terminal",
-    code: "03",
     title: "Terminal",
     desc: "Live quotes and market structure, read-only, no price calls",
     status: "warn",
@@ -112,7 +108,6 @@ export default function OverviewModule({ data }: { data: AppData }) {
         <div className="mod-rows">
           {MODULE_ROWS.map((m) => (
             <button key={m.key} className="mod-row" onClick={() => nav.open(m.key)}>
-              <span className="mono mod-code">{m.code}</span>
               <span className="mod-title">{m.title}</span>
               <span className="mod-desc">{m.desc}</span>
               <span className={`badge ${m.status === "live" ? "good" : "warn"}`}>
