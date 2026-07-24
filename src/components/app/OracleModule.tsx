@@ -1,22 +1,19 @@
 "use client";
 
+import tokenized from "@/data/tokenized.json";
 import type { DatasetDetail } from "@/lib/oracle-catalog";
 import type { AppData, AnchorRecord, OracleSelection } from "./GeomApp";
-import DatasetCatalog from "@/components/oracle/DatasetCatalog";
+import ExplorerCatalog from "@/components/oracle/ExplorerCatalog";
 import SeriesChart from "@/components/oracle/SeriesChart";
 import VerifyCard from "@/components/oracle/VerifyCard";
 import CodeSnippets from "@/components/oracle/CodeSnippets";
 import CopyChip from "@/components/oracle/CopyChip";
-import OracleQuickstart from "@/components/OracleQuickstart";
+import { TokenizationGapChart } from "@/components/charts";
 
 function explorerUrl(a: AnchorRecord): string {
   return `https://explorer.solana.com/tx/${a.signature}${
     a.cluster === "mainnet-beta" ? "" : `?cluster=${a.cluster}`
   }`;
-}
-
-function shortSig(sig: string): string {
-  return `${sig.slice(0, 8)}…${sig.slice(-8)}`;
 }
 
 /* Friendly labels for the compact keys the map's plant popups carry. */
@@ -45,7 +42,7 @@ function RecordPanel({
   return (
     <div className="panel record-panel">
       <p className="panel-title">
-        Linked from the map <span className="badge info">record</span>
+        Selected record <span className="badge info">record</span>
       </p>
       <p className="record-title">{title}</p>
       <div className="kv-list" style={{ marginBottom: 12 }}>
@@ -70,6 +67,41 @@ function RecordPanel({
           ← Show on map
         </button>
       )}
+    </div>
+  );
+}
+
+/* The tracker's headline analysis lives on the tokenized dataset now. */
+function TokenizationGapPanel() {
+  const liveCount = tokenized.assets.filter((a) => a.status === "live").length;
+  const gapCount = tokenized.assets.filter((a) => a.status === "gap").length;
+  return (
+    <div className="panel">
+      <p className="panel-title">
+        The tokenization gap <span className="badge info">registry analysis</span>
+      </p>
+      <div className="stat-strip" style={{ marginBottom: 14 }}>
+        <div className="stat-tile">
+          <span className="stat-value">{tokenized.assets.length + tokenized.watchlist.length}</span>
+          <span className="stat-label">Registry entries</span>
+        </div>
+        <div className="stat-tile">
+          <span className="stat-value">{liveCount}</span>
+          <span className="stat-label">Live products</span>
+          <span className="stat-note">none of them crude or REE</span>
+        </div>
+        <div className="stat-tile">
+          <span className="stat-value">{gapCount}</span>
+          <span className="stat-label">Open gaps</span>
+          <span className="stat-note">verified whitespaces</span>
+        </div>
+        <div className="stat-tile">
+          <span className="stat-value">$0</span>
+          <span className="stat-label">Tokenized crude + REE</span>
+          <span className="stat-note">the market GEOM is built for</span>
+        </div>
+      </div>
+      <TokenizationGapChart />
     </div>
   );
 }
@@ -160,6 +192,8 @@ function DatasetDetailView({
               </p>
             </div>
           )}
+
+          {detail.id === "tokenized" && <TokenizationGapPanel />}
 
           <VerifyCard id={detail.id} />
           <CodeSnippets id={detail.id} />
@@ -333,16 +367,16 @@ export default function OracleModule({
   data,
   selection,
   onSelect,
+  onSelectRecord,
   onShowMap,
 }: {
   data: AppData;
   selection: OracleSelection;
   onSelect: (dataset: string | null) => void;
+  onSelectRecord: (dataset: string, record: Record<string, unknown>) => void;
   onShowMap: (lngLat: [number, number], props?: Record<string, unknown>) => void;
 }) {
   const detail = selection.dataset ? data.details[selection.dataset] : null;
-  const latestAnchor = data.anchors[0];
-  const anchorIsCurrent = latestAnchor?.manifestSha256 === data.manifestHash;
 
   if (detail) {
     return (
@@ -359,155 +393,10 @@ export default function OracleModule({
   }
 
   return (
-    <main className="main">
-      <p className="mod-intro">
-        Every dataset GEOM publishes is fingerprinted, signed by the oracle
-        key, and anchored on Solana. A notarized data feed: nothing is issued,
-        deployed, or custodied through it.
-      </p>
-
-      <div style={{ display: "grid", gap: 20 }}>
-        <DatasetCatalog rows={data.catalog} onOpen={(id) => onSelect(id)} />
-
-        <section className="panel">
-          <p className="panel-title">
-            On-chain proof
-            {latestAnchor &&
-              (anchorIsCurrent ? (
-                <span className="badge good">current</span>
-              ) : (
-                <span className="badge warn">datasets changed since anchor</span>
-              ))}
-          </p>
-          {!latestAnchor ? (
-            <p className="dim" style={{ fontSize: 13, margin: 0 }}>
-              No anchors published yet.
-            </p>
-          ) : (
-            <>
-              <div className="kv-list" style={{ marginBottom: 16 }}>
-                <div className="row">
-                  <span className="k">Network</span>
-                  <span className="v mono" style={{ fontSize: 12 }}>
-                    Solana {latestAnchor.cluster} · slot{" "}
-                    {latestAnchor.slot?.toLocaleString("en-US") ?? "—"}
-                  </span>
-                </div>
-                <div className="row">
-                  <span className="k">Memo</span>
-                  <span className="v">
-                    <span className="hash">{latestAnchor.memo}</span>
-                  </span>
-                </div>
-                <div className="row">
-                  <span className="k">Signer</span>
-                  <span className="v">
-                    <span className="hash">
-                      {data.signer}
-                      {data.signerDev
-                        ? "  (dev key, set ORACLE_SIGNER_KEY in production)"
-                        : ""}
-                    </span>
-                  </span>
-                </div>
-              </div>
-              <a
-                className="btn primary"
-                href={explorerUrl(latestAnchor)}
-                target="_blank"
-                rel="noreferrer"
-              >
-                View the transaction on Solana Explorer →
-              </a>
-              {data.anchors.length > 1 && (
-                <div className="table-wrap" style={{ marginTop: 18 }}>
-                  <table className="data">
-                    <thead>
-                      <tr>
-                        <th>Anchored</th>
-                        <th>Cluster</th>
-                        <th>Manifest SHA-256</th>
-                        <th>Status</th>
-                        <th>Transaction</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {data.anchors.map((a) => (
-                        <tr key={a.signature}>
-                          <td className="mono dim" style={{ fontSize: 12 }}>
-                            {a.anchoredAt}
-                          </td>
-                          <td className="mono dim">{a.cluster}</td>
-                          <td className="mono dim" style={{ fontSize: 11, wordBreak: "break-all" }}>
-                            {a.manifestSha256}
-                          </td>
-                          <td>
-                            {a.manifestSha256 === data.manifestHash ? (
-                              <span className="badge good">current</span>
-                            ) : (
-                              <span className="badge">superseded</span>
-                            )}
-                          </td>
-                          <td>
-                            <a
-                              className="mono"
-                              style={{ color: "var(--glacial-bright)", fontSize: 12 }}
-                              href={explorerUrl(a)}
-                              target="_blank"
-                              rel="noreferrer"
-                            >
-                              {shortSig(a.signature)}
-                            </a>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              )}
-            </>
-          )}
-        </section>
-
-        <OracleQuickstart />
-
-        <section className="grid grid-2">
-          <div className="panel" style={{ display: "flex", flexDirection: "column" }}>
-            <p className="panel-title">
-              API reference <span className="badge good">public</span>
-            </p>
-            <div className="codeblock" style={{ marginBottom: 14 }}>
-              <span className="k">GET</span> /api/datasets            <span className="v"># all dataset ids + digests</span>{"\n"}
-              <span className="k">GET</span> /api/datasets/:id        <span className="v"># raw canonical dataset</span>{"\n"}
-              <span className="k">GET</span> /api/attest/:id          <span className="v"># signed attestation (Ed25519)</span>
-            </div>
-            <p className="dim" style={{ fontSize: 13, marginBottom: 0 }}>
-              Verifying what GEOM published will never sit behind a paywall.
-              Public verifiability is the point. These three endpoints are all
-              a verifier needs, from curl, a browser, or any language.
-            </p>
-          </div>
-          <div className="panel" style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-            <p className="panel-title">
-              Commercial API access <span className="badge info">request</span>
-            </p>
-            <p className="dim" style={{ fontSize: 13, margin: 0 }}>
-              High-frequency polling, bulk history, webhook delivery on new
-              attestations and anchors, and third-party co-signature feeds are
-              offered under commercial terms as they ship. Verification stays
-              public; the firehose is the product.
-            </p>
-            <div style={{ marginTop: "auto" }}>
-              <a
-                className="btn primary"
-                href="mailto:request@geom.org?subject=GEOM%20Oracle%20API%20access%20request"
-              >
-                Request API access →
-              </a>
-            </div>
-          </div>
-        </section>
-      </div>
-    </main>
+    <ExplorerCatalog
+      catalog={data.catalog}
+      onOpenDataset={(id) => onSelect(id)}
+      onOpenRecord={onSelectRecord}
+    />
   );
 }

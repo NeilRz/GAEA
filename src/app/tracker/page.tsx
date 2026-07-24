@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
 
 export default function TrackerPage() {
-  redirect("/app?m=tracker");
+  redirect("/app?d=tokenized");
 }

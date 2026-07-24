@@ -22,18 +22,19 @@ import type { CatalogRow, DatasetDetail } from "@/lib/oracle-catalog";
 
 const OverviewModule = dynamic(() => import("./OverviewModule"), { ssr: false });
 const MapModule = dynamic(() => import("./MapModule"), { ssr: false });
-const TrackerModule = dynamic(() => import("./TrackerModule"), { ssr: false });
 const TerminalModule = dynamic(() => import("./TerminalModule"), { ssr: false });
 const OracleModule = dynamic(() => import("./OracleModule"), { ssr: false });
 
-export type ModuleKey = "overview" | "map" | "tracker" | "terminal" | "oracle";
+export type ModuleKey = "overview" | "map" | "terminal" | "oracle";
+
+/* The oracle explorer is the app's landing surface, Pyth-style. */
+const DEFAULT_VIEW: ModuleKey = "oracle";
 
 const MODULES: Array<{ key: ModuleKey; code: string; label: string; desc: string }> = [
-  { key: "overview", code: "00", label: "Overview", desc: "attested datasets at a glance" },
-  { key: "map", code: "01", label: "Map", desc: "the physical layer, mapped" },
-  { key: "tracker", code: "02", label: "Tracker", desc: "tokenized resource registry" },
+  { key: "oracle", code: "01", label: "Explore", desc: "attested datasets & tokenization registry" },
+  { key: "map", code: "02", label: "Map", desc: "the physical layer, mapped" },
   { key: "terminal", code: "03", label: "Terminal", desc: "market structure, read-only" },
-  { key: "oracle", code: "04", label: "Oracle", desc: "signed, Solana-anchored data" },
+  { key: "overview", code: "04", label: "Status", desc: "attestation proof & developer access" },
 ];
 
 export interface AnchorRecord {
@@ -92,27 +93,25 @@ export function useAppNav(): AppNavApi {
   return useContext(AppNavContext);
 }
 
-function isModuleKey(v: string | null): v is ModuleKey {
-  return !!v && MODULES.some((m) => m.key === v);
+function parseModule(v: string | null): ModuleKey {
+  if (v === "tracker") return "oracle"; // tracker merged into the explorer
+  return v && MODULES.some((m) => m.key === v) ? (v as ModuleKey) : DEFAULT_VIEW;
 }
 
 export default function GeomApp({ data }: { data: AppData }) {
   const searchParams = useSearchParams();
-  const [view, setViewRaw] = useState<ModuleKey>(() => {
-    const m = searchParams.get("m");
-    return isModuleKey(m) ? m : "overview";
-  });
+  const [view, setViewRaw] = useState<ModuleKey>(() =>
+    parseModule(searchParams.get("m"))
+  );
   const [oracleSel, setOracleSel] = useState<OracleSelection>(() => ({
     dataset: searchParams.get("d"),
   }));
   const [mapFocus, setMapFocus] = useState<MapFocusRequest | null>(null);
   const [mounted, setMounted] = useState<Record<ModuleKey, boolean>>(() => {
-    const m = searchParams.get("m");
-    const initial = isModuleKey(m) ? m : "overview";
+    const initial = parseModule(searchParams.get("m"));
     return {
       overview: initial === "overview",
       map: initial === "map",
-      tracker: initial === "tracker",
       terminal: initial === "terminal",
       oracle: initial === "oracle",
     };
@@ -135,7 +134,7 @@ export default function GeomApp({ data }: { data: AppData }) {
   // Deep-linkable URL without triggering a server navigation.
   useEffect(() => {
     const params = new URLSearchParams();
-    if (view !== "overview") params.set("m", view);
+    if (view !== DEFAULT_VIEW) params.set("m", view);
     if (view === "oracle" && oracleSel.dataset) params.set("d", oracleSel.dataset);
     const qs = params.toString();
     window.history.replaceState(null, "", qs ? `/app?${qs}` : "/app");
@@ -238,11 +237,6 @@ export default function GeomApp({ data }: { data: AppData }) {
               <MapModule focusRequest={mapFocus} />
             </div>
           )}
-          {mounted.tracker && (
-            <div className="gapp-view" style={{ display: view === "tracker" ? undefined : "none" }}>
-              <TrackerModule signer={data.signer} />
-            </div>
-          )}
           {mounted.terminal && (
             <div className="gapp-view" style={{ display: view === "terminal" ? undefined : "none" }}>
               <TerminalModule />
@@ -257,6 +251,9 @@ export default function GeomApp({ data }: { data: AppData }) {
                   setOracleSel((prev) =>
                     prev.dataset === dataset ? { ...prev, dataset } : { dataset }
                   )
+                }
+                onSelectRecord={(dataset, record) =>
+                  setOracleSel({ dataset, record })
                 }
                 onShowMap={showOnMap}
               />
