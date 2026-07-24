@@ -1,16 +1,22 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import tokenized from "@/data/tokenized.json";
+import fields from "@/data/fields.json";
+import sites from "@/data/sites.json";
+import reserves from "@/data/reserves.json";
+import pipelines from "@/data/pipelines.json";
 import type { CatalogRow } from "@/lib/oracle-catalog";
 import CatIcon from "./CatIcon";
 
 /* The Pyth-explore-shaped surface: a filter rail (quick search, collapsible
    checkbox groups with live counts) beside one dense table where signed
    datasets, tokenized assets, and watchlist names are all rows of the same
-   catalog. Filter changes flash a short skeleton shimmer, rows fade in. */
+   catalog. The quick search goes deeper: it also hits every individual
+   asset record inside the datasets (fields, mines, reserve countries,
+   pipelines, and the 34,936 power plants, lazy-loaded on first search). */
 
-type Kind = "dataset" | "asset" | "watch";
+type Kind = "dataset" | "asset" | "watch" | "record";
 
 interface ExploreRow {
   key: string;
@@ -27,12 +33,14 @@ interface ExploreRow {
   spark: number[] | null;
   datasetId: string;
   record: Record<string, unknown> | null;
+  lngLat?: [number, number];
 }
 
 const KIND_LABEL: Record<Kind, string> = {
   dataset: "Dataset",
   asset: "Tokenized asset",
   watch: "Watchlist",
+  record: "Asset record",
 };
 
 const ASSET_STATUS: Record<string, { cls: string; label: string }> = {
@@ -72,6 +80,16 @@ const FOLDER_STYLE: Record<string, { color: string; icon: string }> = {
   "watchlist-mining-equity": { color: "#7e97a6", icon: "eye" },
 };
 
+const SITE_GROUP_STYLE: Record<string, { color: string; icon: string }> = {
+  base: { color: "#b26a4e", icon: "hammer" },
+  precious: { color: "#cbc3b1", icon: "diamond" },
+  battery: { color: "#2ba57e", icon: "battery" },
+  ree: { color: "#8a75e8", icon: "crystal" },
+  nuclear: { color: "#8fb4c9", icon: "atom" },
+};
+
+const ATTESTED = { cls: "good", label: "Attested" };
+
 function pretty(id: string): string {
   return id.replace(/-/g, " ");
 }
@@ -86,7 +104,7 @@ function buildRows(catalog: CatalogRow[]): ExploreRow[] {
     categoryKey: `ds:${c.category}`,
     color: c.color,
     icon: DATASET_ICON[c.id] ?? "coin",
-    status: { cls: "good", label: "Attested" },
+    status: ATTESTED,
     details: c.records,
     meta: `v${c.version}`,
     spark: c.spark,
@@ -148,6 +166,90 @@ function buildRows(catalog: CatalogRow[]): ExploreRow[] {
 
   return [...datasets, ...assets, ...watch];
 }
+
+/* Every individual asset inside the small attested datasets, searchable.
+   Plants (34,936 records, 4.3 MB) load separately on first search. */
+function buildRecordIndex(): ExploreRow[] {
+  const rec = (
+    key: string,
+    datasetId: string,
+    style: { color: string; icon: string },
+    symbol: string,
+    title: string,
+    details: string,
+    record: Record<string, unknown>,
+    lngLat?: [number, number]
+  ): ExploreRow => ({
+    key,
+    kind: "record",
+    symbol,
+    title,
+    category: pretty(datasetId),
+    categoryKey: `rec:${datasetId}`,
+    color: style.color,
+    icon: style.icon,
+    status: ATTESTED,
+    details,
+    meta: datasetId,
+    spark: null,
+    datasetId,
+    record,
+    lngLat,
+  });
+
+  return [
+    ...fields.fields.map((f) =>
+      rec(
+        `rec-f-${f.name}`,
+        "fields",
+        { color: "#e8a33d", icon: "rig" },
+        f.name,
+        `${f.country} · ${f.type}`,
+        f.figure,
+        { name: f.name, country: f.country, commodity: f.type, figure: f.figure, status: f.status, note: f.note },
+        [f.lng, f.lat]
+      )
+    ),
+    ...sites.sites.map((s) =>
+      rec(
+        `rec-s-${s.name}`,
+        "sites",
+        SITE_GROUP_STYLE[s.group] ?? { color: "#b26a4e", icon: "hammer" },
+        s.name,
+        `${s.country} · ${s.commodity}`,
+        s.figure,
+        { name: s.name, country: s.country, commodity: s.commodity, figure: s.figure, operator: s.operator, status: s.status, note: s.note },
+        [s.lng, s.lat]
+      )
+    ),
+    ...reserves.countries.map((c) =>
+      rec(
+        `rec-r-${c.iso}`,
+        "reserves",
+        { color: "#5e8ba6", icon: "droplet" },
+        c.name,
+        "proven crude reserves",
+        `${c.reserves} billion bbl`,
+        { name: c.name, reserves: `${c.reserves} billion bbl`, status: c.status, note: c.note },
+        [c.lng, c.lat]
+      )
+    ),
+    ...pipelines.pipelines.map((p) =>
+      rec(
+        `rec-p-${p.name}`,
+        "pipelines",
+        { color: "#c67c1b", icon: "pipe" },
+        p.name,
+        `${p.kind} pipeline`,
+        p.figure,
+        { name: p.name, kind: p.kind, figure: p.figure, status: p.status, note: p.note },
+        (p.coords as [number, number][])[0]
+      )
+    ),
+  ];
+}
+
+const RECORD_HIT_CAP = 40;
 
 function Sparkline({ values }: { values: number[] }) {
   const W = 88;
@@ -231,14 +333,23 @@ export default function ExplorerCatalog({
 }: {
   catalog: CatalogRow[];
   onOpenDataset: (id: string) => void;
-  onOpenRecord: (datasetId: string, record: Record<string, unknown>) => void;
+  onOpenRecord: (
+    datasetId: string,
+    record: Record<string, unknown>,
+    lngLat?: [number, number]
+  ) => void;
 }) {
   const rows = useMemo(() => buildRows(catalog), [catalog]);
+  const staticRecords = useMemo(() => buildRecordIndex(), []);
+  const [plantRecords, setPlantRecords] = useState<ExploreRow[] | null>(null);
+  const [plantsLoading, setPlantsLoading] = useState(false);
   const [query, setQuery] = useState("");
   const [kinds, setKinds] = useState<Set<string>>(new Set());
   const [cats, setCats] = useState<Set<string>>(new Set());
   const [statuses, setStatuses] = useState<Set<string>>(new Set());
   const [sort, setSort] = useState<{ col: SortCol; dir: 1 | -1 } | null>(null);
+
+  const q = query.trim().toLowerCase();
 
   /* Short skeleton shimmer on checkbox-filter changes (not while typing),
      the Pyth-style "results refreshing" beat. */
@@ -254,6 +365,44 @@ export default function ExplorerCatalog({
     return () => clearTimeout(t);
   }, [pending, kinds, cats, statuses]);
 
+  /* The plants index rides in on the first real search, from the same
+     signed bytes the oracle attests (/data/plants.json is the CDN copy). */
+  const plantsFetchStarted = useRef(false);
+  const maybeLoadPlants = (value: string) => {
+    if (value.trim().length < 2 || plantsFetchStarted.current) return;
+    plantsFetchStarted.current = true;
+    setPlantsLoading(true);
+    fetch("/data/plants.json")
+      .then((r) => r.json())
+      .then(
+        (ds: {
+          plants: Array<{ name: string; country: string; fuel: string; mw: number; lat: number; lng: number }>;
+        }) => {
+          setPlantRecords(
+            ds.plants.map((p) => ({
+              key: `rec-pl-${p.name}-${p.lat}-${p.lng}`,
+              kind: "record" as const,
+              symbol: p.name,
+              title: `${p.country} · ${p.fuel}`,
+              category: "plants",
+              categoryKey: "rec:plants",
+              color: "#5fd4ae",
+              icon: "bolt",
+              status: ATTESTED,
+              details: `${p.mw.toLocaleString("en-US")} MW`,
+              meta: "plants",
+              spark: null,
+              datasetId: "plants",
+              record: { name: p.name, country: p.country, fuel: p.fuel, "capacity (MW)": p.mw },
+              lngLat: [p.lng, p.lat] as [number, number],
+            }))
+          );
+        }
+      )
+      .catch(() => {})
+      .finally(() => setPlantsLoading(false));
+  };
+
   const toggle =
     (set: Set<string>, apply: (s: Set<string>) => void) => (key: string) => {
       const next = new Set(set);
@@ -264,7 +413,6 @@ export default function ExplorerCatalog({
     };
 
   const filtered = useMemo(() => {
-    const q = query.trim().toLowerCase();
     const out = rows.filter((r) => {
       if (kinds.size && !kinds.has(r.kind)) return false;
       if (cats.size && !cats.has(r.categoryKey)) return false;
@@ -281,7 +429,21 @@ export default function ExplorerCatalog({
       out.sort((a, b) => (key(a) < key(b) ? -sort.dir : key(a) > key(b) ? sort.dir : 0));
     }
     return out;
-  }, [rows, query, kinds, cats, statuses, sort]);
+  }, [rows, q, kinds, cats, statuses, sort]);
+
+  /* Deep hits: individual records inside the datasets, search-only. */
+  const recordHits = useMemo(() => {
+    if (q.length < 2) return [];
+    const all = plantRecords ? staticRecords.concat(plantRecords) : staticRecords;
+    const hits: ExploreRow[] = [];
+    for (const r of all) {
+      if (`${r.symbol} ${r.title} ${r.details}`.toLowerCase().includes(q)) {
+        hits.push(r);
+        if (hits.length >= RECORD_HIT_CAP) break;
+      }
+    }
+    return hits;
+  }, [q, staticRecords, plantRecords]);
 
   const { kindCounts, statusCounts, catOptions } = useMemo(() => {
     const kind = new Map<string, number>();
@@ -319,7 +481,7 @@ export default function ExplorerCatalog({
   };
 
   const open = (r: ExploreRow) => {
-    if (r.record) onOpenRecord(r.datasetId, r.record);
+    if (r.record) onOpenRecord(r.datasetId, r.record, r.lngLat);
     else onOpenDataset(r.datasetId);
   };
 
@@ -344,15 +506,60 @@ export default function ExplorerCatalog({
     </th>
   );
 
+  const renderRow = (r: ExploreRow) => (
+    <tr key={r.key} className="catalog-row" onClick={() => open(r)}>
+      <td>
+        <span className="cat-id">
+          <span
+            className="ex-avatar"
+            style={{ background: `${r.color}22`, color: r.color }}
+          >
+            <CatIcon icon={r.icon} />
+            {r.kind === "dataset" && (
+              <span className="ex-avatar-badge" title="Attested dataset">
+                ✓
+              </span>
+            )}
+          </span>
+          <span>
+            <span className="mono catalog-name">{r.symbol}</span>
+            <br />
+            <span className="dim" style={{ fontSize: 11.5 }}>{r.title}</span>
+          </span>
+        </span>
+      </td>
+      <td className="mono dim" style={{ fontSize: 11 }}>{KIND_LABEL[r.kind]}</td>
+      <td className="mono dim" style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.05em" }}>
+        {r.category}
+      </td>
+      <td>
+        <span className={`badge ${r.status.cls}`}>{r.status.label}</span>
+      </td>
+      <td className="dim" style={{ fontSize: 12 }}>{r.details}</td>
+      <td className="mono dim" style={{ fontSize: 11.5 }}>{r.meta}</td>
+      <td>
+        {r.spark ? (
+          <Sparkline values={r.spark} />
+        ) : (
+          <span className="dimmer mono" style={{ fontSize: 11 }}>—</span>
+        )}
+      </td>
+      <td className="mono catalog-go" aria-hidden="true">→</td>
+    </tr>
+  );
+
   return (
     <div className="ex-shell">
       <aside className="ex-rail">
         <input
           className="lib-search"
-          placeholder="Quick search…"
+          placeholder="Search datasets & assets…"
           value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          aria-label="Search the catalog"
+          onChange={(e) => {
+            setQuery(e.target.value);
+            maybeLoadPlants(e.target.value);
+          }}
+          aria-label="Search the catalog and all asset records"
         />
         <div className="ex-rail-head">
           <span>Filters</span>
@@ -389,8 +596,8 @@ export default function ExplorerCatalog({
           onToggle={toggle(statuses, setStatuses)}
         />
         <p className="ex-rail-note">
-          Datasets are signed and Solana-anchored. Registry rows ship inside
-          the <span className="mono">tokenized</span> dataset.
+          Search reaches every asset record inside the datasets: fields,
+          mines, reserve countries, pipelines, and all power plants.
         </p>
       </aside>
 
@@ -433,53 +640,26 @@ export default function ExplorerCatalog({
             </tbody>
           ) : (
             <tbody key={epoch} className="ex-rows">
-              {filtered.map((r) => (
-                <tr key={r.key} className="catalog-row" onClick={() => open(r)}>
-                  <td>
-                    <span className="cat-id">
-                      <span
-                        className="ex-avatar"
-                        style={{ background: `${r.color}22`, color: r.color }}
-                      >
-                        <CatIcon icon={r.icon} />
-                        {r.kind === "dataset" && (
-                          <span className="ex-avatar-badge" title="Attested dataset">
-                            ✓
-                          </span>
-                        )}
-                      </span>
-                      <span>
-                        <span className="mono catalog-name">{r.symbol}</span>
-                        <br />
-                        <span className="dim" style={{ fontSize: 11.5 }}>{r.title}</span>
-                      </span>
-                    </span>
+              {filtered.map(renderRow)}
+              {recordHits.length > 0 && (
+                <tr className="ex-sep">
+                  <td colSpan={8}>
+                    Asset records · from inside the attested datasets
+                    {plantsLoading ? " · indexing plants…" : ""}
                   </td>
-                  <td className="mono dim" style={{ fontSize: 11 }}>{KIND_LABEL[r.kind]}</td>
-                  <td className="mono dim" style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.05em" }}>
-                    {r.category}
-                  </td>
-                  <td>
-                    <span className={`badge ${r.status.cls}`}>{r.status.label}</span>
-                  </td>
-                  <td className="dim" style={{ fontSize: 12 }}>{r.details}</td>
-                  <td className="mono dim" style={{ fontSize: 11.5 }}>{r.meta}</td>
-                  <td>
-                    {r.spark ? (
-                      <Sparkline values={r.spark} />
-                    ) : (
-                      <span className="dimmer mono" style={{ fontSize: 11 }}>—</span>
-                    )}
-                  </td>
-                  <td className="mono catalog-go" aria-hidden="true">→</td>
                 </tr>
-              ))}
+              )}
+              {recordHits.map(renderRow)}
             </tbody>
           )}
         </table>
         <div className="ex-foot mono">
-          {filtered.length} results · {rows.length} in catalog · informational
-          only, not investment advice
+          {filtered.length} results
+          {recordHits.length > 0 &&
+            ` · ${recordHits.length}${recordHits.length >= RECORD_HIT_CAP ? "+" : ""} asset records`}
+          {plantsLoading && " · indexing plants…"}
+          {" · "}
+          {rows.length} in catalog · informational only, not investment advice
         </div>
       </div>
     </div>

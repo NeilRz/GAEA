@@ -31,7 +31,7 @@ export type ModuleKey = "overview" | "map" | "terminal" | "oracle";
 const DEFAULT_VIEW: ModuleKey = "oracle";
 
 const MODULES: Array<{ key: ModuleKey; label: string; desc: string }> = [
-  { key: "oracle", label: "Explore", desc: "attested datasets & tokenization registry" },
+  { key: "oracle", label: "Oracle", desc: "attested datasets & tokenization registry" },
   { key: "map", label: "Map", desc: "the physical layer, mapped" },
   { key: "terminal", label: "Terminal", desc: "market structure, read-only" },
   { key: "overview", label: "Status", desc: "attestation proof & developer access" },
@@ -189,7 +189,7 @@ export default function GeomApp({ data }: { data: AppData }) {
             {MODULES.map((m) => (
               <button
                 key={m.key}
-                className={`gapp-navbtn ${view === m.key ? "on" : ""}`}
+                className={`gapp-navbtn ${m.key === "oracle" ? "oracle" : ""} ${view === m.key ? "on" : ""}`}
                 onClick={() => setView(m.key)}
                 aria-current={view === m.key ? "page" : undefined}
               >
@@ -250,8 +250,8 @@ export default function GeomApp({ data }: { data: AppData }) {
                     prev.dataset === dataset ? { ...prev, dataset } : { dataset }
                   )
                 }
-                onSelectRecord={(dataset, record) =>
-                  setOracleSel({ dataset, record })
+                onSelectRecord={(dataset, record, lngLat) =>
+                  setOracleSel({ dataset, record, lngLat })
                 }
                 onShowMap={showOnMap}
               />

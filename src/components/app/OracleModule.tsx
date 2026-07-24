@@ -373,7 +373,11 @@ export default function OracleModule({
   data: AppData;
   selection: OracleSelection;
   onSelect: (dataset: string | null) => void;
-  onSelectRecord: (dataset: string, record: Record<string, unknown>) => void;
+  onSelectRecord: (
+    dataset: string,
+    record: Record<string, unknown>,
+    lngLat?: [number, number]
+  ) => void;
   onShowMap: (lngLat: [number, number], props?: Record<string, unknown>) => void;
 }) {
   const detail = selection.dataset ? data.details[selection.dataset] : null;

@@ -25,7 +25,7 @@ const MODULE_ROWS: Array<{
 }> = [
   {
     key: "oracle",
-    title: "Explore",
+    title: "Oracle",
     desc: "Signed datasets and the tokenization registry, one catalog, filterable",
     status: "live",
     label: "Live",
