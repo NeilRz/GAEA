@@ -254,3 +254,47 @@
 .geom-site .join-box .cta:hover{background:#fff}
 .geom-site .join-box .jmeta{font-family:var(--mono);font-size:12px;letter-spacing:.1em;color:var(--glacier);margin-top:22px;text-transform:uppercase}
 .geom-site .foot .fbase{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-top:34px;padding-top:22px;border-top:1px solid rgba(255,255,255,.1);font-family:var(--mono);font-size:11.5px;color:#7d8f9b;letter-spacing:.04em}
+
+/* ── 25 Jul restructure: intro band, dark proof, gap chart, even full-viewport screens ── */
+
+/* Intro: decodes the name and sets the three-market narrative between hero and proof */
+.geom-site .intro{background:var(--paper);text-align:center}
+.geom-site .intro-k{font-family:var(--mono);font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:var(--ice)}
+.geom-site .intro-line{font-family:var(--serif);font-weight:500;font-size:clamp(24px,3.6vw,40px);line-height:1.25;color:var(--night);max-width:30ch;margin:18px auto 0;text-wrap:balance}
+.geom-site .intro-line em{font-style:italic;color:var(--redbed)}
+.geom-site .intro-sub{max-width:58ch;margin:20px auto 0;font-size:clamp(15px,1.5vw,17px);line-height:1.7;color:var(--slate)}
+
+/* Proof runs dark: it holds the night slot the old thesis section had, keeping the light/dark rhythm */
+.geom-site .proof{background:var(--night)}
+.geom-site .proof .sec-head h2{color:var(--snow)}
+.geom-site .proof .sec-head h2 em{color:var(--glacier)}
+.geom-site .proof .cols{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.08)}
+.geom-site .proof .cell2{background:#10191F}
+.geom-site .proof .cell2:hover{background:#131E26}
+.geom-site .proof .cell2 h3{color:var(--snow)}
+.geom-site .proof .cell2 p{color:var(--sky)}
+
+/* Three cards now, not four */
+.geom-site .cols{grid-template-columns:repeat(3,1fr)}
+@media(max-width:1000px){.geom-site .cols{grid-template-columns:1fr}}
+.geom-site .struct-grid{grid-template-columns:repeat(3,1fr)}
+@media(max-width:1000px){.geom-site .struct-grid{grid-template-columns:1fr}}
+
+/* The tokenization gap — the RWA narrative as one chart */
+.geom-site .gap-panel{margin-top:clamp(26px,4vh,44px);max-width:880px;background:rgba(6,13,19,.84);border:1px solid rgba(255,255,255,.09);border-radius:14px;padding:clamp(22px,3.5vw,34px)}
+.geom-site .gap-head{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--glacier);padding-bottom:16px;border-bottom:1px solid rgba(255,255,255,.07)}
+.geom-site .gap-row{margin-top:20px}
+.geom-site .gap-label{font-size:14px;line-height:1.4;color:#C8D4DB;margin-bottom:8px;text-shadow:none}
+.geom-site .gap-bar-wrap{display:flex;align-items:center;gap:10px}
+.geom-site .gap-bar{height:16px;border-radius:3px;flex:none}
+.geom-site .gap-bar.b1{width:min(76%,560px);background:linear-gradient(90deg,#1B6FAE,#4E9AD0)}
+.geom-site .gap-bar.b2{width:15px;background:#C98A3C}
+.geom-site .gap-val{font-family:var(--mono);font-size:12px;letter-spacing:.04em;color:#E4EDF2}
+.geom-site .gap-zero{font-family:var(--mono);font-size:13px;letter-spacing:.06em;color:#E08A74}
+
+/* Even screens: every section owns at least one full viewport, content centred, one shared padding value */
+.geom-site .partners, .geom-site .idea, .geom-site .structure, .geom-site .join, .geom-site .proof, .geom-site .intro{
+  min-height:100svh;display:flex;align-items:center;padding:clamp(64px,10vh,120px) 0}
+.geom-site .partners .wrap, .geom-site .idea .wrap, .geom-site .structure .wrap, .geom-site .join .wrap, .geom-site .proof .wrap, .geom-site .intro .wrap{width:100%}
+.geom-site .chapter{min-height:100svh;padding:clamp(64px,10vh,120px) 0}
+.geom-site .close{min-height:100svh;display:flex;flex-direction:column;justify-content:center;padding:clamp(64px,10vh,120px) 0}
