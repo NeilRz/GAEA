@@ -291,6 +291,10 @@ export default function ExplorerCatalog({
     for (const r of rows) {
       kind.set(r.kind, (kind.get(r.kind) ?? 0) + 1);
       status.set(r.status.label, (status.get(r.status.label) ?? 0) + 1);
+      // Registry folders only: every dataset has a one-off category, which
+      // would render a filter list of nothing but (1)s. Datasets are already
+      // one checkbox in the Type group.
+      if (r.kind === "dataset") continue;
       cat.set(r.categoryKey, (cat.get(r.categoryKey) ?? 0) + 1);
       if (!catLabels.has(r.categoryKey)) catLabels.set(r.categoryKey, r.category);
     }
@@ -369,7 +373,7 @@ export default function ExplorerCatalog({
           onToggle={toggle(kinds, setKinds)}
         />
         <FilterGroup
-          title="Category"
+          title="Registry"
           options={catOptions}
           selected={cats}
           onToggle={toggle(cats, setCats)}
