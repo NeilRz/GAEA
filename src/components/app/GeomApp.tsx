@@ -28,12 +28,12 @@ const OracleModule = dynamic(() => import("./OracleModule"), { ssr: false });
 
 export type ModuleKey = "overview" | "map" | "tracker" | "terminal" | "oracle";
 
-const MODULES: Array<{ key: ModuleKey; code: string; label: string }> = [
-  { key: "overview", code: "00", label: "Overview" },
-  { key: "map", code: "01", label: "Map" },
-  { key: "tracker", code: "02", label: "Tracker" },
-  { key: "terminal", code: "03", label: "Terminal" },
-  { key: "oracle", code: "04", label: "Oracle" },
+const MODULES: Array<{ key: ModuleKey; code: string; label: string; desc: string }> = [
+  { key: "overview", code: "00", label: "Overview", desc: "attested datasets at a glance" },
+  { key: "map", code: "01", label: "Map", desc: "the physical layer, mapped" },
+  { key: "tracker", code: "02", label: "Tracker", desc: "tokenized resource registry" },
+  { key: "terminal", code: "03", label: "Terminal", desc: "market structure, read-only" },
+  { key: "oracle", code: "04", label: "Oracle", desc: "signed, Solana-anchored data" },
 ];
 
 export interface AnchorRecord {
@@ -177,6 +177,7 @@ export default function GeomApp({ data }: { data: AppData }) {
 
   const anchorIsCurrent =
     data.anchors[0]?.manifestSha256 === data.manifestHash;
+  const activeModule = MODULES.find((m) => m.key === view)!;
 
   return (
     <AppNavContext.Provider value={{ open, openDataset }}>
@@ -199,15 +200,6 @@ export default function GeomApp({ data }: { data: AppData }) {
             ))}
           </nav>
           <div className="gapp-side-foot">
-            <span className={`badge ${anchorIsCurrent ? "good" : "warn"}`}>
-              {anchorIsCurrent ? "anchor current" : "anchor stale"}
-            </span>
-            <a
-              className="gapp-side-link"
-              href="mailto:request@geom.org?subject=GEOM%20Oracle%20API%20access%20request"
-            >
-              Request API access →
-            </a>
             <Link className="gapp-side-link" href="/">
               geom.org →
             </Link>
@@ -218,9 +210,27 @@ export default function GeomApp({ data }: { data: AppData }) {
         </aside>
 
         <div className="gapp-main">
+          <div className="gapp-top">
+            <span className="t-code">MOD-{activeModule.code}</span>
+            <span className="t-title">{activeModule.label}</span>
+            <span className="t-desc">{activeModule.desc}</span>
+            <span className="t-right">
+              <span className={`badge ${anchorIsCurrent ? "good" : "warn"}`}>
+                {anchorIsCurrent ? "anchor current" : "anchor stale"}
+              </span>
+              <a
+                className="dl-chip"
+                style={{ textDecoration: "none" }}
+                href="mailto:request@geom.org?subject=GEOM%20Oracle%20API%20access%20request"
+              >
+                API ACCESS →
+              </a>
+            </span>
+          </div>
+          <div className="gapp-views">
           {mounted.overview && (
             <div className="gapp-view" style={{ display: view === "overview" ? undefined : "none" }}>
-              <OverviewModule stats={data.stats} />
+              <OverviewModule data={data} />
             </div>
           )}
           {mounted.map && (
@@ -252,6 +262,7 @@ export default function GeomApp({ data }: { data: AppData }) {
               />
             </div>
           )}
+          </div>
         </div>
       </div>
     </AppNavContext.Provider>

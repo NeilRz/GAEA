@@ -13,21 +13,19 @@ export default function TerminalModule() {
   const nav = useAppNav();
   return (
     <main className="main">
-      <p className="eyebrow">MOD-03</p>
-      <h1 className="page-title">Terminal</h1>
-      <p className="page-lede">
-        Live market structure across the instruments we track, partner
-        equities, tokenized real-world assets, the energy complex, critical
-        minerals, and the benchmarks underneath all of them. The terminal reads
-        the shape of the market. It does not call price, and nothing here is
-        advice.
-      </p>
-      <p style={{ margin: "8px 0 20px", display: "flex", gap: 10, alignItems: "center" }}>
-        <span className="badge">Live quotes · 60s refresh</span>
-        <button className="dl-chip" onClick={() => nav.openDataset("market")}>
-          STRUCTURAL SERIES ON ORACLE →
-        </button>
-      </p>
+      <div className="mod-intro-row">
+        <p className="mod-intro">
+          Live market structure across the instruments we track. The terminal
+          reads the shape of the market; it does not call price, and nothing
+          here is advice.
+        </p>
+        <span style={{ display: "flex", gap: 10, alignItems: "center", flexShrink: 0 }}>
+          <span className="badge">Live quotes · 60s refresh</span>
+          <button className="dl-chip" onClick={() => nav.openDataset("market")}>
+            SERIES ON ORACLE →
+          </button>
+        </span>
+      </div>
 
       <MarketBoard />
 

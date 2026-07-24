@@ -105,7 +105,7 @@ function DatasetDetailView({
       <header className="o-head">
         <div>
           <p className="eyebrow">{detail.category.toUpperCase()}</p>
-          <h1 className="page-title" style={{ fontSize: "clamp(26px, 3.4vw, 36px)" }}>
+          <h1 className="page-title" style={{ fontSize: 26 }}>
             {detail.title}
           </h1>
           <p className="page-lede" style={{ fontSize: 14 }}>{detail.description}</p>
@@ -360,28 +360,11 @@ export default function OracleModule({
 
   return (
     <main className="main">
-      <div className="o-head" style={{ marginBottom: 16 }}>
-        <div>
-          <p className="eyebrow">MOD-04 · THE TRUST LAYER</p>
-          <h1 className="page-title" style={{ fontSize: "clamp(26px, 3.4vw, 36px)" }}>
-            Oracle
-          </h1>
-          <p className="page-lede" style={{ fontSize: 14 }}>
-            Every dataset GEOM publishes is fingerprinted, signed by the oracle
-            key, and anchored on Solana. A notarized data feed: nothing is
-            issued, deployed, or custodied through it. Click a dataset on the
-            map, in the tracker, or below, then verify it yourself.
-          </p>
-        </div>
-        <div className="o-head-badges">
-          <span className="badge good">{data.catalog.length} datasets attested</span>
-          {anchorIsCurrent ? (
-            <span className="badge good">anchor current</span>
-          ) : (
-            <span className="badge warn">anchor stale</span>
-          )}
-        </div>
-      </div>
+      <p className="mod-intro">
+        Every dataset GEOM publishes is fingerprinted, signed by the oracle
+        key, and anchored on Solana. A notarized data feed: nothing is issued,
+        deployed, or custodied through it.
+      </p>
 
       <div style={{ display: "grid", gap: 20 }}>
         <DatasetCatalog rows={data.catalog} onOpen={(id) => onSelect(id)} />

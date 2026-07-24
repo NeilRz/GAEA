@@ -29,17 +29,24 @@ const count = (id: string, key: string): number =>
 
 const DISPLAY: Record<
   string,
-  { category: string; recordsKey: string | null; recordsNoun: string; schedule?: string }
+  {
+    category: string;
+    color: string;
+    recordsKey: string | null;
+    recordsNoun: string;
+    schedule?: string;
+  }
 > = {
-  reserves: { category: "Crude reserves", recordsKey: "countries", recordsNoun: "countries" },
-  fields: { category: "Upstream assets", recordsKey: "fields", recordsNoun: "fields" },
-  tokenized: { category: "RWA registry", recordsKey: "assets", recordsNoun: "assets" },
-  market: { category: "Market structure", recordsKey: null, recordsNoun: "sample series" },
-  sites: { category: "Minerals & nuclear", recordsKey: "sites", recordsNoun: "sites" },
-  plants: { category: "Power infrastructure", recordsKey: "plants", recordsNoun: "plants" },
-  pipelines: { category: "Midstream", recordsKey: "pipelines", recordsNoun: "pipelines" },
+  reserves: { category: "Crude reserves", color: "#5e8ba6", recordsKey: "countries", recordsNoun: "countries" },
+  fields: { category: "Upstream assets", color: "#e8a33d", recordsKey: "fields", recordsNoun: "fields" },
+  tokenized: { category: "RWA registry", color: "#cbc3b1", recordsKey: "assets", recordsNoun: "assets" },
+  market: { category: "Market structure", color: "#8fb4c9", recordsKey: null, recordsNoun: "sample series" },
+  sites: { category: "Minerals & nuclear", color: "#b26a4e", recordsKey: "sites", recordsNoun: "sites" },
+  plants: { category: "Power infrastructure", color: "#5fd4ae", recordsKey: "plants", recordsNoun: "plants" },
+  pipelines: { category: "Midstream", color: "#c67c1b", recordsKey: "pipelines", recordsNoun: "pipelines" },
   eia: {
     category: "Weekly fundamentals",
+    color: "#3e90cb",
     recordsKey: null,
     recordsNoun: "series",
     schedule: "WPSR release Wednesdays ~10:30 ET · ingested Wed 21:30 UTC (Fri catch-up)",
@@ -76,6 +83,7 @@ export interface CatalogRow {
   id: string;
   title: string;
   category: string;
+  color: string;
   records: string;
   version: string;
   updated: string;
@@ -97,6 +105,7 @@ export function catalogRows(): CatalogRow[] {
       id,
       title,
       category: DISPLAY[id]?.category ?? "Dataset",
+      color: DISPLAY[id]?.color ?? "#7e97a6",
       records: recordsLabel(id),
       version,
       updated: timeseries ? `week of ${version}` : `registry v${version}`,

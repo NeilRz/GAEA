@@ -337,14 +337,78 @@ table.data th.num { text-align: right; }
   color: var(--ink-3); text-transform: uppercase; line-height: 1.6;
 }
 
-.gapp-main { flex: 1; min-width: 0; position: relative; }
+.gapp-main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.gapp-views { flex: 1; min-height: 0; position: relative; }
 .gapp-view { position: absolute; inset: 0; overflow-y: auto; }
 .gapp-view-map { overflow: hidden; }
 
-/* Inside the shell there is no floating nav, so kill the topbar offsets. */
-.gapp .main { padding: 30px 30px 60px; }
+/* Persistent top bar: names the active module, carries global status. */
+.gapp-top {
+  flex-shrink: 0; display: flex; align-items: center; gap: 12px;
+  height: 46px; padding: 0 18px;
+  background: var(--bg-raised); border-bottom: 1px solid var(--line);
+  font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.gapp-top .t-code { color: var(--glacial); }
+.gapp-top .t-title { color: var(--ink); }
+.gapp-top .t-desc {
+  color: var(--ink-3); text-transform: none; letter-spacing: 0.04em;
+  font-size: 11.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.gapp-top .t-right { margin-left: auto; display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+
+/* Inside the shell there is no floating nav, so kill the topbar offsets,
+   and run one notch denser than the standalone pages. */
+.gapp .main { padding: 22px 26px 52px; max-width: 1240px; }
 .gapp .map-shell { height: 100%; }
 .gapp .map-panel { top: 16px; max-height: calc(100% - 32px); }
+.gapp .panel { padding: 16px 16px; border-radius: 12px; }
+.gapp table.data th { padding: 8px 12px; }
+.gapp table.data td { padding: 8px 12px; font-size: 12.5px; }
+.gapp .stat-value { font-size: 26px; }
+.gapp .stat-label { margin-top: 4px; }
+
+.stat-strip {
+  display: grid; gap: 10px;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+}
+
+.sec-label {
+  font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.2em;
+  text-transform: uppercase; color: var(--glacial); margin: 0 0 10px;
+  display: flex; align-items: center; gap: 10px;
+}
+.sec-label::before { content: ""; width: 11px; height: 1px; background: var(--amber); }
+
+.mod-intro {
+  color: var(--ink-2); font-size: 13.5px; max-width: 74ch; margin: 0 0 18px;
+}
+.mod-intro-row {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  gap: 12px 24px; flex-wrap: wrap;
+}
+.mod-intro-row .mod-intro { margin-bottom: 14px; }
+
+.mod-rows { display: flex; flex-direction: column; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+.mod-row {
+  display: flex; align-items: center; gap: 14px; width: 100%;
+  padding: 11px 14px; cursor: pointer; text-align: left;
+  background: var(--panel); border: 0; border-bottom: 1px solid var(--line);
+  color: var(--ink); font: inherit;
+  transition: background 0.15s var(--ease);
+}
+.mod-row:last-child { border-bottom: 0; }
+.mod-row:hover { background: var(--panel-2); }
+.mod-code { font-size: 10px; color: var(--glacial); letter-spacing: 0.1em; }
+.mod-title { font-family: var(--font-mono); font-size: 13px; font-weight: 700; width: 76px; flex-shrink: 0; }
+.mod-desc { flex: 1; min-width: 0; font-size: 12.5px; color: var(--ink-2); }
+
+.o-toolbar {
+  display: flex; align-items: center; gap: 14px; margin-bottom: 10px;
+}
+.cat-id { display: flex; align-items: center; gap: 10px; }
+.cat-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
 
 @media (max-width: 860px) {
   .gapp { flex-direction: column; }
