@@ -1,7 +1,5 @@
 "use client";
 
-import Link from "next/link";
-import { useRouter } from "next/navigation";
 import type { CatalogRow } from "@/lib/oracle-catalog";
 
 /* Inline sparkline, one polyline scaled into a fixed box. Flat data still
@@ -40,8 +38,13 @@ function Sparkline({ values }: { values: number[] }) {
   );
 }
 
-export default function DatasetCatalog({ rows }: { rows: CatalogRow[] }) {
-  const router = useRouter();
+export default function DatasetCatalog({
+  rows,
+  onOpen,
+}: {
+  rows: CatalogRow[];
+  onOpen: (id: string) => void;
+}) {
   return (
     <section>
       <p className="panel-title">
@@ -65,16 +68,10 @@ export default function DatasetCatalog({ rows }: { rows: CatalogRow[] }) {
               <tr
                 key={r.id}
                 className="catalog-row"
-                onClick={() => router.push(`/oracle/${r.id}`)}
+                onClick={() => onOpen(r.id)}
               >
                 <td>
-                  <Link
-                    className="mono catalog-name"
-                    href={`/oracle/${r.id}`}
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    {r.id}
-                  </Link>
+                  <span className="mono catalog-name">{r.id}</span>
                   <br />
                   <span className="dim" style={{ fontSize: 12 }}>{r.title}</span>
                 </td>

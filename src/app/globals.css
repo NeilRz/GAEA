@@ -287,6 +287,100 @@ table.data th.num { text-align: right; }
 .oracle-hero .sub { color: var(--ink-2); max-width: 52ch; font-size: 16px; margin: 0 0 28px; }
 .oracle-hero .burst { width: 100%; height: auto; display: block; }
 
+/* ── the unified GEOM app shell ── */
+
+.gapp {
+  display: flex; height: 100dvh; background: var(--bg); overflow: hidden;
+}
+.gapp-loading { align-items: center; justify-content: center; }
+
+.gapp-side {
+  width: 208px; flex-shrink: 0;
+  display: flex; flex-direction: column;
+  background: var(--bg-raised); border-right: 1px solid var(--line);
+  padding: 18px 14px 16px;
+}
+.gapp-brand { display: block; padding: 2px 8px 16px; }
+.gapp-brand .brand-mark {
+  font-family: var(--font-display); font-weight: 900;
+  font-variation-settings: "wght" 900, "wdth" 125;
+  font-size: 19px; letter-spacing: 0.02em; color: #fff;
+}
+.gapp-nav { display: flex; flex-direction: column; gap: 2px; }
+.gapp-navbtn {
+  display: flex; align-items: center; gap: 10px;
+  font-family: var(--font-mono); font-size: 12.5px; letter-spacing: 0.04em;
+  color: var(--ink-2); background: transparent; border: 0; cursor: pointer;
+  padding: 9px 10px; border-radius: 8px; text-align: left;
+  border-left: 2px solid transparent;
+  transition: background 0.15s var(--ease), color 0.15s var(--ease);
+}
+.gapp-navbtn:hover { background: var(--panel-2); color: var(--ink); }
+.gapp-navbtn.on {
+  background: var(--panel-2); color: var(--ink);
+  border-left-color: var(--glacial-bright);
+}
+.gapp-navcode { font-size: 10px; color: var(--ink-3); letter-spacing: 0.1em; }
+.gapp-navbtn.on .gapp-navcode { color: var(--glacial-bright); }
+
+.gapp-side-foot {
+  margin-top: auto; display: flex; flex-direction: column; gap: 10px;
+  padding: 14px 8px 0; border-top: 1px solid var(--line);
+}
+.gapp-side-link {
+  font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.06em;
+  color: var(--glacial-bright);
+}
+.gapp-side-link:hover { color: var(--ink); }
+.gapp-side-note {
+  font-family: var(--font-mono); font-size: 9.5px; letter-spacing: 0.05em;
+  color: var(--ink-3); text-transform: uppercase; line-height: 1.6;
+}
+
+.gapp-main { flex: 1; min-width: 0; position: relative; }
+.gapp-view { position: absolute; inset: 0; overflow-y: auto; }
+.gapp-view-map { overflow: hidden; }
+
+/* Inside the shell there is no floating nav, so kill the topbar offsets. */
+.gapp .main { padding: 30px 30px 60px; }
+.gapp .map-shell { height: 100%; }
+.gapp .map-panel { top: 16px; max-height: calc(100% - 32px); }
+
+@media (max-width: 860px) {
+  .gapp { flex-direction: column; }
+  .gapp-side {
+    width: 100%; flex-direction: row; align-items: center; gap: 6px;
+    padding: 10px 12px; border-right: 0; border-bottom: 1px solid var(--line);
+    overflow-x: auto;
+  }
+  .gapp-brand { padding: 0 10px 0 0; }
+  .gapp-nav { flex-direction: row; }
+  .gapp-navbtn { border-left: 0; padding: 7px 10px; white-space: nowrap; }
+  .gapp-side-foot { display: none; }
+  .gapp .main { padding: 20px 16px 48px; }
+}
+
+/* map popup → oracle link */
+.popup-link {
+  margin-top: 9px; padding: 4px 12px; border-radius: 999px; cursor: pointer;
+  font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.1em;
+  color: var(--glacial-bright); background: transparent;
+  border: 1px solid rgba(143, 180, 201, 0.45);
+  transition: background 0.15s, color 0.15s;
+}
+.popup-link:hover { background: var(--glacial); color: #fff; }
+
+/* record panel on the oracle (map → oracle link target) */
+.record-panel { border-color: rgba(143, 180, 201, 0.4); }
+.record-title {
+  font-family: var(--font-serif); font-size: 24px; margin: 0 0 12px;
+}
+.crumb-link {
+  font: inherit; letter-spacing: inherit; text-transform: inherit;
+  color: var(--glacial-bright); background: none; border: 0; cursor: pointer; padding: 0;
+}
+.crumb-link:hover { color: var(--ink); }
+
 /* ── oracle explorer: catalog + detail pages ── */
 
 .oracle-hero.slim { padding: 40px 36px; }
