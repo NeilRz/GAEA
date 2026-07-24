@@ -107,7 +107,7 @@ console.log(ok ? "signature valid" : "DO NOT TRUST");
 
 /* Tiny regex tokenizer, comments, keys, strings, keywords, numbers.
    Not a real parser; just enough for readable highlighting. */
-function highlight(code: string): React.ReactNode[] {
+export function highlight(code: string): React.ReactNode[] {
   const pattern =
     /(\/\/[^\n]*)|("(?:[^"\\\n]|\\.)*"(?=\s*:))|("(?:[^"\\\n]|\\.)*")|\b(const|await|fetch|import|from|new|console|GET)\b|\b(\d+(?:\.\d+)?)\b/g;
   const out: React.ReactNode[] = [];
