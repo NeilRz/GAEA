@@ -290,7 +290,7 @@ function TradePanel({
         Contract verified via {token.verifiedVia}. Works with MetaMask and
         Phantom. The swap executes on {token.tradeVenue} in your own wallet —
         GEOM routes you to the venue and never holds funds or executes
-        orders. Informational only, not investment advice.
+        orders.
       </p>
     </div>
   );

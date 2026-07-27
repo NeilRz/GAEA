@@ -227,9 +227,6 @@ export default function GeomApp({ data }: { data: AppData }) {
             <Link className="gapp-side-link" href="/">
               geom.org →
             </Link>
-            <span className="gapp-side-note">
-              Informational only, not investment advice
-            </span>
           </div>
         </aside>
 

@@ -260,9 +260,6 @@ export default function ModuleSelect() {
         </section>
       </main>
 
-      <footer className="msel-foot mono">
-        Informational only, not investment advice
-      </footer>
     </div>
   );
 }

@@ -211,7 +211,6 @@ function DatasetDetailView({
               <p className="provenance">
                 Static registry dataset: it changes only on revision, and every
                 revision is re-fingerprinted, re-signed, and re-anchored.
-                Informational only, not investment advice.
               </p>
             </div>
           )}

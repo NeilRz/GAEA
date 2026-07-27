@@ -752,7 +752,7 @@ export default function ExplorerCatalog({
             ` · ${recordHits.length}${recordHits.length >= RECORD_HIT_CAP ? "+" : ""} asset records`}
           {plantsLoading && " · indexing plants…"}
           {" · "}
-          {rows.length} in catalog · informational only, not investment advice
+          {rows.length} in catalog
         </div>
       </div>
     </div>
