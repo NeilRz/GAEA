@@ -140,10 +140,6 @@
 .geom-site .idea .gs-big em{font-style:italic;color:var(--redbed)}
 .geom-site .idea p{margin-top:26px;max-width:58ch;font-size:clamp(15px,1.2vw,17px);color:var(--slate)}
 .geom-site .idea p strong{color:var(--night);font-weight:600}
-.geom-site .mark-graphic{margin-top:clamp(52px,9vh,96px);position:relative;height:1px;background:var(--line);border:0;opacity:1}
-.geom-site .mark-graphic::before{content:"";position:absolute;top:-8px;left:38%;width:2px;height:18px;background:var(--dyke)}
-.geom-site .mark-graphic::after{content:"HORIZON · LEDGER · BLOCK BOUNDARY";position:absolute;top:15px;right:0;
-    font-family:var(--mono);font-size:10px;letter-spacing:.18em;color:var(--slate-2)}
 .geom-site /* ================= PROOF ================= */
   .proof{background:var(--snow);padding:clamp(74px,13vh,146px) 0}
 .geom-site .sec-head{display:flex;align-items:baseline;gap:16px;margin-bottom:clamp(36px,6vh,68px);flex-wrap:wrap}
