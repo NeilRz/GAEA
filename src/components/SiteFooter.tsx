@@ -7,7 +7,14 @@ const MARKETING = new Set(["/", "/news", "/investors", "/terms", "/privacy"]);
 
 export default function SiteFooter() {
   const pathname = usePathname();
-  if (MARKETING.has(pathname)) return null;
+  // The unified app (/app) and the module select screen (/overview)
+  // carry their own chrome and compliance note.
+  if (
+    MARKETING.has(pathname) ||
+    pathname.startsWith("/app") ||
+    pathname === "/overview"
+  )
+    return null;
   return (
     <footer className="footer">
       <span>GEOM, REAL ASSETS FROM THE FAR NORTH</span>

@@ -9,6 +9,7 @@ import sites from "@/data/sites.json";
 import plants from "@/data/plants.json";
 import pipelinesData from "@/data/pipelines.json";
 import eia from "@/data/eia.json";
+import prices from "@/data/prices.json";
 
 /**
  * GAEA Oracle v2, verifiable data attestation, Solana-native.
@@ -72,6 +73,11 @@ export const DATASETS: Record<
     data: eia,
     title: eia.meta.title,
     version: eia.meta.version,
+  },
+  prices: {
+    data: prices,
+    title: prices.meta.title,
+    version: prices.meta.version,
   },
 };
 

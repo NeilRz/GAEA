@@ -154,6 +154,13 @@ function arcticCircle(): GeoJSON.Feature {
   return { type: "Feature", geometry: { type: "LineString", coordinates: coords }, properties: {} };
 }
 
+/* The oracle button only renders inside the app shell, where the shell
+   listens for the `geom:open-oracle` events the button click dispatches. */
+const oracleLinkHTML = () =>
+  typeof document !== "undefined" && document.querySelector(".gapp")
+    ? `<button class="popup-link">ATTESTATION →</button>`
+    : "";
+
 function popupHTML(p: Record<string, unknown>): string {
   const status = String(p.status ?? "");
   const dot = STATUS_COLOR[status] ?? "#7e97a6";
@@ -167,7 +174,7 @@ function popupHTML(p: Record<string, unknown>): string {
         <span style="width:7px;height:7px;border-radius:50%;background:${dot}"></span>
         <b>${status}</b>
       </span><br/>${p.note ?? ""}
-    </div>`;
+    </div>${oracleLinkHTML()}`;
 }
 
 function plantPopupHTML(p: Record<string, unknown>): string {
@@ -177,19 +184,49 @@ function plantPopupHTML(p: Record<string, unknown>): string {
       ${p.c} · ${p.f}<br/>
       <b>${p.mw} MW</b><br/>
       <span style="color:#64778f">WRI Global Power Plant Database · CC-BY 4.0</span>
-    </div>`;
+    </div>${oracleLinkHTML()}`;
 }
+
+/* Which attested dataset each interactive layer's features belong to. */
+const LAYER_DATASET: Record<string, string> = {
+  oilgas: "fields",
+  base: "sites",
+  precious: "sites",
+  battery: "sites",
+  ree: "sites",
+  nuclear: "sites",
+  reserves: "reserves",
+  pipelines: "pipelines",
+  "pipelines-idle": "pipelines",
+};
 
 const POINT_LAYERS: Exclude<GroupKey, "plants" | "pipelines" | "reserves" | "arctic">[] = [
   "oilgas", "base", "precious", "battery", "ree", "nuclear",
 ];
 const plantLayerIds = (g: string) => [`pl-${g}-cc`, `pl-${g}-cs`, `pl-${g}-pt`];
 
-export default function ReserveMap() {
+export interface MapFocusRequest {
+  token: number;
+  lngLat: [number, number];
+  zoom: number;
+  props?: Record<string, unknown>;
+}
+
+export default function ReserveMap({
+  focusRequest = null,
+}: {
+  focusRequest?: MapFocusRequest | null;
+} = {}) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<MLMap | null>(null);
   const popupRef = useRef<maplibregl.Popup | null>(null);
   const plantsDataRef = useRef<GeoJSON.FeatureCollection | null>(null);
+  /* Last clicked feature, consumed by the popup's oracle button. */
+  const lastFeatureRef = useRef<{
+    dataset: string;
+    record: Record<string, unknown>;
+    lngLat: [number, number];
+  } | null>(null);
   const [visible, setVisible] = useState<Record<GroupKey, boolean>>({
     oilgas: true, pipelines: true, base: true, precious: true, battery: true,
     ree: true, nuclear: true, plants: true, reserves: true, arctic: true,
@@ -204,10 +241,12 @@ export default function ReserveMap() {
     () => [
       ...fields.fields.map((f) => ({
         name: f.name, sub: `${f.country} · ${f.type}`, lngLat: [f.lng, f.lat] as [number, number],
+        dataset: "fields",
         props: { name: f.name, country: f.country, commodity: f.type, figure: f.figure, operator: "", status: f.status, note: f.note },
       })),
       ...sites.sites.map((s) => ({
         name: s.name, sub: `${s.country} · ${s.commodity}`, lngLat: [s.lng, s.lat] as [number, number],
+        dataset: "sites",
         props: { name: s.name, country: s.country, commodity: s.commodity, figure: s.figure, operator: s.operator, status: s.status, note: s.note },
       })),
     ],
@@ -320,6 +359,11 @@ export default function ReserveMap() {
     map.addControl(new maplibregl.NavigationControl({ showCompass: true, visualizePitch: true }), "top-right");
     map.addControl(new maplibregl.GlobeControl(), "top-right");
 
+    // Created before `load` so spotlight/search/focus clicks that land while
+    // tiles are still streaming can already open a popup.
+    const popup = new maplibregl.Popup({ closeButton: false, maxWidth: "300px" });
+    popupRef.current = popup;
+
     map.on("load", () => {
       registerMapIcons(map);
       map.addSource("arctic-circle", { type: "geojson", data: arcticCircle() });
@@ -389,14 +433,17 @@ export default function ReserveMap() {
         });
       }
 
-      const popup = new maplibregl.Popup({ closeButton: false, maxWidth: "300px" });
-      popupRef.current = popup;
-
       for (const id of [...POINT_LAYERS, "reserves", "pipelines", "pipelines-idle"]) {
         map.on("click", id, (e) => {
           const f = e.features?.[0];
           if (!f) return;
-          popup.setLngLat(e.lngLat).setHTML(popupHTML(f.properties as Record<string, unknown>)).addTo(map);
+          const props = f.properties as Record<string, unknown>;
+          lastFeatureRef.current = {
+            dataset: LAYER_DATASET[id] ?? "sites",
+            record: props,
+            lngLat: [e.lngLat.lng, e.lngLat.lat],
+          };
+          popup.setLngLat(e.lngLat).setHTML(popupHTML(props)).addTo(map);
         });
         map.on("mouseenter", id, () => (map.getCanvas().style.cursor = "pointer"));
         map.on("mouseleave", id, () => (map.getCanvas().style.cursor = ""));
@@ -483,7 +530,13 @@ export default function ReserveMap() {
             map.on("click", `pl-${g.id}-pt`, (e) => {
               const f = e.features?.[0];
               if (!f) return;
-              popup.setLngLat(e.lngLat).setHTML(plantPopupHTML(f.properties as Record<string, unknown>)).addTo(map);
+              const props = f.properties as Record<string, unknown>;
+              lastFeatureRef.current = {
+                dataset: "plants",
+                record: props,
+                lngLat: [e.lngLat.lng, e.lngLat.lat],
+              };
+              popup.setLngLat(e.lngLat).setHTML(plantPopupHTML(props)).addTo(map);
             });
             map.on("click", `pl-${g.id}-cc`, async (e) => {
               const f = e.features?.[0];
@@ -504,11 +557,41 @@ export default function ReserveMap() {
         });
     });
 
+    // The popup's oracle button is plain DOM inside the map container;
+    // delegate its clicks into a window event the app shell listens for.
+    const container = containerRef.current;
+    const onPopupClick = (ev: MouseEvent) => {
+      if (!(ev.target as HTMLElement).closest(".popup-link")) return;
+      const sel = lastFeatureRef.current;
+      if (!sel) return;
+      popupRef.current?.remove();
+      window.dispatchEvent(new CustomEvent("geom:open-oracle", { detail: sel }));
+    };
+    container.addEventListener("click", onPopupClick);
+
     return () => {
+      container.removeEventListener("click", onPopupClick);
       map.remove();
       mapRef.current = null;
     };
   }, []);
+
+  // External focus requests from the app shell (oracle → "show on map").
+  useEffect(() => {
+    if (!focusRequest) return;
+    const map = mapRef.current;
+    if (!map) return;
+    const apply = () => {
+      map.flyTo({ center: focusRequest.lngLat, zoom: focusRequest.zoom, duration: 1600 });
+      if (focusRequest.props && popupRef.current) {
+        const p = focusRequest.props;
+        const html = "n" in p ? plantPopupHTML(p) : popupHTML(p);
+        popupRef.current.setLngLat(focusRequest.lngLat).setHTML(html).addTo(map);
+      }
+    };
+    if (map.loaded()) apply();
+    else map.once("load", apply);
+  }, [focusRequest]);
 
   const setTerrainEnabled = (on: boolean) => {
     const map = mapRef.current;
@@ -526,7 +609,8 @@ export default function ReserveMap() {
               "hillshade-accent-color": "#0c1519", "hillshade-exaggeration": 0.55,
             },
           },
-          "arctic-circle"
+          // Before load the data layers don't exist yet; top of stack is fine.
+          map.getLayer("arctic-circle") ? "arctic-circle" : undefined
         );
       }
     } else {
@@ -584,6 +668,9 @@ export default function ReserveMap() {
 
   const spotlight = (s: (typeof SPOTLIGHT)[number]) => {
     const hit = searchIndex.find((x) => x.name === s.name);
+    if (hit) {
+      lastFeatureRef.current = { dataset: hit.dataset, record: hit.props, lngLat: hit.lngLat };
+    }
     focus(s.lngLat, s.zoom, hit?.props, true);
   };
 
@@ -615,6 +702,7 @@ export default function ReserveMap() {
                 className="spotlight-row"
                 onClick={() => {
                   setQuery("");
+                  lastFeatureRef.current = { dataset: r.dataset, record: r.props, lngLat: r.lngLat };
                   focus(r.lngLat, 6.5, r.props);
                 }}
               >

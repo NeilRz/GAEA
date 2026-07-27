@@ -43,8 +43,10 @@ export function PriceChart({
   const currencyRef = useRef(currency);
   const [hover, setHover] = useState<number | null>(null);
 
-  candlesRef.current = candles;
-  currencyRef.current = currency;
+  useEffect(() => {
+    candlesRef.current = candles;
+    currencyRef.current = currency;
+  }, [candles, currency]);
 
   useEffect(() => {
     const el = wrapRef.current;

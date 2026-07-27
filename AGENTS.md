@@ -91,8 +91,9 @@ idiomatic React. Treat them as one self-contained unit.
 
 - **Routes.** `/` is the landing (`src/components/geom/GeomLanding.tsx`, a
   client component). `/news`, `/investors`, `/terms`, `/privacy` are static
-  corporate pages. Neil's original overview is preserved at `/overview`, which
-  is where "Enter" lands.
+  corporate pages. "Enter" lands on `/overview`, the module-select lobby
+  (`src/components/app/ModuleSelect.tsx`): four panels, one per app module,
+  each linking into `/app`.
 - **How they render.** Each page injects an exact HTML string
   (`src/components/geom/landingHtml.ts`, `corpHtml.ts`) via
   `dangerouslySetInnerHTML` inside a scoped wrapper. The landing's original
