@@ -9,8 +9,6 @@ import {
   DEFAULT_RANGE,
   DEFAULT_SYMBOL,
   findInstrument,
-  GEOM_TOKEN,
-  GEOM_IS_TRADEABLE,
   type Instrument,
 } from "@/lib/board";
 import CopyChip from "@/components/oracle/CopyChip";
@@ -203,17 +201,6 @@ export function MarketBoard() {
         {updatedAt ? `board refreshed ${updatedAt} · auto every 60s` : "connecting…"}
       </p>
 
-      <section className="panel flagship-panel" style={{ marginBottom: 16 }}>
-        <p className="chart-title flagship-title">Flagship</p>
-        <p className="chart-sub">
-          The GEOM token. Contract address TBA — this tile flips to a live
-          Jupiter route the moment the mint exists.
-        </p>
-        <div className="quote-grid">
-          <GeomTile />
-        </div>
-      </section>
-
       {BOARD.map((group) => (
         <section className="panel" key={group.id} style={{ marginBottom: 16 }}>
           <p className="chart-title">{group.title}</p>
@@ -292,37 +279,6 @@ function TradePanel({
         GEOM routes you to the venue and never holds funds or executes
         orders.
       </p>
-    </div>
-  );
-}
-
-/** $GEOM has no market yet. This golden flagship tile says so rather than
- *  drawing a price that does not exist; it becomes a Jupiter route the
- *  moment a mint is set in `GEOM_TOKEN.contractAddress`. */
-function GeomTile() {
-  if (GEOM_IS_TRADEABLE) {
-    return (
-      <a
-        className="quote-tile geom-tile gold is-live"
-        href={GEOM_TOKEN.jupiterUrl(GEOM_TOKEN.contractAddress)}
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        <span className="quote-sym">GEOM</span>
-        <span className="quote-venue">Jupiter · Solana</span>
-        <span className="quote-price">Trade</span>
-        <span className="quote-delta">open route ↗</span>
-      </a>
-    );
-  }
-
-  return (
-    <div className="quote-tile geom-tile gold" aria-label="GEOM, not tradeable yet">
-      <span className="quote-sym">GEOM</span>
-      <span className="quote-venue">Solana</span>
-      <span className="quote-price geom-dash">—</span>
-      <span className="quote-delta geom-status">NOT TRADEABLE YET</span>
-      <span className="geom-foot">contract address TBA</span>
     </div>
   );
 }
