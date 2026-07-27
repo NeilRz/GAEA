@@ -1,0 +1,39 @@
+name: Deploy geom.org
+
+# Deploys main to the Vercel project that serves www.geom.org
+# (project "geom", team jj-me55s-projects — the brand-site domain lives there,
+# separate from the neilrzs-projects/gaea project that serves gaea-gray.vercel.app).
+#
+# ACTIVATION (repo admin, one time): add an Actions secret named VERCEL_TOKEN
+# containing a Vercel token for the jj-me55s-projects team.
+# Settings -> Secrets and variables -> Actions -> New repository secret.
+# Until that secret exists, this workflow skips itself.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      VERCEL_ORG_ID: team_Qce0MaAG8nIOZHPNXaHrZIpQ
+      VERCEL_PROJECT_ID: prj_OGGp1XbpLnsJgYeQE3cj97Qs7dTq
+    steps:
+      - name: Check secret
+        id: check
+        run: |
+          if [ -n "${{ secrets.VERCEL_TOKEN }}" ]; then
+            echo "ok=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "VERCEL_TOKEN secret not set - skipping deploy (see comments in this file)."
+            echo "ok=false" >> "$GITHUB_OUTPUT"
+          fi
+      - uses: actions/checkout@v4
+        if: steps.check.outputs.ok == 'true'
+      - name: Deploy to Vercel (production)
+        if: steps.check.outputs.ok == 'true'
+        run: |
+          npm i -g vercel@latest
+          vercel deploy --prod --yes --token "${{ secrets.VERCEL_TOKEN }}"
