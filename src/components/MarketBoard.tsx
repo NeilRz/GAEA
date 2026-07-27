@@ -11,7 +11,9 @@ import {
   findInstrument,
   GEOM_TOKEN,
   GEOM_IS_TRADEABLE,
+  type Instrument,
 } from "@/lib/board";
+import CopyChip from "@/components/oracle/CopyChip";
 import {
   formatPrice,
   formatChange,
@@ -191,11 +193,26 @@ export function MarketBoard() {
         )}
 
         {instrument && <p className="term-note">{instrument.note}</p>}
+
+        {instrument?.token && (
+          <TradePanel token={instrument.token} label={instrument.label} />
+        )}
       </section>
 
       <p className="term-updated">
         {updatedAt ? `board refreshed ${updatedAt} · auto every 60s` : "connecting…"}
       </p>
+
+      <section className="panel flagship-panel" style={{ marginBottom: 16 }}>
+        <p className="chart-title flagship-title">Flagship</p>
+        <p className="chart-sub">
+          The GEOM token. Contract address TBA — this tile flips to a live
+          Jupiter route the moment the mint exists.
+        </p>
+        <div className="quote-grid">
+          <GeomTile />
+        </div>
+      </section>
 
       {BOARD.map((group) => (
         <section className="panel" key={group.id} style={{ marginBottom: 16 }}>
@@ -214,7 +231,10 @@ export function MarketBoard() {
                   aria-pressed={ins.symbol === symbol}
                   title={ins.note}
                 >
-                  <span className="quote-sym">{ins.label}</span>
+                  <span className="quote-sym">
+                    {ins.label}
+                    {ins.token && <span className="tile-swap-flag">swap</span>}
+                  </span>
                   <span className="quote-venue">{ins.venue}</span>
                   <span className="quote-price">
                     {q ? formatPrice(q.price, q.currency) : "—"}
@@ -225,8 +245,6 @@ export function MarketBoard() {
                 </button>
               );
             })}
-
-            {group.id === "tokenized" && <GeomTile />}
           </div>
         </section>
       ))}
@@ -234,14 +252,58 @@ export function MarketBoard() {
   );
 }
 
-/** $GEOM has no market yet. This tile says so rather than drawing a price
- *  that does not exist; it becomes a Jupiter route the moment a mint is set
- *  in `GEOM_TOKEN.contractAddress`. */
+/** Swap route for a token whose contract was verified against the issuer's
+ *  own documentation and that has a real public pool. The swap itself
+ *  happens on the external venue in the user's own wallet (MetaMask and
+ *  Phantom both work) — GEOM routes, it never holds funds or executes. */
+function TradePanel({
+  token,
+  label,
+}: {
+  token: NonNullable<Instrument["token"]>;
+  label: string;
+}) {
+  return (
+    <div className="trade-panel">
+      <div className="trade-head">
+        <span className="trade-title">
+          Swap route · {token.tradeVenue} · Ethereum
+        </span>
+        <span className="badge good">contract verified</span>
+      </div>
+      <div className="trade-ca">
+        <span className="hash">{token.address}</span>
+      </div>
+      <div className="trade-actions">
+        <a
+          className="btn primary"
+          style={{ fontSize: 13 }}
+          href={token.tradeUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Swap {label} on {token.tradeVenue} ↗
+        </a>
+        <CopyChip value={token.address} label="COPY CONTRACT" />
+      </div>
+      <p className="trade-note">
+        Contract verified via {token.verifiedVia}. Works with MetaMask and
+        Phantom. The swap executes on {token.tradeVenue} in your own wallet —
+        GEOM routes you to the venue and never holds funds or executes
+        orders. Informational only, not investment advice.
+      </p>
+    </div>
+  );
+}
+
+/** $GEOM has no market yet. This golden flagship tile says so rather than
+ *  drawing a price that does not exist; it becomes a Jupiter route the
+ *  moment a mint is set in `GEOM_TOKEN.contractAddress`. */
 function GeomTile() {
   if (GEOM_IS_TRADEABLE) {
     return (
       <a
-        className="quote-tile geom-tile is-live"
+        className="quote-tile geom-tile gold is-live"
         href={GEOM_TOKEN.jupiterUrl(GEOM_TOKEN.contractAddress)}
         target="_blank"
         rel="noopener noreferrer"
@@ -255,7 +317,7 @@ function GeomTile() {
   }
 
   return (
-    <div className="quote-tile geom-tile" aria-label="GEOM, not tradeable yet">
+    <div className="quote-tile geom-tile gold" aria-label="GEOM, not tradeable yet">
       <span className="quote-sym">GEOM</span>
       <span className="quote-venue">Solana</span>
       <span className="quote-price geom-dash">—</span>

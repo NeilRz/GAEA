@@ -12,7 +12,26 @@ export interface Instrument {
   venue: string;
   /** Why it is on our board, one clause, factual, no view */
   note: string;
+  /** Verified on-chain contract — enables the swap route in the terminal.
+      Only set for tokens whose address was checked against the issuer's
+      own documentation AND that have a real public pool. Trades execute
+      on the external venue in the user's own wallet; GEOM routes, never
+      holds or executes. */
+  token?: {
+    chain: "ethereum";
+    /** Canonical contract address, checksum-cased, source-verified. */
+    address: string;
+    /** Where the address was verified (shown to the user). */
+    verifiedVia: string;
+    /** External swap venue, prefilled with the output token. */
+    tradeUrl: string;
+    tradeVenue: string;
+  };
 }
+
+/** Uniswap works with both MetaMask and Phantom (EVM) injected wallets. */
+const uniswap = (address: string) =>
+  `https://app.uniswap.org/swap?outputCurrency=${address}&chain=mainnet`;
 
 export interface BoardGroup {
   id: string;
@@ -28,6 +47,15 @@ export const BOARD: BoardGroup[] = [
     blurb:
       "Listed vehicles behind the Greenland licence positions we track. Prices are the market's, not ours.",
     instruments: [
+      {
+        // The combined company is USFM; the exchange line still prints as
+        // VEEE until the ticker change completes, so the quote request
+        // stays on VEEE while the board already reads USFM.
+        symbol: "VEEE",
+        label: "USFM",
+        venue: "Nasdaq CM",
+        note: "US Fuels & Minerals (Twin Vee combination), funding the US$30m Disko-Nuussuaq earn-in. Quote line still prints as VEEE until the ticker change completes.",
+      },
       {
         symbol: "80M.L",
         label: "80M",
@@ -46,25 +74,64 @@ export const BOARD: BoardGroup[] = [
     id: "tokenized",
     title: "Tokenized real-world assets",
     blurb:
-      "The on-chain wrappers for commodity and treasury exposure, the market our oracle attests into.",
+      "The on-chain wrappers for commodity and treasury exposure, the market our oracle attests into. Tokens with a verified contract and a public pool carry a swap route.",
     instruments: [
       {
         symbol: "ONDO-USD",
         label: "ONDO",
         venue: "Crypto",
         note: "Ondo Finance, tokenized treasuries and equities; USOon wraps the United States Oil Fund.",
+        token: {
+          chain: "ethereum",
+          address: "0xfAbA6f8e4a5E8Ab82F62fe7C39859FA577269BE3",
+          verifiedVia: "Ondo Foundation docs · Etherscan",
+          tradeUrl: uniswap("0xfAbA6f8e4a5E8Ab82F62fe7C39859FA577269BE3"),
+          tradeVenue: "Uniswap",
+        },
       },
       {
         symbol: "PAXG-USD",
         label: "PAXG",
         venue: "Crypto",
         note: "Paxos Gold, one token, one allocated troy ounce. Half of the tokenized-commodity float.",
+        token: {
+          chain: "ethereum",
+          address: "0x45804880De22913dAFE09f4980848ECE6EcbAf78",
+          verifiedVia: "paxosglobal GitHub · Etherscan",
+          tradeUrl: uniswap("0x45804880De22913dAFE09f4980848ECE6EcbAf78"),
+          tradeVenue: "Uniswap",
+        },
       },
       {
         symbol: "XAUT-USD",
         label: "XAUT",
         venue: "Crypto",
         note: "Tether Gold, the other half. Together with PAXG, roughly three-quarters of tokenized commodities.",
+        token: {
+          chain: "ethereum",
+          address: "0x68749665FF8D2d112Fa859AA293F07A622782F38",
+          verifiedVia: "Tether transparency page · Etherscan (post-upgrade contract)",
+          tradeUrl: uniswap("0x68749665FF8D2d112Fa859AA293F07A622782F38"),
+          tradeVenue: "Uniswap",
+        },
+      },
+      {
+        symbol: "VNXAU-USD",
+        label: "VNXAU",
+        venue: "Crypto",
+        note: "VNX Gold, one token, one gram of LBMA gold. No verified public pool — no swap route shown.",
+      },
+      {
+        symbol: "CGO-USD",
+        label: "CGO",
+        venue: "Crypto",
+        note: "Comtech Gold, gram-denominated gold on XDC. No verified public pool — no swap route shown.",
+      },
+      {
+        symbol: "KAG-USD",
+        label: "KAG",
+        venue: "Crypto",
+        note: "Kinesis Silver, one token, one troy ounce; trades on the Kinesis exchange, not on public DEXs.",
       },
     ],
   },
