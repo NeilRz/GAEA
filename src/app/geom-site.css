@@ -114,7 +114,7 @@
       radial-gradient(125% 100% at 50% 26%,transparent 52%,rgba(6,12,18,.4) 100%)}
 .geom-site .gs-hero .gs-eyebrow{color:#E0ECF2}
 .geom-site .gs-hero .wordmark{color:#FFFFFF}
-.geom-site .wm-sub{color:#fff;text-align:center;font-family:var(--body);font-weight:600;font-size:clamp(10px,1.1vw,13px);letter-spacing:.14em;text-transform:uppercase;margin:0 auto clamp(2px,.6vh,10px);text-shadow:0 2px 16px rgba(6,12,18,.6)}
+.geom-site .wm-sub{color:#fff;text-align:center;font-family:var(--body);font-weight:600;font-size:clamp(10px,1.1vw,13px);letter-spacing:.14em;text-transform:uppercase;margin:clamp(6px,1.2vh,14px) auto 0;text-shadow:0 2px 16px rgba(6,12,18,.6)}
 .geom-site .gs-hero .tagline{color:#EDF4F8}
 .geom-site .gs-hero .tagline em{color:#fff}
 .geom-site .gs-hero .subtag{color:#CFDEE7}
