@@ -169,8 +169,7 @@ export default function SeriesChart({ series }: { series: SeriesData[] }) {
       <div ref={wrapRef} className="chart-frame" style={{ height: 360 }} />
       <p className="provenance">
         Source: U.S. EIA Weekly Petroleum Status Report, public-domain U.S.
-        government data republished under GEOM attestation. Informational
-        only, not investment advice.
+        government data republished under GEOM attestation.
       </p>
     </div>
   );
