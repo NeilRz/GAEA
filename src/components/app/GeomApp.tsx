@@ -238,9 +238,23 @@ export default function GeomApp({ data }: { data: AppData }) {
             <span className="t-title">{activeModule.label}</span>
             <span className="t-desc">{activeModule.desc}</span>
             <span className="t-right">
-              <span className={`badge ${anchorIsCurrent ? "good" : "warn"}`}>
-                {anchorIsCurrent ? "anchor current" : "anchor stale"}
-              </span>
+              {data.anchors[0] ? (
+                <a
+                  className={`badge ${anchorIsCurrent ? "good" : "warn"}`}
+                  href={`https://explorer.solana.com/tx/${data.anchors[0].signature}${
+                    data.anchors[0].cluster === "mainnet-beta"
+                      ? ""
+                      : `?cluster=${data.anchors[0].cluster}`
+                  }`}
+                  target="_blank"
+                  rel="noreferrer"
+                  title="View the latest anchor transaction on Solana Explorer"
+                >
+                  {anchorIsCurrent ? "anchor current" : "anchor stale"} ↗
+                </a>
+              ) : (
+                <span className="badge warn">no anchor</span>
+              )}
               <a
                 className="dl-chip"
                 style={{ textDecoration: "none" }}

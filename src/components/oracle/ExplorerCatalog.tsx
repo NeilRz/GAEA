@@ -9,6 +9,7 @@ import pipelines from "@/data/pipelines.json";
 import prices from "@/data/prices.json";
 import type { CatalogRow } from "@/lib/oracle-catalog";
 import CatIcon from "./CatIcon";
+import Flag from "@/components/Flag";
 
 /* The Pyth-explore-shaped surface: a filter rail (quick search, collapsible
    checkbox groups with live counts) beside one dense table where signed
@@ -37,12 +38,15 @@ interface ExploreRow {
   lngLat?: [number, number];
   /** Attested indicative quote from the signed prices dataset, if one exists. */
   price?: PriceQuote;
+  /** Country whose mini flag decorates the title line (record rows). */
+  flagCountry?: string;
 }
 
 interface PriceQuote {
   price: number;
   currency: string;
   changePct: number | null;
+  spark: number[] | null;
 }
 
 /* The signed prices snapshot, keyed by registry symbol / watchlist ticker.
@@ -50,7 +54,12 @@ interface PriceQuote {
 const PRICE_BY_SYMBOL: Record<string, PriceQuote> = Object.fromEntries(
   prices.prices.map((p) => [
     p.symbol,
-    { price: p.price, currency: p.currency, changePct: p.changePct },
+    {
+      price: p.price,
+      currency: p.currency,
+      changePct: p.changePct,
+      spark: p.spark?.length > 1 ? p.spark : null,
+    },
   ])
 );
 
@@ -155,7 +164,7 @@ function buildRows(catalog: CatalogRow[]): ExploreRow[] {
       status: ASSET_STATUS[a.status] ?? { cls: "", label: a.status },
       details: a.issuer,
       meta: a.chains.join(", ") || "—",
-      spark: null,
+      spark: price?.spark ?? null,
       datasetId: "tokenized",
       price,
       record: {
@@ -190,7 +199,7 @@ function buildRows(catalog: CatalogRow[]): ExploreRow[] {
       status: WATCH_STATUS[w.tokenization] ?? { cls: "", label: w.tokenization },
       details: w.listing,
       meta: "—",
-      spark: null,
+      spark: price?.spark ?? null,
       datasetId: "tokenized",
       price,
       record: {
@@ -221,7 +230,8 @@ function buildRecordIndex(): ExploreRow[] {
     title: string,
     details: string,
     record: Record<string, unknown>,
-    lngLat?: [number, number]
+    lngLat?: [number, number],
+    flagCountry?: string
   ): ExploreRow => ({
     key,
     kind: "record",
@@ -238,6 +248,7 @@ function buildRecordIndex(): ExploreRow[] {
     datasetId,
     record,
     lngLat,
+    flagCountry,
   });
 
   return [
@@ -250,7 +261,8 @@ function buildRecordIndex(): ExploreRow[] {
         `${f.country} · ${f.type}`,
         f.figure,
         { name: f.name, country: f.country, commodity: f.type, figure: f.figure, status: f.status, note: f.note },
-        [f.lng, f.lat]
+        [f.lng, f.lat],
+        f.country
       )
     ),
     ...sites.sites.map((s) =>
@@ -262,7 +274,8 @@ function buildRecordIndex(): ExploreRow[] {
         `${s.country} · ${s.commodity}`,
         s.figure,
         { name: s.name, country: s.country, commodity: s.commodity, figure: s.figure, operator: s.operator, status: s.status, note: s.note },
-        [s.lng, s.lat]
+        [s.lng, s.lat],
+        s.country
       )
     ),
     ...reserves.countries.map((c) =>
@@ -309,9 +322,16 @@ function Sparkline({ values }: { values: number[] }) {
       return `${x.toFixed(1)},${y.toFixed(1)}`;
     })
     .join(" ");
+  const up = values[values.length - 1] >= values[0];
   return (
     <svg className="spark" viewBox={`0 0 ${W} ${H}`} width={W} height={H} aria-hidden="true">
-      <polyline points={pts} fill="none" stroke="var(--c1)" strokeWidth={1.5} strokeLinejoin="round" />
+      <polyline
+        points={pts}
+        fill="none"
+        stroke={up ? "#5fd4ae" : "#e87a85"}
+        strokeWidth={1.5}
+        strokeLinejoin="round"
+      />
     </svg>
   );
 }
@@ -439,6 +459,7 @@ export default function ExplorerCatalog({
               datasetId: "plants",
               record: { name: p.name, country: p.country, fuel: p.fuel, "capacity (MW)": p.mw },
               lngLat: [p.lng, p.lat] as [number, number],
+              flagCountry: p.country,
             }))
           );
         }
@@ -471,6 +492,11 @@ export default function ExplorerCatalog({
     if (sort) {
       const key = SORT_KEY[sort.col];
       out.sort((a, b) => (key(a) < key(b) ? -sort.dir : key(a) > key(b) ? sort.dir : 0));
+    } else {
+      // Default order: live rows first — anything with a 52w trend (priced
+      // assets, watchlist names, the EIA series) reads like an oracle at
+      // first sight. Stable sort keeps catalog order within each group.
+      out.sort((a, b) => Number(!!b.spark) - Number(!!a.spark));
     }
     return out;
   }, [rows, q, kinds, cats, statuses, sort]);
@@ -568,7 +594,10 @@ export default function ExplorerCatalog({
           <span>
             <span className="mono catalog-name">{r.symbol}</span>
             <br />
-            <span className="dim" style={{ fontSize: 11.5 }}>{r.title}</span>
+            <span className="dim" style={{ fontSize: 11.5 }}>
+              {r.flagCountry && <Flag country={r.flagCountry} />}
+              {r.title}
+            </span>
           </span>
         </span>
       </td>

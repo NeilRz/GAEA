@@ -4,6 +4,10 @@ import localFont from "next/font/local";
 import Nav from "@/components/Nav";
 import SiteFooter from "@/components/SiteFooter";
 import "./globals.css";
+/* Mini country flags (fi fi-xx spans) used by the oracle record panels,
+   explorer rows, and the map popups. Self-hosted SVGs — emoji flags
+   don't render on Windows. */
+import "flag-icons/css/flag-icons.min.css";
 
 /* Same expanded Archivo file the marketing wordmark uses, so the app
    logotype and the geom.org brandmark are the identical glyphs. */

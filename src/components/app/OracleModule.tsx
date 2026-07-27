@@ -5,6 +5,7 @@ import tokenized from "@/data/tokenized.json";
 import type { DatasetDetail } from "@/lib/oracle-catalog";
 import type { AppData, AnchorRecord, OracleSelection } from "./GeomApp";
 import ExplorerCatalog from "@/components/oracle/ExplorerCatalog";
+import Flag from "@/components/Flag";
 import SeriesChart from "@/components/oracle/SeriesChart";
 import VerifyCard from "@/components/oracle/VerifyCard";
 import CodeSnippets from "@/components/oracle/CodeSnippets";
@@ -24,6 +25,9 @@ const RECORD_KEY_LABELS: Record<string, string> = {
   f: "Fuel",
   mw: "Capacity (MW)",
 };
+
+/* Record keys whose value is a country name — they get a mini flag. */
+const COUNTRY_KEYS = new Set(["country", "c"]);
 
 function RecordPanel({
   record,
@@ -53,6 +57,9 @@ function RecordPanel({
             <div className="row" key={k}>
               <span className="k">{RECORD_KEY_LABELS[k] ?? k}</span>
               <span className="v" style={{ fontSize: 13 }}>
+                {COUNTRY_KEYS.has(k) && typeof v === "string" && (
+                  <Flag country={v} />
+                )}
                 {typeof v === "boolean" ? (v ? "yes" : "no") : String(v)}
               </span>
             </div>

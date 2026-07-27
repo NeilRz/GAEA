@@ -5,6 +5,7 @@ import maplibregl, { Map as MLMap } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 import reserves from "@/data/reserves.json";
 import fields from "@/data/fields.json";
+import { countryFlagCode } from "@/lib/flags";
 import sites from "@/data/sites.json";
 import pipelines from "@/data/pipelines.json";
 import {
@@ -161,13 +162,19 @@ const oracleLinkHTML = () =>
     ? `<button class="popup-link">ATTESTATION →</button>`
     : "";
 
+/* Mini flag markup for the plain-DOM popups; flag-icons CSS is global. */
+function flagHTML(country: unknown): string {
+  const code = typeof country === "string" ? countryFlagCode(country) : null;
+  return code ? `<span class="fi fi-${code} flag-mini"></span>` : "";
+}
+
 function popupHTML(p: Record<string, unknown>): string {
   const status = String(p.status ?? "");
   const dot = STATUS_COLOR[status] ?? "#7e97a6";
   return `
     <div class="popup-title">${p.name}</div>
     <div class="popup-kv">
-      ${p.country ? `${p.country} · ` : ""}${p.commodity}<br/>
+      ${p.country ? `${flagHTML(p.country)}${p.country} · ` : ""}${p.commodity}<br/>
       ${p.operator ? `${p.operator}<br/>` : ""}
       ${p.figure ? `<b>${p.figure}</b><br/>` : ""}
       <span style="display:inline-flex;align-items:center;gap:5px">
@@ -181,7 +188,7 @@ function plantPopupHTML(p: Record<string, unknown>): string {
   return `
     <div class="popup-title">${p.n}</div>
     <div class="popup-kv">
-      ${p.c} · ${p.f}<br/>
+      ${flagHTML(p.c)}${p.c} · ${p.f}<br/>
       <b>${p.mw} MW</b><br/>
       <span style="color:#64778f">WRI Global Power Plant Database · CC-BY 4.0</span>
     </div>${oracleLinkHTML()}`;

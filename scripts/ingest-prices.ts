@@ -76,6 +76,8 @@ interface PriceRecord {
   currency: string;
   changePct: number | null;
   asOf: string;
+  /** ~52 weekly closes over the past year, oldest first, for sparklines. */
+  spark: number[];
 }
 
 function num(v: unknown): number | null {
@@ -90,9 +92,18 @@ const MAX_AGE_DAYS = 7;
 
 async function fetchQuote(
   quoteSymbol: string
-): Promise<{ price: number; currency: string; changePct: number | null; asOf: string } | null> {
+): Promise<{
+  price: number;
+  currency: string;
+  changePct: number | null;
+  asOf: string;
+  spark: number[];
+} | null> {
   try {
-    const res = await fetch(`${YF}/${encodeURIComponent(quoteSymbol)}?range=5d&interval=1d`, {
+    // One request covers everything: current price + day change from the
+    // last two daily bars, and a year of closes downsampled to a weekly
+    // sparkline. No runtime cost — the frontend reads the signed bytes.
+    const res = await fetch(`${YF}/${encodeURIComponent(quoteSymbol)}?range=1y&interval=1d`, {
       headers: { "User-Agent": UA, Accept: "application/json" },
     });
     if (!res.ok) return null;
@@ -114,6 +125,13 @@ async function fetchQuote(
     if (time === null || Date.now() - time * 1000 > MAX_AGE_DAYS * 86_400_000) {
       return null;
     }
+    // Weekly downsample: last close of each ~5-bar bucket, capped at 52
+    // points, rounded to 4 significant digits to keep the dataset small.
+    const step = Math.max(1, Math.round(closes.length / 52));
+    const spark: number[] = [];
+    for (let i = closes.length - 1; i >= 0 && spark.length < 52; i -= step) {
+      spark.unshift(Number(closes[i].toPrecision(4)));
+    }
     return {
       price: Number(price.toFixed(price < 1 ? 6 : 4)),
       currency: typeof meta.currency === "string" ? meta.currency : "USD",
@@ -124,6 +142,7 @@ async function fetchQuote(
       asOf: time !== null
         ? new Date(time * 1000).toISOString().slice(0, 16) + "Z"
         : "unknown",
+      spark,
     };
   } catch {
     return null;
