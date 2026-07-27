@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Instrument_Serif, Space_Mono } from "next/font/google";
+import { Archivo, Fragment_Mono } from "next/font/google";
 import localFont from "next/font/local";
 import Nav from "@/components/Nav";
 import SiteFooter from "@/components/SiteFooter";
@@ -18,17 +18,19 @@ const archivo = localFont({
   declarations: [{ prop: "font-stretch", value: "125%" }],
 });
 
-const instrumentSerif = Instrument_Serif({
+/* Standard-width Archivo for headings and body — same family as the
+   expanded wordmark, so the whole site is cut from one typeface. */
+const archivoStd = Archivo({
   subsets: ["latin"],
-  variable: "--font-instrument",
-  weight: "400",
+  variable: "--font-archivo-std",
+  weight: ["400", "500", "600"],
   style: ["normal", "italic"],
 });
 
-const spaceMono = Space_Mono({
+const fragmentMono = Fragment_Mono({
   subsets: ["latin"],
-  variable: "--font-space-mono",
-  weight: ["400", "700"],
+  variable: "--font-fragment",
+  weight: "400",
 });
 
 export const metadata: Metadata = {
@@ -43,7 +45,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${archivo.variable} ${instrumentSerif.variable} ${spaceMono.variable}`}
+        className={`${archivo.variable} ${archivoStd.variable} ${fragmentMono.variable}`}
       >
         <div className="shell">
           <Nav />

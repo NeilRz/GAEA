@@ -1,14 +1,10 @@
 /* GEOM corporate-page styles, scoped under .geom-corp */
 @font-face{font-family:"ArchivoExp";src:url("/fonts/archivoexp-700.woff2") format("woff2");font-weight:900;font-stretch:125%;font-display:swap}
-@font-face{font-family:"InstrumentSerif";src:url("/fonts/instrumentserif-400.woff2") format("woff2");font-style:normal;font-display:swap}
-@font-face{font-family:"InstrumentSerif";src:url("/fonts/instrumentserif-400-italic.woff2") format("woff2");font-style:italic;font-display:swap}
-@font-face{font-family:"SpaceMonoE";src:url("/fonts/spacemonoe-400.woff2") format("woff2");font-weight:400;font-display:swap}
-@font-face{font-family:"SpaceMonoE";src:url("/fonts/spacemonoe-700.woff2") format("woff2");font-weight:700;font-display:swap}
 .geom-corp{
   --night:#0C1519; --paper:#F2F5F6; --snow:#EDF1F3; --mist:#DDE3EA; --glacier:#8FB4C9;
   --ice:#5E8BA6; --basin:#1B6FAE; --redbed:#8F4632; --slate:#5B6B75; --line:#D5DCE1;
-  --serif:"InstrumentSerif",Georgia,serif; --mono:"SpaceMonoE",ui-monospace,Menlo,monospace;
-  --wm:"ArchivoExp",system-ui,sans-serif; --body:-apple-system,system-ui,"Segoe UI",Roboto,Arial,sans-serif;
+  --serif:var(--font-archivo-std),system-ui,"Segoe UI",sans-serif; --mono:var(--font-fragment),ui-monospace,Menlo,monospace;
+  --wm:"ArchivoExp",system-ui,sans-serif; --body:var(--font-archivo-std),-apple-system,system-ui,"Segoe UI",Roboto,Arial,sans-serif;
 }
 .geom-corp *{box-sizing:border-box;margin:0;padding:0}
 .geom-corp{scroll-behavior:smooth}
@@ -65,3 +61,9 @@
 .geom-corp .foot a{display:block;color:#c4d2da;font-size:14px;padding:5px 0;transition:color .2s}
 .geom-corp .foot a:hover{color:#fff}
 .geom-corp .foot .base{margin-top:44px;padding-top:22px;border-top:1px solid rgba(255,255,255,.1);display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;font-family:var(--mono);font-size:11.5px;color:#7d8f9b;letter-spacing:.04em}
+
+/* All-Archivo system: headline weights and sizes tuned for the standard-width sans in the old serif slot. */
+.geom-corp h1.title{font-weight:600;letter-spacing:-.02em;font-size:clamp(34px,6vw,62px)}
+.geom-corp h2.h{font-weight:600;letter-spacing:-.015em}
+.geom-corp .legal h2{font-weight:600;letter-spacing:-.01em}
+.geom-corp .it-title{font-weight:500;letter-spacing:-.01em}

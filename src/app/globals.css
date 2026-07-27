@@ -47,9 +47,11 @@
    outside their scope), which silently kills the whole font-family. */
 body {
   --font-display: var(--font-archivo), Impact, "Arial Narrow Bold", sans-serif;
-  --font-serif: var(--font-instrument), Georgia, "Times New Roman", serif;
-  --font-body: -apple-system, system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  --font-mono: var(--font-space-mono), ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  /* --font-serif is legacy-named: it now carries standard-width Archivo,
+     the heading voice of the all-Archivo system. */
+  --font-serif: var(--font-archivo-std), system-ui, "Segoe UI", sans-serif;
+  --font-body: var(--font-archivo-std), -apple-system, system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: var(--font-fragment), ui-monospace, "SF Mono", Menlo, Consolas, monospace;
 }
 
 * { box-sizing: border-box; }
@@ -152,7 +154,7 @@ a { color: inherit; text-decoration: none; }
 }
 
 .page-title {
-  font-family: var(--font-serif); font-weight: 400;
+  font-family: var(--font-serif); font-weight: 600; letter-spacing: -0.01em;
   font-size: clamp(32px, 4.6vw, 46px); letter-spacing: 0;
   line-height: 1.05; margin: 6px 0 10px; text-wrap: balance;
 }
@@ -191,7 +193,7 @@ a { color: inherit; text-decoration: none; }
 
 .stat-tile { display: flex; flex-direction: column; gap: 4px; }
 .stat-value {
-  font-family: var(--font-serif); font-weight: 400;
+  font-family: var(--font-serif); font-weight: 600; letter-spacing: -0.01em;
   font-size: clamp(29px, 3.6vw, 42px); line-height: 1;
   letter-spacing: 0.005em; color: var(--ink);
 }
@@ -280,7 +282,7 @@ table.data th.num { text-align: right; }
   .oracle-hero svg { max-width: 320px; margin: 0 auto; }
 }
 .oracle-hero h1 {
-  font-family: var(--font-serif); font-weight: 400;
+  font-family: var(--font-serif); font-weight: 600; letter-spacing: -0.01em;
   font-size: clamp(38px, 5.4vw, 62px); line-height: 1.03;
   letter-spacing: 0; margin: 12px 0 18px; max-width: 16ch; text-wrap: balance;
 }
@@ -725,7 +727,7 @@ table.catalog { min-width: 860px; }
 }
 
 .hero h1 {
-  font-family: var(--font-serif); font-weight: 400;
+  font-family: var(--font-serif); font-weight: 600; letter-spacing: -0.01em;
   font-size: clamp(36px, 6vw, 64px); line-height: 1.03;
   letter-spacing: 0; margin: 14px 0 16px; max-width: 22ch;
   position: relative; text-wrap: balance;
@@ -758,7 +760,7 @@ table.catalog { min-width: 860px; }
   text-transform: uppercase; color: var(--glacial);
 }
 .module-card h3 {
-  font-family: var(--font-serif); font-weight: 400;
+  font-family: var(--font-serif); font-weight: 600; letter-spacing: -0.01em;
   font-size: clamp(22px, 2.6vw, 27px); line-height: 1.1;
   margin: 0; letter-spacing: 0;
 }
@@ -842,7 +844,7 @@ table.catalog { min-width: 860px; }
   color: var(--glacial-bright);
 }
 .step h4 {
-  font-family: var(--font-serif); font-weight: 400; font-size: 20px;
+  font-family: var(--font-serif); font-weight: 600; letter-spacing: -0.01em; font-size: 20px;
   margin: 0; letter-spacing: 0;
 }
 .step p { margin: 0; font-size: 13px; color: var(--ink-2); }
@@ -868,7 +870,7 @@ table.catalog { min-width: 860px; }
 .verdict-banner.valid .verdict-mark { background: rgba(43, 165, 126, 0.18); color: #5fd4ae; }
 .verdict-banner.invalid .verdict-mark { background: rgba(204, 74, 87, 0.18); color: #e87a85; }
 .verdict-title {
-  font-family: var(--font-serif); font-weight: 400; font-size: 19px; margin: 0;
+  font-family: var(--font-serif); font-weight: 600; letter-spacing: -0.01em; font-size: 19px; margin: 0;
 }
 .verdict-banner.valid .verdict-title { color: #5fd4ae; }
 .verdict-banner.invalid .verdict-title { color: #e87a85; }
@@ -983,7 +985,7 @@ table.catalog { min-width: 860px; }
   gap: 24px; flex-wrap: wrap; margin-bottom: 14px;
 }
 .qs-title {
-  font-family: var(--font-serif); font-weight: 400;
+  font-family: var(--font-serif); font-weight: 600; letter-spacing: -0.01em;
   font-size: clamp(24px, 3.2vw, 34px); line-height: 1.08; margin: 6px 0 0;
 }
 .qs-title em { font-style: italic; color: var(--glacial-bright); }
@@ -1203,7 +1205,7 @@ table.catalog { min-width: 860px; }
 
 .msel-head { text-align: center; padding: clamp(14px, 3vh, 34px) 20px clamp(16px, 3vh, 30px); }
 .msel-head h1 {
-  font-family: var(--font-serif); font-weight: 400;
+  font-family: var(--font-serif); font-weight: 600; letter-spacing: -0.01em;
   font-size: clamp(30px, 4.2vw, 50px); line-height: 1.05; margin: 0;
   text-wrap: balance;
 }
@@ -1266,7 +1268,7 @@ table.catalog { min-width: 860px; }
   margin-bottom: 8px;
 }
 .msel-title {
-  font-family: var(--font-serif); font-weight: 400;
+  font-family: var(--font-serif); font-weight: 600; letter-spacing: -0.01em;
   font-size: clamp(26px, 2.6vw, 38px); line-height: 1; margin: 0 0 10px;
 }
 .msel-desc {
