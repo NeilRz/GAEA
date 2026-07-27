@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import tokenized from "@/data/tokenized.json";
 import type { DatasetDetail } from "@/lib/oracle-catalog";
 import type { AppData, AnchorRecord, OracleSelection } from "./GeomApp";
@@ -124,14 +125,29 @@ function DatasetDetailView({
   const record =
     selection.dataset === detail.id && selection.record ? selection.record : null;
 
+  // Esc walks back to the explorer, same as the back button.
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onBack();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [onBack]);
+
   return (
     <>
-      <nav className="crumb" aria-label="Breadcrumb">
-        <button className="crumb-link" onClick={onBack}>
-          Oracle
+      <nav className="crumb detail-nav" aria-label="Breadcrumb">
+        <button className="btn-back" onClick={onBack}>
+          <span aria-hidden="true">←</span> Back to explorer
         </button>
-        <span aria-hidden="true">/</span>
-        <span className="crumb-here">{detail.id}</span>
+        <span className="crumb-trail">
+          <button className="crumb-link" onClick={onBack}>
+            Oracle
+          </button>
+          <span aria-hidden="true">/</span>
+          <span className="crumb-here">{detail.id}</span>
+        </span>
+        <span className="crumb-hint mono" aria-hidden="true">ESC</span>
       </nav>
 
       <header className="o-head">

@@ -16,8 +16,14 @@ const MARKETING = new Set(["/", "/news", "/investors", "/terms", "/privacy"]);
 
 export default function Nav() {
   const pathname = usePathname();
-  // The unified app (/app) carries its own sidebar chrome.
-  if (MARKETING.has(pathname) || pathname.startsWith("/app")) return null;
+  // The unified app (/app) carries its own sidebar chrome; the module
+  // select screen (/overview) is a full-viewport lobby with its own top.
+  if (
+    MARKETING.has(pathname) ||
+    pathname.startsWith("/app") ||
+    pathname === "/overview"
+  )
+    return null;
   return (
     <header className="topbar">
       <Link href="/" className="brand">

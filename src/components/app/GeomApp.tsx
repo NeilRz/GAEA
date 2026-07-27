@@ -117,6 +117,9 @@ export default function GeomApp({ data }: { data: AppData }) {
     };
   });
   const focusToken = useRef(0);
+  /* Where the last state change came from: user actions push a history
+     entry, popstate restores one, the initial render only normalizes. */
+  const navSource = useRef<"init" | "ui" | "pop">("init");
 
   const setView = useCallback((m: ModuleKey) => {
     setViewRaw(m);
@@ -131,14 +134,37 @@ export default function GeomApp({ data }: { data: AppData }) {
     }
   }, [view]);
 
-  // Deep-linkable URL without triggering a server navigation.
+  // Deep-linkable URL without triggering a server navigation. User-driven
+  // changes PUSH so the browser back button walks back through the app
+  // (explorer → dataset → record) instead of leaving it.
   useEffect(() => {
+    const src = navSource.current;
+    navSource.current = "ui";
     const params = new URLSearchParams();
     if (view !== DEFAULT_VIEW) params.set("m", view);
     if (view === "oracle" && oracleSel.dataset) params.set("d", oracleSel.dataset);
     const qs = params.toString();
-    window.history.replaceState(null, "", qs ? `/app?${qs}` : "/app");
+    const url = qs ? `/app?${qs}` : "/app";
+    if (window.location.pathname + window.location.search === url) return;
+    if (src === "ui") window.history.pushState(null, "", url);
+    else window.history.replaceState(null, "", url);
   }, [view, oracleSel.dataset]);
+
+  // Browser back/forward: restore the module + dataset the URL describes.
+  useEffect(() => {
+    const onPop = () => {
+      const sp = new URLSearchParams(window.location.search);
+      const m = parseModule(sp.get("m"));
+      const d = m === "oracle" ? sp.get("d") : null;
+      navSource.current = "pop";
+      setView(m);
+      setOracleSel((prev) =>
+        prev.dataset === d ? prev : { dataset: d }
+      );
+    };
+    window.addEventListener("popstate", onPop);
+    return () => window.removeEventListener("popstate", onPop);
+  }, [setView]);
 
   // The map's popups are plain DOM, they talk to the shell via window events.
   useEffect(() => {

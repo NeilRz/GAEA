@@ -649,6 +649,26 @@ table.catalog { min-width: 860px; }
 .crumb a { color: var(--glacial-bright); }
 .crumb a:hover { color: var(--ink); }
 .crumb-here { color: var(--ink-2); }
+.crumb-trail { display: flex; align-items: center; gap: 10px; }
+
+/* dataset detail top nav: explicit back button + breadcrumb + esc hint */
+.detail-nav { gap: 14px; }
+.btn-back {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.1em;
+  text-transform: uppercase; cursor: pointer;
+  color: var(--ink); background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--line-strong); border-radius: 999px;
+  padding: 7px 14px;
+  transition: background 0.25s var(--ease), border-color 0.25s var(--ease);
+}
+.btn-back:hover { background: rgba(255, 255, 255, 0.13); border-color: rgba(255, 255, 255, 0.3); }
+.btn-back span { color: var(--glacial-bright); }
+.crumb-hint {
+  margin-left: auto; font-size: 9px; letter-spacing: 0.18em;
+  color: var(--ink-3); border: 1px solid var(--line); border-radius: 4px;
+  padding: 3px 6px; opacity: 0.8;
+}
 
 .o-head {
   display: flex; align-items: flex-start; justify-content: space-between;
@@ -1156,4 +1176,163 @@ table.catalog { min-width: 860px; }
   .term-head-row { flex-direction: column; }
   .term-price-block { align-items: flex-start; text-align: left; }
   .quote-grid { grid-template-columns: repeat(auto-fill, minmax(148px, 1fr)); }
+}
+
+/* ── module select (/overview): the post-Enter lobby ──
+   Four full-height panels, one per module, each with its own ambient
+   accent visual. Hovering a panel widens it, game-mode-select style. */
+
+.msel-page {
+  min-height: 100dvh; display: flex; flex-direction: column;
+  background: var(--bg);
+}
+
+.msel-top {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 18px clamp(20px, 4vw, 48px) 0;
+}
+.msel-brand { color: #fff; }
+.msel-exit {
+  font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--ink-3); transition: color 0.25s var(--ease);
+}
+.msel-exit:hover { color: var(--ink); }
+
+.msel-head { text-align: center; padding: clamp(14px, 3vh, 34px) 20px clamp(16px, 3vh, 30px); }
+.msel-head h1 {
+  font-family: var(--font-serif); font-weight: 400;
+  font-size: clamp(30px, 4.2vw, 50px); line-height: 1.05; margin: 0;
+  text-wrap: balance;
+}
+.msel-head h1 em { font-style: italic; color: var(--glacial-bright); }
+
+.msel-grid {
+  flex: 1; min-height: 0;
+  display: flex; gap: 10px;
+  padding: 0 clamp(12px, 2vw, 28px);
+}
+
+.msel-panel {
+  position: relative; overflow: hidden;
+  flex: 1 1 0; min-width: 0; min-height: 340px;
+  display: flex; flex-direction: column;
+  border: 1px solid var(--line); border-radius: 18px;
+  background:
+    radial-gradient(120% 70% at 50% 0%,
+      color-mix(in srgb, var(--acc) 10%, transparent) 0%, transparent 62%),
+    var(--bg-raised);
+  transition: flex-grow 0.55s var(--ease), border-color 0.35s var(--ease),
+    box-shadow 0.35s var(--ease);
+}
+.msel-panel:hover,
+.msel-panel:focus-within {
+  flex-grow: 1.5;
+  border-color: color-mix(in srgb, var(--acc) 45%, transparent);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.4);
+}
+
+.msel-bg {
+  position: absolute; inset: 0; color: var(--acc);
+  opacity: 0.42;
+  transition: opacity 0.5s var(--ease), transform 0.9s var(--ease);
+}
+.msel-panel:hover .msel-bg,
+.msel-panel:focus-within .msel-bg { opacity: 0.85; transform: scale(1.045); }
+.msel-svg { width: 100%; height: 100%; display: block; }
+
+.msel-scrim {
+  position: absolute; inset: 0;
+  background: linear-gradient(180deg,
+    rgba(12, 21, 25, 0.1) 30%,
+    rgba(12, 21, 25, 0.82) 72%,
+    var(--bg) 100%);
+}
+
+.msel-content {
+  position: relative; z-index: 2;
+  margin-top: auto; padding: clamp(18px, 2.2vw, 30px);
+  display: flex; flex-direction: column; align-items: flex-start;
+}
+.msel-index {
+  font-size: 10px; letter-spacing: 0.3em; color: var(--acc);
+  margin-bottom: 8px;
+}
+.msel-title {
+  font-family: var(--font-serif); font-weight: 400;
+  font-size: clamp(26px, 2.6vw, 38px); line-height: 1; margin: 0 0 10px;
+}
+.msel-desc {
+  font-size: 13px; line-height: 1.55; color: var(--ink-2);
+  margin: 0 0 18px; max-width: 34ch;
+}
+
+.msel-actions { display: flex; flex-direction: column; align-items: flex-start; gap: 0; }
+
+.msel-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  font-family: var(--font-body); font-size: 14px; font-weight: 600;
+  padding: 10px 22px; border-radius: 999px; cursor: pointer;
+  background: #f4f7f8; color: var(--bg); border: 1px solid #f4f7f8;
+  transition: background 0.3s var(--ease), box-shadow 0.3s var(--ease),
+    border-color 0.3s var(--ease);
+}
+.msel-btn:hover { background: #fff; border-color: #fff; box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.09); }
+
+/* inverted twin: dark glass, light ink, light hairline */
+.msel-btn.inv {
+  position: relative; z-index: 3;
+  background: rgba(255, 255, 255, 0.06); color: var(--ink);
+  border-color: rgba(255, 255, 255, 0.3); font-weight: 500;
+  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+}
+.msel-btn.inv:hover {
+  background: rgba(255, 255, 255, 0.14); border-color: rgba(255, 255, 255, 0.5);
+  box-shadow: none;
+}
+
+.msel-dev {
+  font-size: 9px; letter-spacing: 0.26em; text-transform: uppercase;
+  color: var(--ink-3); margin: 14px 0 6px;
+}
+
+/* the primary CTA stretches over the whole panel, so anywhere is clickable */
+.msel-btn-primary::after { content: ""; position: absolute; inset: 0; z-index: 1; }
+
+.msel-foot {
+  text-align: center; font-size: 10px; letter-spacing: 0.22em;
+  text-transform: uppercase; color: var(--ink-3);
+  padding: 14px 20px 16px;
+}
+
+/* panel visual animations */
+.msel-spin {
+  animation: msel-spin 80s linear infinite;
+  transform-box: fill-box; transform-origin: center;
+}
+@keyframes msel-spin { to { transform: rotate(360deg); } }
+
+.msel-ping {
+  animation: msel-ping 3.2s var(--ease) infinite;
+  transform-box: fill-box; transform-origin: center;
+}
+.msel-ping-late { animation-delay: 1.6s; }
+@keyframes msel-ping {
+  0% { opacity: 0.9; transform: scale(1); }
+  70%, 100% { opacity: 0; transform: scale(4); }
+}
+
+.msel-pulse {
+  stroke-dasharray: 640; stroke-dashoffset: 640;
+  animation: msel-pulse 5s linear infinite;
+}
+@keyframes msel-pulse {
+  0% { stroke-dashoffset: 640; }
+  55%, 100% { stroke-dashoffset: 0; }
+}
+
+@media (max-width: 960px) {
+  .msel-grid { flex-direction: column; padding-bottom: 4px; }
+  .msel-panel { min-height: 300px; flex: none; }
+  .msel-panel:hover, .msel-panel:focus-within { flex-grow: 0; }
+  .msel-bg { opacity: 0.6; }
 }
