@@ -135,24 +135,24 @@ function StatusVisual() {
 
 const PANELS: PanelDef[] = [
   {
-    key: "oracle",
-    index: "01",
-    title: "Oracle",
-    desc: "Signed datasets and the tokenization registry. Every byte fingerprinted, Ed25519-signed, anchored on Solana.",
-    cta: "Enter Oracle",
-    href: "/app",
-    acc: "#8fb4c9",
-    visual: <OracleVisual />,
-  },
-  {
     key: "map",
-    index: "02",
+    index: "01",
     title: "Map",
     desc: "The physical layer on one globe: reserves, fields, mines, pipelines and 34,936 power plants.",
     cta: "See Map",
     href: "/app?m=map",
     acc: "#2ba57e",
     visual: <MapVisual />,
+  },
+  {
+    key: "oracle",
+    index: "02",
+    title: "Oracle",
+    desc: "Signed datasets and the tokenization registry. Every byte fingerprinted, Ed25519-signed, anchored on Solana.",
+    cta: "Enter Oracle",
+    href: "/app",
+    acc: "#8fb4c9",
+    visual: <OracleVisual />,
   },
   {
     key: "terminal",
@@ -193,11 +193,12 @@ export default function ModuleSelect() {
           THE GEOM APPLICATION
         </p>
         <h1>
-          Choose your <em>surface</em>
+          GEOM <em>modules</em>
         </h1>
       </div>
 
-      <main className="msel-grid">
+      <main className="msel-lobby">
+        <div className="msel-grid">
         {PANELS.map((p) => (
           <section
             key={p.key}
@@ -217,7 +218,7 @@ export default function ModuleSelect() {
                   {p.cta} <span aria-hidden="true">→</span>
                 </Link>
                 {p.key === "oracle" && (
-                  <>
+                  <span className="msel-devcol">
                     <span className="msel-dev mono">For developers</span>
                     <a
                       className="msel-btn inv"
@@ -225,12 +226,38 @@ export default function ModuleSelect() {
                     >
                       Request API
                     </a>
-                  </>
+                  </span>
                 )}
               </div>
             </div>
           </section>
         ))}
+        </div>
+
+        <section className="msel-bar">
+          <span className="msel-index mono">05</span>
+          <span className="msel-bar-text">
+            <h2 className="msel-title msel-bar-title">Tokenization Platform</h2>
+            <p className="msel-desc msel-bar-desc">
+              The fifth module. In development, unlocks in a future phase.
+            </p>
+          </span>
+          <span className="msel-lock mono">
+            <svg
+              width="12"
+              height="14"
+              viewBox="0 0 12 14"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.4"
+              aria-hidden="true"
+            >
+              <rect x="1" y="6" width="10" height="7" rx="1.5" />
+              <path d="M3.2 6 V4.2 a2.8 2.8 0 0 1 5.6 0 V6" />
+            </svg>
+            Locked
+          </span>
+        </section>
       </main>
 
       <footer className="msel-foot mono">

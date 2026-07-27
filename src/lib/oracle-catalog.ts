@@ -51,6 +51,13 @@ const DISPLAY: Record<
     recordsNoun: "series",
     schedule: "WPSR release Wednesdays ~10:30 ET · ingested Wed 21:30 UTC (Fri catch-up)",
   },
+  prices: {
+    category: "Indicative prices",
+    color: "#c4a469",
+    recordsKey: "prices",
+    recordsNoun: "quotes",
+    schedule: "snapshot on ingest · every snapshot re-signed and re-anchored",
+  },
 };
 
 const SERIES_LABELS: Record<string, string> = {

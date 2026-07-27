@@ -1,0 +1,275 @@
+{
+  "meta": {
+    "id": "prices-v1",
+    "title": "Indicative prices — tokenized assets & watchlist equities",
+    "description": "Point-in-time indicative quotes for the tokenized-RWA registry and its equity watchlist, snapshotted from Yahoo Finance's public chart endpoint. The attestation covers the integrity and publication time of this snapshot, not price accuracy: quotes are indicative, possibly delayed, and not a licensed market-data feed. Informational only, not investment advice.",
+    "unit": "quote currency per token / share — see records[].currency",
+    "sources": [
+      "Yahoo Finance public chart API (unofficial, indicative)"
+    ],
+    "cadence": "snapshot · re-anchored on each ingest",
+    "version": "2026-07-27T10:26Z"
+  },
+  "prices": [
+    {
+      "symbol": "ALB",
+      "quoteSymbol": "ALB",
+      "name": "Albemarle",
+      "kind": "equity",
+      "price": 114.85,
+      "currency": "USD",
+      "changePct": -2.21,
+      "asOf": "2026-07-24T20:00Z"
+    },
+    {
+      "symbol": "BHP",
+      "quoteSymbol": "BHP",
+      "name": "BHP Group",
+      "kind": "equity",
+      "price": 83.72,
+      "currency": "USD",
+      "changePct": -0.97,
+      "asOf": "2026-07-24T20:00Z"
+    },
+    {
+      "symbol": "BP",
+      "quoteSymbol": "BP",
+      "name": "BP",
+      "kind": "equity",
+      "price": 43.82,
+      "currency": "USD",
+      "changePct": 1.15,
+      "asOf": "2026-07-24T20:00Z"
+    },
+    {
+      "symbol": "CCJ",
+      "quoteSymbol": "CCJ",
+      "name": "Cameco",
+      "kind": "equity",
+      "price": 87.86,
+      "currency": "USD",
+      "changePct": -2.78,
+      "asOf": "2026-07-24T20:00Z"
+    },
+    {
+      "symbol": "CGO",
+      "quoteSymbol": "CGO-USD",
+      "name": "Comtech Gold",
+      "kind": "token",
+      "price": 131.1489,
+      "currency": "USD",
+      "changePct": -0.15,
+      "asOf": "2026-07-27T10:25Z"
+    },
+    {
+      "symbol": "COP",
+      "quoteSymbol": "COP",
+      "name": "ConocoPhillips",
+      "kind": "equity",
+      "price": 120.26,
+      "currency": "USD",
+      "changePct": 1.24,
+      "asOf": "2026-07-24T20:00Z"
+    },
+    {
+      "symbol": "CVX",
+      "quoteSymbol": "CVX",
+      "name": "Chevron",
+      "kind": "equity",
+      "price": 194.79,
+      "currency": "USD",
+      "changePct": 0.94,
+      "asOf": "2026-07-24T20:02Z"
+    },
+    {
+      "symbol": "EQNR",
+      "quoteSymbol": "EQNR",
+      "name": "Equinor",
+      "kind": "equity",
+      "price": 40.35,
+      "currency": "USD",
+      "changePct": 0.98,
+      "asOf": "2026-07-24T20:00Z"
+    },
+    {
+      "symbol": "FCX",
+      "quoteSymbol": "FCX",
+      "name": "Freeport-McMoRan",
+      "kind": "equity",
+      "price": 62.6,
+      "currency": "USD",
+      "changePct": -3.69,
+      "asOf": "2026-07-24T20:03Z"
+    },
+    {
+      "symbol": "GLEN",
+      "quoteSymbol": "GLEN.L",
+      "name": "Glencore",
+      "kind": "equity",
+      "price": 524.4,
+      "currency": "GBp",
+      "changePct": -2.4,
+      "asOf": "2026-07-27T10:11Z"
+    },
+    {
+      "symbol": "GOLD",
+      "quoteSymbol": "GOLD",
+      "name": "Barrick Gold",
+      "kind": "equity",
+      "price": 39.35,
+      "currency": "USD",
+      "changePct": -2.14,
+      "asOf": "2026-07-24T20:00Z"
+    },
+    {
+      "symbol": "KAG",
+      "quoteSymbol": "KAG-USD",
+      "name": "Kinesis Silver",
+      "kind": "token",
+      "price": 43.4744,
+      "currency": "USD",
+      "changePct": -18.2,
+      "asOf": "2026-07-27T10:25Z"
+    },
+    {
+      "symbol": "LYC",
+      "quoteSymbol": "LYC.AX",
+      "name": "Lynas Rare Earths",
+      "kind": "equity",
+      "price": 14.87,
+      "currency": "AUD",
+      "changePct": 0.54,
+      "asOf": "2026-07-27T06:10Z"
+    },
+    {
+      "symbol": "MP",
+      "quoteSymbol": "MP",
+      "name": "MP Materials",
+      "kind": "equity",
+      "price": 41.3,
+      "currency": "USD",
+      "changePct": -9.59,
+      "asOf": "2026-07-24T20:00Z"
+    },
+    {
+      "symbol": "NEM",
+      "quoteSymbol": "NEM",
+      "name": "Newmont",
+      "kind": "equity",
+      "price": 93.19,
+      "currency": "USD",
+      "changePct": -2.67,
+      "asOf": "2026-07-24T20:00Z"
+    },
+    {
+      "symbol": "OXY",
+      "quoteSymbol": "OXY",
+      "name": "Occidental Petroleum",
+      "kind": "equity",
+      "price": 57.3,
+      "currency": "USD",
+      "changePct": -0.35,
+      "asOf": "2026-07-24T20:00Z"
+    },
+    {
+      "symbol": "PAXG",
+      "quoteSymbol": "PAXG-USD",
+      "name": "Pax Gold",
+      "kind": "token",
+      "price": 4084.07,
+      "currency": "USD",
+      "changePct": 0.01,
+      "asOf": "2026-07-27T10:25Z"
+    },
+    {
+      "symbol": "RIO",
+      "quoteSymbol": "RIO",
+      "name": "Rio Tinto",
+      "kind": "equity",
+      "price": 91.22,
+      "currency": "USD",
+      "changePct": -1.15,
+      "asOf": "2026-07-24T20:00Z"
+    },
+    {
+      "symbol": "SHEL",
+      "quoteSymbol": "SHEL",
+      "name": "Shell",
+      "kind": "equity",
+      "price": 88.38,
+      "currency": "USD",
+      "changePct": 0.49,
+      "asOf": "2026-07-24T20:00Z"
+    },
+    {
+      "symbol": "SQM",
+      "quoteSymbol": "SQM",
+      "name": "Sociedad Química y Minera",
+      "kind": "equity",
+      "price": 68.73,
+      "currency": "USD",
+      "changePct": -0.69,
+      "asOf": "2026-07-24T20:00Z"
+    },
+    {
+      "symbol": "TTE",
+      "quoteSymbol": "TTE",
+      "name": "TotalEnergies",
+      "kind": "equity",
+      "price": 86.8,
+      "currency": "USD",
+      "changePct": 2.23,
+      "asOf": "2026-07-24T20:00Z"
+    },
+    {
+      "symbol": "UUUU",
+      "quoteSymbol": "UUUU",
+      "name": "Energy Fuels",
+      "kind": "equity",
+      "price": 11.3,
+      "currency": "USD",
+      "changePct": -8.2,
+      "asOf": "2026-07-24T20:00Z"
+    },
+    {
+      "symbol": "VALE",
+      "quoteSymbol": "VALE",
+      "name": "Vale",
+      "kind": "equity",
+      "price": 14.79,
+      "currency": "USD",
+      "changePct": -0.4,
+      "asOf": "2026-07-24T20:00Z"
+    },
+    {
+      "symbol": "VNXAU",
+      "quoteSymbol": "VNXAU-USD",
+      "name": "VNX Gold",
+      "kind": "token",
+      "price": 130.6752,
+      "currency": "USD",
+      "changePct": -0.26,
+      "asOf": "2026-07-27T10:25Z"
+    },
+    {
+      "symbol": "XAUT",
+      "quoteSymbol": "XAUT-USD",
+      "name": "Tether Gold",
+      "kind": "token",
+      "price": 4078.3389,
+      "currency": "USD",
+      "changePct": -0.07,
+      "asOf": "2026-07-27T10:24Z"
+    },
+    {
+      "symbol": "XOM",
+      "quoteSymbol": "XOM",
+      "name": "Exxon Mobil",
+      "kind": "equity",
+      "price": 156.94,
+      "currency": "USD",
+      "changePct": 1.61,
+      "asOf": "2026-07-24T20:02Z"
+    }
+  ]
+}

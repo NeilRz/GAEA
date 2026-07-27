@@ -6,6 +6,7 @@ import fields from "@/data/fields.json";
 import sites from "@/data/sites.json";
 import reserves from "@/data/reserves.json";
 import pipelines from "@/data/pipelines.json";
+import prices from "@/data/prices.json";
 import type { CatalogRow } from "@/lib/oracle-catalog";
 import CatIcon from "./CatIcon";
 
@@ -34,6 +35,33 @@ interface ExploreRow {
   datasetId: string;
   record: Record<string, unknown> | null;
   lngLat?: [number, number];
+  /** Attested indicative quote from the signed prices dataset, if one exists. */
+  price?: PriceQuote;
+}
+
+interface PriceQuote {
+  price: number;
+  currency: string;
+  changePct: number | null;
+}
+
+/* The signed prices snapshot, keyed by registry symbol / watchlist ticker.
+   Same bytes the oracle attests and anchors — see /api/datasets/prices. */
+const PRICE_BY_SYMBOL: Record<string, PriceQuote> = Object.fromEntries(
+  prices.prices.map((p) => [
+    p.symbol,
+    { price: p.price, currency: p.currency, changePct: p.changePct },
+  ])
+);
+
+function fmtPrice(q: PriceQuote): string {
+  const v = q.price.toLocaleString("en-US", {
+    minimumFractionDigits: q.price < 1 ? 0 : 2,
+    maximumFractionDigits: q.price < 1 ? 4 : 2,
+  });
+  if (q.currency === "USD") return `$${v}`;
+  if (q.currency === "GBp") return `${v}p`;
+  return `${v} ${q.currency}`;
 }
 
 const KIND_LABEL: Record<Kind, string> = {
@@ -64,6 +92,7 @@ const DATASET_ICON: Record<string, string> = {
   plants: "bolt",
   pipelines: "pipe",
   eia: "bars",
+  prices: "chart",
 };
 
 const FOLDER_STYLE: Record<string, { color: string; icon: string }> = {
@@ -112,57 +141,71 @@ function buildRows(catalog: CatalogRow[]): ExploreRow[] {
     record: null,
   }));
 
-  const assets: ExploreRow[] = tokenized.assets.map((a) => ({
-    key: `as-${a.symbol}-${a.name}`,
-    kind: "asset" as const,
-    symbol: a.symbol === "—" ? "···" : a.symbol,
-    title: a.name,
-    category: pretty(a.category),
-    categoryKey: a.category,
-    color: FOLDER_STYLE[a.category]?.color ?? "#7e97a6",
-    icon: FOLDER_STYLE[a.category]?.icon ?? "coin",
-    status: ASSET_STATUS[a.status] ?? { cls: "", label: a.status },
-    details: a.issuer,
-    meta: a.chains.join(", ") || "—",
-    spark: null,
-    datasetId: "tokenized",
-    record: {
-      name: a.name,
-      symbol: a.symbol,
-      issuer: a.issuer,
-      underlying: a.underlying,
-      chains: a.chains.join(", "),
-      status: a.status,
-      note: a.relevance,
-    },
-  }));
+  const assets: ExploreRow[] = tokenized.assets.map((a) => {
+    const price = PRICE_BY_SYMBOL[a.symbol];
+    return {
+      key: `as-${a.symbol}-${a.name}`,
+      kind: "asset" as const,
+      symbol: a.symbol === "—" ? "···" : a.symbol,
+      title: a.name,
+      category: pretty(a.category),
+      categoryKey: a.category,
+      color: FOLDER_STYLE[a.category]?.color ?? "#7e97a6",
+      icon: FOLDER_STYLE[a.category]?.icon ?? "coin",
+      status: ASSET_STATUS[a.status] ?? { cls: "", label: a.status },
+      details: a.issuer,
+      meta: a.chains.join(", ") || "—",
+      spark: null,
+      datasetId: "tokenized",
+      price,
+      record: {
+        name: a.name,
+        symbol: a.symbol,
+        issuer: a.issuer,
+        underlying: a.underlying,
+        chains: a.chains.join(", "),
+        status: a.status,
+        ...(price
+          ? { "indicative price": `${fmtPrice(price)} · attested in the prices dataset` }
+          : {}),
+        note: a.relevance,
+      },
+    };
+  });
 
-  const watch: ExploreRow[] = tokenized.watchlist.map((w) => ({
-    key: `wl-${w.ticker}-${w.name}`,
-    kind: "watch" as const,
-    symbol: w.ticker,
-    title: w.name,
-    category: pretty(
-      w.sector === "mining" ? "watchlist-mining-equity" : "watchlist-oil-equity"
-    ),
-    categoryKey:
-      w.sector === "mining" ? "watchlist-mining-equity" : "watchlist-oil-equity",
-    color: "#7e97a6",
-    icon: "eye",
-    status: WATCH_STATUS[w.tokenization] ?? { cls: "", label: w.tokenization },
-    details: w.listing,
-    meta: "—",
-    spark: null,
-    datasetId: "tokenized",
-    record: {
-      name: w.name,
-      ticker: w.ticker,
-      listing: w.listing,
-      sector: w.sector,
-      tokenization: w.tokenization,
-      note: "Watched for a verified tokenization event",
-    },
-  }));
+  const watch: ExploreRow[] = tokenized.watchlist.map((w) => {
+    const price = PRICE_BY_SYMBOL[w.ticker];
+    return {
+      key: `wl-${w.ticker}-${w.name}`,
+      kind: "watch" as const,
+      symbol: w.ticker,
+      title: w.name,
+      category: pretty(
+        w.sector === "mining" ? "watchlist-mining-equity" : "watchlist-oil-equity"
+      ),
+      categoryKey:
+        w.sector === "mining" ? "watchlist-mining-equity" : "watchlist-oil-equity",
+      color: "#7e97a6",
+      icon: "eye",
+      status: WATCH_STATUS[w.tokenization] ?? { cls: "", label: w.tokenization },
+      details: w.listing,
+      meta: "—",
+      spark: null,
+      datasetId: "tokenized",
+      price,
+      record: {
+        name: w.name,
+        ticker: w.ticker,
+        listing: w.listing,
+        sector: w.sector,
+        tokenization: w.tokenization,
+        ...(price
+          ? { "indicative price": `${fmtPrice(price)} · attested in the prices dataset` }
+          : {}),
+        note: "Watched for a verified tokenization event",
+      },
+    };
+  });
 
   return [...datasets, ...assets, ...watch];
 }
@@ -313,13 +356,14 @@ function FilterGroup({
   );
 }
 
-type SortCol = "symbol" | "kind" | "category" | "status" | "details" | "meta";
+type SortCol = "symbol" | "kind" | "category" | "status" | "price" | "details" | "meta";
 
-const SORT_KEY: Record<SortCol, (r: ExploreRow) => string> = {
+const SORT_KEY: Record<SortCol, (r: ExploreRow) => string | number> = {
   symbol: (r) => r.symbol.toLowerCase(),
   kind: (r) => r.kind,
   category: (r) => r.category,
   status: (r) => r.status.label,
+  price: (r) => r.price?.price ?? -1,
   details: (r) => r.details.toLowerCase(),
   meta: (r) => r.meta.toLowerCase(),
 };
@@ -535,6 +579,25 @@ export default function ExplorerCatalog({
       <td>
         <span className={`badge ${r.status.cls}`}>{r.status.label}</span>
       </td>
+      <td className="mono" style={{ fontSize: 12, whiteSpace: "nowrap" }}>
+        {r.price ? (
+          <>
+            {fmtPrice(r.price)}
+            {r.price.changePct !== null && (
+              <span
+                className={
+                  r.price.changePct < 0 ? "px-delta down" : "px-delta up"
+                }
+              >
+                {r.price.changePct > 0 ? "+" : ""}
+                {r.price.changePct.toFixed(2)}%
+              </span>
+            )}
+          </>
+        ) : (
+          <span className="dimmer">—</span>
+        )}
+      </td>
       <td className="dim" style={{ fontSize: 12 }}>{r.details}</td>
       <td className="mono dim" style={{ fontSize: 11.5 }}>{r.meta}</td>
       <td>
@@ -609,6 +672,7 @@ export default function ExplorerCatalog({
               {sortableTh("kind", "Type")}
               {sortableTh("category", "Category")}
               {sortableTh("status", "Status")}
+              {sortableTh("price", "Price")}
               {sortableTh("details", "Details")}
               {sortableTh("meta", "Version · Chains")}
               <th>Trend · 52w</th>
@@ -625,7 +689,7 @@ export default function ExplorerCatalog({
                       <span className="ex-skel ex-skel-bar" style={{ width: w + 30 }} />
                     </span>
                   </td>
-                  {[0, 1, 2, 3, 4].map((c) => (
+                  {[0, 1, 2, 3, 4, 5].map((c) => (
                     <td key={c}>
                       <span
                         className="ex-skel ex-skel-bar"
@@ -643,7 +707,7 @@ export default function ExplorerCatalog({
               {filtered.map(renderRow)}
               {recordHits.length > 0 && (
                 <tr className="ex-sep">
-                  <td colSpan={8}>
+                  <td colSpan={9}>
                     Asset records · from inside the attested datasets
                     {plantsLoading ? " · indexing plants…" : ""}
                   </td>
