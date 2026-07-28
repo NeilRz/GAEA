@@ -30,7 +30,7 @@ jobs:
             echo "VERCEL_TOKEN secret not set - skipping deploy (see comments in this file)."
             echo "ok=false" >> "$GITHUB_OUTPUT"
           fi
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4, SHA-pinned
         if: steps.check.outputs.ok == 'true'
       - name: Deploy to Vercel (production)
         if: steps.check.outputs.ok == 'true'

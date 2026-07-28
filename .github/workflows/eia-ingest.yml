@@ -26,17 +26,28 @@ concurrency:
 jobs:
   ingest:
     runs-on: ubuntu-latest
+    # Environment hook for the signer secret: move ORACLE_SIGNER_KEY from
+    # repo-level secrets into this environment (Settings → Environments →
+    # oracle) and add protection rules; repo-level secrets keep working
+    # meanwhile, so this is a no-op until the secret is moved.
+    environment: oracle
     steps:
-      - uses: actions/checkout@v4
+      # Third-party actions pinned by commit SHA — a hijacked version tag
+      # cannot ship new code into the job that handles the signer key.
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           # Node 24 ships npm 11 — must match the npm generation that wrote
           # package-lock.json, or `npm ci` rejects nested optional deps.
           node-version: 24
           cache: npm
 
-      - run: npm ci
+      # --ignore-scripts: no dependency lifecycle script executes on this
+      # runner, closing the classic npm-postinstall secret-theft vector.
+      # The ingest/anchor scripts run tsx on pure-JS deps and need no
+      # native builds.
+      - run: npm ci --ignore-scripts
 
       - name: Ingest EIA WPSR series
         run: npm run ingest:eia
