@@ -16,7 +16,6 @@ import {
   LabelList,
 } from "recharts";
 import market from "@/data/market.json";
-import tokenized from "@/data/tokenized.json";
 
 /* Categorical order (CVD-validated on #0A1220): blue, amber, teal, violet, rose */
 const C = ["#3e90cb", "#c67c1b", "#2ba57e", "#8a75e8", "#cc5b7e"];
@@ -200,46 +199,3 @@ export function InventoryChart() {
   );
 }
 
-export function TokenizationGapChart() {
-  const g = tokenized.gap;
-  const rows = [
-    { name: "Oil & gas equity market cap", value: g.oilEquityMarketCapUSD / 1e9, color: C[0] },
-    { name: "Tokenized commodities (all, mostly gold)", value: g.tokenizedCommodityRWAUSD / 1e9, color: C[1] },
-    { name: "Tokenized crude oil", value: g.tokenizedOilUSD / 1e9, color: C[4] },
-  ];
-  const max = Math.sqrt(Math.max(...rows.map((r) => r.value)));
-  const fmt = (n: number) =>
-    n >= 1000 ? `$${(n / 1000).toFixed(1)}T` : n === 0 ? "$0, the gap" : `$${n.toFixed(1)}B`;
-  return (
-    <div className="chart-frame">
-      {rows.map((r) => (
-        <div key={r.name} style={{ margin: "14px 0" }}>
-          <div style={{ fontSize: 12, color: INK2, marginBottom: 5 }}>{r.name}</div>
-          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            <div
-              style={{
-                width: `${Math.max((Math.sqrt(r.value) / max) * 72, r.value > 0 ? 1 : 0)}%`,
-                height: 18,
-                background: r.color,
-                borderRadius: "0 4px 4px 0",
-              }}
-            />
-            <span
-              style={{
-                fontFamily: "var(--font-mono)",
-                fontSize: 12,
-                color: r.value === 0 ? "#e87a85" : INK2,
-                whiteSpace: "nowrap",
-              }}
-            >
-              {fmt(r.value)}
-            </span>
-          </div>
-        </div>
-      ))}
-      <p className="chart-sub" style={{ marginTop: 10, marginBottom: 0 }}>
-        bar length on sqrt scale · approximate orders of magnitude, seed data
-      </p>
-    </div>
-  );
-}

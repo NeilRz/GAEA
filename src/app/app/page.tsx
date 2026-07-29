@@ -7,6 +7,7 @@ import anchors from "@/data/anchors.json";
 import reserves from "@/data/reserves.json";
 import fields from "@/data/fields.json";
 import tokenized from "@/data/tokenized.json";
+import minerals from "@/data/minerals.json";
 import GeomApp, { type AppData, type AnchorRecord } from "@/components/app/GeomApp";
 
 export const metadata: Metadata = {
@@ -27,6 +28,8 @@ export default function AppPage() {
       arcticCount: fields.fields.filter((f) => f.arctic).length,
       tokenizedCount: tokenized.assets.length,
       datasetCount: datasetIds().length,
+      mineralCommodities: new Set(minerals.rows.map((r) => r[0])).size,
+      criticalMinerals: minerals.criticalMinerals.length,
     },
     signer: bs58.encode(keypair.publicKey),
     signerDev: dev,

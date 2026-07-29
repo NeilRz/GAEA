@@ -54,6 +54,8 @@ export interface OverviewStats {
   arcticCount: number;
   tokenizedCount: number;
   datasetCount: number;
+  mineralCommodities: number;
+  criticalMinerals: number;
 }
 
 export interface AppData {

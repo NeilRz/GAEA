@@ -138,10 +138,11 @@ export default function OverviewModule({ data }: { data: AppData }) {
         </div>
         <div className="panel stat-tile">
           <span className="stat-value">
-            $0<span className="unit">tokenized crude</span>
+            {stats.mineralCommodities}
+            <span className="unit">commodities</span>
           </span>
-          <span className="stat-label">The gap</span>
-          <span className="stat-note">{stats.tokenizedCount} adjacent assets</span>
+          <span className="stat-label">Minerals tracked</span>
+          <span className="stat-note">{stats.criticalMinerals} critical · USGS MCS</span>
         </div>
         <div className="panel stat-tile">
           <span className="stat-value">

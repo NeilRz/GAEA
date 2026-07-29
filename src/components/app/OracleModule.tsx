@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect } from "react";
-import tokenized from "@/data/tokenized.json";
 import type { DatasetDetail } from "@/lib/oracle-catalog";
 import type { AppData, AnchorRecord, OracleSelection } from "./GeomApp";
 import ExplorerCatalog from "@/components/oracle/ExplorerCatalog";
@@ -10,7 +9,6 @@ import SeriesChart from "@/components/oracle/SeriesChart";
 import VerifyCard from "@/components/oracle/VerifyCard";
 import CodeSnippets from "@/components/oracle/CodeSnippets";
 import CopyChip from "@/components/oracle/CopyChip";
-import { TokenizationGapChart } from "@/components/charts";
 
 function explorerUrl(a: AnchorRecord): string {
   return `https://explorer.solana.com/tx/${a.signature}${
@@ -75,41 +73,6 @@ function RecordPanel({
           ← Show on map
         </button>
       )}
-    </div>
-  );
-}
-
-/* The tracker's headline analysis lives on the tokenized dataset now. */
-function TokenizationGapPanel() {
-  const liveCount = tokenized.assets.filter((a) => a.status === "live").length;
-  const gapCount = tokenized.assets.filter((a) => a.status === "gap").length;
-  return (
-    <div className="panel">
-      <p className="panel-title">
-        The tokenization gap <span className="badge info">registry analysis</span>
-      </p>
-      <div className="stat-strip" style={{ marginBottom: 14 }}>
-        <div className="stat-tile">
-          <span className="stat-value">{tokenized.assets.length + tokenized.watchlist.length}</span>
-          <span className="stat-label">Registry entries</span>
-        </div>
-        <div className="stat-tile">
-          <span className="stat-value">{liveCount}</span>
-          <span className="stat-label">Live products</span>
-          <span className="stat-note">none of them crude or REE</span>
-        </div>
-        <div className="stat-tile">
-          <span className="stat-value">{gapCount}</span>
-          <span className="stat-label">Open gaps</span>
-          <span className="stat-note">verified whitespaces</span>
-        </div>
-        <div className="stat-tile">
-          <span className="stat-value">$0</span>
-          <span className="stat-label">Tokenized crude + REE</span>
-          <span className="stat-note">the market GEOM is built for</span>
-        </div>
-      </div>
-      <TokenizationGapChart />
     </div>
   );
 }
@@ -234,8 +197,6 @@ function DatasetDetailView({
               </p>
             </div>
           )}
-
-          {detail.id === "tokenized" && <TokenizationGapPanel />}
 
           <VerifyCard id={detail.id} />
           <CodeSnippets id={detail.id} />
