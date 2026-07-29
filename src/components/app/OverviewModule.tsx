@@ -49,6 +49,18 @@ const SOURCE_DBS: Array<{
     license: "open data",
   },
   {
+    source: "USGS · Mineral Commodity Summaries data release",
+    datasets: "minerals",
+    cadence: "annual (~Feb)",
+    license: "public domain",
+  },
+  {
+    source: "Ember · Yearly electricity data",
+    datasets: "electricity",
+    cadence: "annual + revisions",
+    license: "CC BY 4.0",
+  },
+  {
     source: "WRI · Global Power Plant Database v1.3.0",
     datasets: "plants",
     cadence: "static",
@@ -85,7 +97,7 @@ const MODULE_ROWS: Array<{
   {
     key: "map",
     title: "Map",
-    desc: "3D globe: reserves, fields, mines, rare earths, nuclear, 34,936 plants",
+    desc: "3D globe: reserves, mines, GEM extraction assets & pipeline routes, 34,936 plants",
     status: "live",
     label: "Live",
   },

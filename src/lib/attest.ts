@@ -14,6 +14,8 @@ import goget from "@/data/goget.json";
 import goit from "@/data/goit.json";
 import jodi from "@/data/jodi.json";
 import noc from "@/data/noc.json";
+import minerals from "@/data/minerals.json";
+import electricity from "@/data/electricity.json";
 
 /**
  * GAEA Oracle v2, verifiable data attestation, Solana-native.
@@ -102,6 +104,16 @@ export const DATASETS: Record<
     data: noc,
     title: noc.meta.title,
     version: noc.meta.version,
+  },
+  minerals: {
+    data: minerals,
+    title: minerals.meta.title,
+    version: minerals.meta.version,
+  },
+  electricity: {
+    data: electricity,
+    title: electricity.meta.title,
+    version: electricity.meta.version,
   },
 };
 

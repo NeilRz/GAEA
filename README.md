@@ -61,6 +61,8 @@ GET /api/quotes/:symbol      # OHLC candles for one symbol (?range=1d|5d|1mo|6mo
 | `goit` | 1,018 | crude & NGL pipelines with route waypoints, ownership, capacity (GEM GOIT, CC BY 4.0) |
 | `jodi` | 81 countries | monthly crude balances: production, refinery intake, imports/exports, stocks (JODI-Oil) |
 | `noc` | 61 | national oil company indicators: revenue, net income, transfers to government, production, reserves (NRGI) |
+| `minerals` | 2,646 | world production & reserves by country, 84 nonfuel commodities incl. 41 critical minerals (USGS MCS, public domain) |
+| `electricity` | 214 areas | annual generation by fuel in TWh, world aggregate included (Ember, CC BY 4.0) |
 | `eia` | 8 series | U.S. weekly petroleum fundamentals (EIA WPSR, public domain) |
 | `prices` | ~26 | attested indicative price snapshot for registry symbols |
 | `pipelines` | 12 | trunk pipeline schematic routes (waypoint polylines) |
@@ -154,9 +156,12 @@ Infrastructure Tracker under **CC BY 4.0** (attribution in each dataset's
 `meta.sources`). `jodi` is compiled from the freely published **JODI-Oil
 World Database** (jodidata.org, national submissions via OPEC/IEA/Eurostat
 et al.). `noc` is republished from the **NRGI National Oil Company
-Database** open-data export (nationaloilcompanydata.org). `eia` is
+Database** open-data export (nationaloilcompanydata.org). `minerals` is
+republished from the **USGS Mineral Commodity Summaries data release**
+(public-domain U.S. government work). `electricity` is republished from
+**Ember's yearly electricity data under CC BY 4.0**. `eia` is
 public-domain U.S. government data (api.eia.gov). Ingest scripts:
-`npm run ingest:goget|goit|jodi|noc|eia|prices`. Map imagery: NASA GIBS (public domain), CARTO
+`npm run ingest:goget|goit|jodi|noc|minerals|electricity|eia|prices`. Map imagery: NASA GIBS (public domain), CARTO
 basemap/labels (© OpenStreetMap contributors, © CARTO), terrain © Mapzen/AWS,
 boundaries: Natural Earth (public domain). Quotes are proxied from the
 unofficial Yahoo Finance chart API — delayed, indicative market colour, not a

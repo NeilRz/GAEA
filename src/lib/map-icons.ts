@@ -183,6 +183,28 @@ const sun: Draw = (ctx, s) => {
   }
 };
 
+const derrick: Draw = (ctx, s) => {
+  // drilling tower: A-frame with two crossbars and a crown block
+  ctx.beginPath();
+  ctx.moveTo(-0.52 * s, 0.7 * s);
+  ctx.lineTo(0, -0.72 * s);
+  ctx.lineTo(0.52 * s, 0.7 * s);
+  ctx.stroke();
+  for (const [y, w] of [
+    [0.25, 0.34],
+    [-0.18, 0.2],
+  ] as const) {
+    ctx.beginPath();
+    ctx.moveTo(-w * s, y * s);
+    ctx.lineTo(w * s, y * s);
+    ctx.stroke();
+  }
+  ctx.beginPath();
+  ctx.arc(0, -0.72 * s, 0.11 * s, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.stroke();
+};
+
 const dot: Draw = (ctx, s) => {
   ctx.beginPath();
   ctx.arc(0, 0, 0.3 * s, 0, Math.PI * 2);
@@ -202,6 +224,7 @@ export const ICONS: Record<string, [Draw, string]> = {
   "i-ree": [crystal, "#8a75e8"],
   "i-nuclear-plant": [atom, "#8fb4c9"],
   "i-uranium": [trefoil, "#8fb4c9"],
+  "i-derrick": [derrick, "#e8873c"],
   "i-fossil": [flame, "#c67c1b"],
   "i-hydro": [waves, "#3e90cb"],
   "i-renewable": [sun, "#2ba57e"],

@@ -21,7 +21,9 @@ import { registerMapIcons } from "@/lib/map-icons";
 
 const GROUPS = {
   oilgas: { color: "#e8a33d", label: "Oil & gas fields", hint: "droplet · supergiants, shale, LNG" },
+  goget: { color: "#e8873c", label: "Extraction assets (5,391)", hint: "derrick clusters · GEM GOGET, CC BY 4.0" },
   pipelines: { color: "#c67c1b", label: "Trunk pipelines", hint: "approximate routes" },
+  goit: { color: "#b5773a", label: "Routed oil pipelines (1,018)", hint: "surveyed lines · GEM GOIT, CC BY 4.0" },
   base: { color: "#b26a4e", label: "Base & industrial metals", hint: "hammer · copper, iron, zinc" },
   precious: { color: "#cbc3b1", label: "Precious metals", hint: "diamond · gold, silver, PGM" },
   battery: { color: "#2ba57e", label: "Battery metals", hint: "bolt · lithium, nickel, cobalt" },
@@ -86,8 +88,11 @@ const SPOTLIGHT: Array<{ name: string; sub: string; lngLat: [number, number]; zo
 const STATUS_COLOR: Record<string, string> = {
   producing: "#2ba57e", operating: "#2ba57e",
   development: "#8fb4c9", construction: "#8fb4c9", "restart-pending": "#8fb4c9",
+  "in development": "#8fb4c9", proposed: "#8fb4c9",
   constrained: "#c4a469", declining: "#c4a469", moratorium: "#c4a469", dormant: "#c4a469",
+  discovered: "#c4a469", idle: "#c4a469", mothballed: "#c4a469", shelved: "#c4a469",
   blocked: "#cc4a57", inactive: "#cc4a57", defunct: "#cc4a57",
+  "shut in": "#cc4a57", cancelled: "#cc4a57", retired: "#cc4a57",
 };
 
 function fc(features: GeoJSON.Feature[]): GeoJSON.FeatureCollection {
@@ -205,6 +210,8 @@ const LAYER_DATASET: Record<string, string> = {
   reserves: "reserves",
   pipelines: "pipelines",
   "pipelines-idle": "pipelines",
+  goit: "goit",
+  "goit-idle": "goit",
 };
 
 const POINT_LAYERS: Exclude<GroupKey, "plants" | "pipelines" | "reserves" | "arctic">[] = [
@@ -235,9 +242,13 @@ export default function ReserveMap({
     lngLat: [number, number];
   } | null>(null);
   const [visible, setVisible] = useState<Record<GroupKey, boolean>>({
-    oilgas: true, pipelines: true, base: true, precious: true, battery: true,
-    ree: true, nuclear: true, plants: true, reserves: true, arctic: true,
+    oilgas: true, goget: true, pipelines: true, goit: true, base: true,
+    precious: true, battery: true, ree: true, nuclear: true, plants: true,
+    reserves: true, arctic: true,
   });
+  const [gemIndex, setGemIndex] = useState<
+    Array<{ name: string; sub: string; lngLat: [number, number]; dataset: string; props: Record<string, unknown> }>
+  >([]);
   const [terrain3d, setTerrain3d] = useState(false);
   const terrain3dRef = useRef(false);
   const [fuel, setFuel] = useState("all");
@@ -262,10 +273,10 @@ export default function ReserveMap({
   const results = useMemo(() => {
     const q = query.trim().toLowerCase();
     if (q.length < 2) return [];
-    return searchIndex
+    return [...searchIndex, ...gemIndex]
       .filter((r) => `${r.name} ${r.sub}`.toLowerCase().includes(q))
       .slice(0, 7);
-  }, [query, searchIndex]);
+  }, [query, searchIndex, gemIndex]);
 
   useEffect(() => {
     if (!containerRef.current || mapRef.current) return;
@@ -562,6 +573,189 @@ export default function ReserveMap({
           (window as unknown as Record<string, unknown>).__geomPlantsError = String(e?.stack ?? e);
           console.error("[GEOM map] plants load failed", e);
         });
+
+      // GEM extraction assets (GOGET): lazy-load the signed dataset,
+      // clustered like plants, derrick glyph per asset.
+      fetch("/api/datasets/goget")
+        .then((r) => r.json())
+        .then(
+          (ds: {
+            assets: Array<{
+              project: string; country: string; status: string; fuel: string;
+              type: string; operator?: string; parent?: string; lat?: number; lng?: number;
+            }>;
+          }) => {
+            const feats: GeoJSON.Feature[] = [];
+            const index: typeof gemIndex = [];
+            for (const a of ds.assets) {
+              if (a.lat === undefined || a.lng === undefined) continue;
+              const props = {
+                name: a.project, country: a.country,
+                commodity: `${a.fuel} ${a.type}`, figure: "",
+                operator: a.operator ?? "", status: a.status,
+                note: "Global Energy Monitor GOGET · CC BY 4.0",
+              };
+              feats.push(point(a.lng, a.lat, props));
+              index.push({
+                name: a.project, sub: `${a.country} · ${a.fuel} ${a.type}`,
+                lngLat: [a.lng, a.lat], dataset: "goget", props,
+              });
+            }
+            setGemIndex(index);
+
+            map.addSource("gx", {
+              type: "geojson", data: fc(feats),
+              cluster: true, clusterMaxZoom: 6, clusterRadius: 42,
+            });
+            map.addLayer({
+              id: "gx-cc", type: "circle", source: "gx",
+              filter: ["has", "point_count"],
+              paint: {
+                "circle-color": GROUPS.goget.color,
+                "circle-opacity": 0.12,
+                "circle-stroke-color": GROUPS.goget.color,
+                "circle-stroke-width": 1.2,
+                "circle-stroke-opacity": 0.7,
+                "circle-radius": ["step", ["get", "point_count"], 11, 50, 14, 250, 18, 1000, 23],
+              },
+            }, "oilgas");
+            map.addLayer({
+              id: "gx-cs", type: "symbol", source: "gx",
+              filter: ["has", "point_count"],
+              layout: {
+                "icon-image": "i-derrick",
+                "icon-size": ["step", ["get", "point_count"], 0.4, 250, 0.48, 1000, 0.56],
+                "icon-allow-overlap": true,
+                "icon-ignore-placement": true,
+                "text-field": ["get", "point_count_abbreviated"],
+                "text-font": ["Noto Sans Regular"],
+                "text-size": 9,
+                "text-offset": [0, 1.35],
+                "text-allow-overlap": true,
+                "text-optional": true,
+              },
+              paint: {
+                "text-color": "#edf1f3",
+                "text-halo-color": "#0c1519",
+                "text-halo-width": 1.1,
+              },
+            }, "oilgas");
+            map.addLayer({
+              id: "gx-pt", type: "symbol", source: "gx",
+              filter: ["!", ["has", "point_count"]],
+              layout: {
+                "icon-image": "i-derrick",
+                "icon-size": ["interpolate", ["linear"], ["zoom"], 4, 0.3, 8, 0.5, 11, 0.62],
+                "icon-allow-overlap": false,
+              },
+            }, "oilgas");
+
+            map.on("click", "gx-pt", (e) => {
+              const f = e.features?.[0];
+              if (!f) return;
+              const props = f.properties as Record<string, unknown>;
+              lastFeatureRef.current = {
+                dataset: "goget", record: props,
+                lngLat: [e.lngLat.lng, e.lngLat.lat],
+              };
+              popup.setLngLat(e.lngLat).setHTML(popupHTML(props)).addTo(map);
+            });
+            map.on("click", "gx-cc", async (e) => {
+              const f = e.features?.[0];
+              if (!f) return;
+              const src = map.getSource("gx") as maplibregl.GeoJSONSource;
+              const zoom = await src.getClusterExpansionZoom(f.properties?.cluster_id as number);
+              map.easeTo({ center: (f.geometry as GeoJSON.Point).coordinates as [number, number], zoom });
+            });
+            for (const id of ["gx-pt", "gx-cc"]) {
+              map.on("mouseenter", id, () => (map.getCanvas().style.cursor = "pointer"));
+              map.on("mouseleave", id, () => (map.getCanvas().style.cursor = ""));
+            }
+          }
+        )
+        .catch((e) => console.error("[GEOM map] goget load failed", e));
+
+      // GEM routed oil & NGL pipelines (GOIT): surveyed waypoint chains,
+      // drawn under the curated trunk lines.
+      fetch("/api/datasets/goit")
+        .then((r) => r.json())
+        .then(
+          (ds: {
+            pipelines: Array<{
+              project: string; unit?: string; type: string; parent?: string;
+              countries: string; status: string; capacity?: number; route?: string;
+            }>;
+          }) => {
+            const feats: GeoJSON.Feature[] = [];
+            for (const p of ds.pipelines) {
+              if (!p.route) continue;
+              // Route format: "lat,lng:lat,lng:…", branches separated by ";".
+              const lines: [number, number][][] = [];
+              for (const part of p.route.split(";")) {
+                const pts = part
+                  .split(":")
+                  .map((seg) => seg.split(",").map(Number))
+                  .filter((a) => a.length === 2 && a.every(Number.isFinite))
+                  .map(([lat, lng]) => [lng, lat] as [number, number]);
+                if (pts.length >= 2) lines.push(pts);
+              }
+              if (!lines.length) continue;
+              feats.push({
+                type: "Feature",
+                geometry:
+                  lines.length === 1
+                    ? { type: "LineString", coordinates: lines[0] }
+                    : { type: "MultiLineString", coordinates: lines },
+                properties: {
+                  name: p.unit ? `${p.project} · ${p.unit}` : p.project,
+                  country: p.countries,
+                  commodity: p.type.replace(/_/g, " ").replace(/s$/, ""),
+                  figure: p.capacity ? `capacity ${p.capacity.toLocaleString("en-US")} (as published)` : "",
+                  operator: p.parent ?? "", status: p.status,
+                  note: "Global Energy Monitor GOIT · CC BY 4.0",
+                  kind: p.type,
+                },
+              });
+            }
+            map.addSource("goit", { type: "geojson", data: fc(feats) });
+            map.addLayer({
+              id: "goit", type: "line", source: "goit",
+              filter: ["==", ["get", "status"], "operating"],
+              layout: { "line-cap": "round", "line-join": "round" },
+              paint: {
+                "line-color": ["match", ["get", "kind"], "ngl_pipelines", "#cbc3b1", "#b5773a"],
+                "line-width": ["interpolate", ["linear"], ["zoom"], 1, 0.8, 6, 2],
+                "line-opacity": 0.65,
+              },
+            }, "pipelines");
+            map.addLayer({
+              id: "goit-idle", type: "line", source: "goit",
+              filter: ["!=", ["get", "status"], "operating"],
+              layout: { "line-cap": "round", "line-join": "round" },
+              paint: {
+                "line-color": ["match", ["get", "kind"], "ngl_pipelines", "#cbc3b1", "#b5773a"],
+                "line-width": ["interpolate", ["linear"], ["zoom"], 1, 0.8, 6, 2],
+                "line-opacity": 0.45,
+                "line-dasharray": [2, 1.6],
+              },
+            }, "pipelines");
+            for (const id of ["goit", "goit-idle"]) {
+              map.on("click", id, (e) => {
+                const f = e.features?.[0];
+                if (!f) return;
+                const props = f.properties as Record<string, unknown>;
+                lastFeatureRef.current = {
+                  dataset: "goit", record: props,
+                  lngLat: [e.lngLat.lng, e.lngLat.lat],
+                };
+                popup.setLngLat(e.lngLat).setHTML(popupHTML(props)).addTo(map);
+              });
+              map.on("mouseenter", id, () => (map.getCanvas().style.cursor = "pointer"));
+              map.on("mouseleave", id, () => (map.getCanvas().style.cursor = ""));
+            }
+          }
+        )
+        .catch((e) => console.error("[GEOM map] goit load failed", e));
     });
 
     // The popup's oracle button is plain DOM inside the map container;
@@ -647,7 +841,14 @@ export default function ReserveMap({
       return;
     }
     const vis = next[key] ? "visible" : "none";
-    const ids = key === "pipelines" ? ["pipelines", "pipelines-idle"] : [key];
+    const ids =
+      key === "pipelines"
+        ? ["pipelines", "pipelines-idle"]
+        : key === "goit"
+          ? ["goit", "goit-idle"]
+          : key === "goget"
+            ? ["gx-cc", "gx-cs", "gx-pt"]
+            : [key];
     for (const id of ids) {
       if (map?.getLayer(id)) map.setLayoutProperty(id, "visibility", vis);
     }
@@ -789,8 +990,9 @@ export default function ReserveMap({
         </div>
         <div className="provenance" style={{ marginTop: 14 }}>
           Curated layers: seed data, verify before publication · Power plants ©
-          WRI Global Power Plant Database (CC-BY 4.0) · Pipeline routes
-          schematic
+          WRI Global Power Plant Database (CC-BY 4.0) · Extraction assets &
+          routed pipelines © Global Energy Monitor (CC BY 4.0) · Trunk pipeline
+          routes schematic
         </div>
       </div>
     </div>

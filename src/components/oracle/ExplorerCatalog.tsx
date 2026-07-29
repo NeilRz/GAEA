@@ -106,6 +106,8 @@ const DATASET_ICON: Record<string, string> = {
   goit: "pipe",
   jodi: "droplet",
   noc: "bars",
+  minerals: "hammer",
+  electricity: "bolt",
 };
 
 const FOLDER_STYLE: Record<string, { color: string; icon: string }> = {

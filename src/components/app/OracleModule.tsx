@@ -176,7 +176,9 @@ function DatasetDetailView({
             {detail.timeseries
               ? detail.id === "jodi"
                 ? "monthly series"
-                : "weekly series"
+                : detail.id === "electricity"
+                  ? "yearly series"
+                  : "weekly series"
               : "registry"}
           </span>
         </div>
@@ -199,9 +201,13 @@ function DatasetDetailView({
               provenance={
                 detail.id === "jodi"
                   ? "Source: JODI-Oil World Database (jodidata.org), national submissions compiled by the Joint Organisations Data Initiative, republished under GEOM attestation. Field production of the largest reporting producers."
-                  : undefined
+                  : detail.id === "electricity"
+                    ? "Source: Ember yearly electricity data (ember-energy.org), CC BY 4.0, republished under GEOM attestation. World generation by fuel."
+                    : undefined
               }
-              deltaLabel={detail.id === "jodi" ? "MO/MO" : undefined}
+              deltaLabel={
+                detail.id === "jodi" ? "MO/MO" : detail.id === "electricity" ? "YR/YR" : undefined
+              }
             />
           ) : (
             <div className="panel">

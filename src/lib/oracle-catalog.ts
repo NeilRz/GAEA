@@ -1,6 +1,8 @@
 import { DATASETS, datasetHashes } from "@/lib/attest";
 import eia from "@/data/eia.json";
 import jodi from "@/data/jodi.json";
+import minerals from "@/data/minerals.json";
+import electricity from "@/data/electricity.json";
 
 /**
  * Presentation metadata for the oracle explorer. The signed datasets stay
@@ -87,6 +89,20 @@ const DISPLAY: Record<
     recordsNoun: "national oil companies",
     schedule: "NRGI database revisions",
   },
+  minerals: {
+    category: "Minerals statistics",
+    color: "#b26a4e",
+    recordsKey: "rows",
+    recordsNoun: "observations",
+    schedule: "USGS MCS release, annually (~February)",
+  },
+  electricity: {
+    category: "Power generation",
+    color: "#5fd4ae",
+    recordsKey: "areas",
+    recordsNoun: "areas",
+    schedule: "Ember yearly release + in-year revisions",
+  },
 };
 
 const SERIES_LABELS: Record<string, string> = {
@@ -113,6 +129,12 @@ function recordsLabel(id: string): string {
   if (id === "jodi") {
     return `${jodi.countries.length} countries · ${jodi.flows.length} monthly flows`;
   }
+  if (id === "minerals") {
+    return `${minerals.rows.length.toLocaleString("en-US")} observations · 84 commodities`;
+  }
+  if (id === "electricity") {
+    return `${electricity.areas.length} areas · ${electricity.fuels.length} fuels, yearly`;
+  }
   if (id === "market") return "3 sample series";
   if (!d.recordsKey) return "—";
   return `${count(id, d.recordsKey).toLocaleString("en-US")} ${d.recordsNoun}`;
@@ -136,6 +158,41 @@ function jodiTopProduction(n: number) {
   }));
 }
 
+const FUEL_LABELS: Record<string, string> = {
+  total: "Total generation",
+  coal: "Coal",
+  gas: "Gas",
+  other_fossil: "Other fossil",
+  nuclear: "Nuclear",
+  hydro: "Hydro",
+  wind: "Wind",
+  solar: "Solar",
+  bioenergy: "Bioenergy",
+  other_renewables: "Other renewables",
+};
+
+/** Headline electricity chart series: world generation per fuel. */
+function electricityWorldSeries() {
+  const world = (
+    electricity.areas as unknown as Array<{
+      code: string;
+      series: Record<string, Array<[number, number]>>;
+    }>
+  ).find((a) => a.code === "WLD");
+  if (!world) return [];
+  return (electricity.fuels as string[])
+    .filter((f) => world.series[f]?.length)
+    .map((f) => ({
+      id: `gen_${f}`,
+      label: FUEL_LABELS[f] ?? f,
+      unit: "TWh",
+      points: world.series[f].map(([year, value]) => ({
+        time: `${year}-12-31`,
+        value,
+      })),
+    }));
+}
+
 export interface CatalogRow {
   id: string;
   title: string;
@@ -150,7 +207,7 @@ export interface CatalogRow {
 
 export function catalogRows(): CatalogRow[] {
   return datasetHashes().map(({ id, title, version }) => {
-    const timeseries = id === "eia" || id === "jodi";
+    const timeseries = id === "eia" || id === "jodi" || id === "electricity";
     let spark: number[] | null = null;
     if (id === "eia") {
       const crude = (eia as { series: EiaSeries[] }).series.find(
@@ -160,6 +217,9 @@ export function catalogRows(): CatalogRow[] {
     } else if (id === "jodi") {
       const top = jodiTopProduction(1)[0];
       spark = top ? top.points.slice(-36).map((p) => p.value) : null;
+    } else if (id === "electricity") {
+      const total = electricityWorldSeries().find((s) => s.id === "gen_total");
+      spark = total ? total.points.map((p) => p.value) : null;
     }
     return {
       id,
@@ -173,7 +233,9 @@ export function catalogRows(): CatalogRow[] {
           ? `week of ${version}`
           : id === "jodi"
             ? `month of ${version}`
-            : `registry v${version}`,
+            : id === "electricity"
+              ? `data year ${version}`
+              : `registry v${version}`,
       timeseries,
       spark,
     };
@@ -210,7 +272,7 @@ export function datasetDetail(id: string): DatasetDetail | null {
   if (!DATASETS[id]) return null;
   const meta = metaOf(id);
   const hash = datasetHashes().find((h) => h.id === id)!;
-  const timeseries = id === "eia" || id === "jodi";
+  const timeseries = id === "eia" || id === "jodi" || id === "electricity";
   let series: DatasetDetail["series"] = null;
   if (id === "eia") {
     series = (eia as { series: EiaSeries[] }).series.map((s) => ({
@@ -221,6 +283,8 @@ export function datasetDetail(id: string): DatasetDetail | null {
     }));
   } else if (id === "jodi") {
     series = jodiTopProduction(8);
+  } else if (id === "electricity") {
+    series = electricityWorldSeries();
   }
   return {
     id,

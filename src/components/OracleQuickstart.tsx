@@ -48,14 +48,14 @@ console.log(countries.length) // 23
 console.log(countries[0]);    // { iso: "VE", name: "Venezuela", reserves: 303, ... }
 
 // Same pattern for every dataset:
-//   /api/datasets/goget       5,391 extraction assets (GEM GOGET, CC BY 4.0)
-//   /api/datasets/goit        1,018 oil & NGL pipelines + routes (GEM, CC BY 4.0)
-//   /api/datasets/jodi        monthly crude balances, 81 countries (JODI-Oil)
-//   /api/datasets/noc         61 national oil companies (NRGI open data)
-//   /api/datasets/plants      34,936 power plants, all fuels (CC-BY WRI)
-//   /api/datasets/fields      43 oil & gas fields
-//   /api/datasets/sites       67 mines, REE deposits, nuclear assets
-//   /api/datasets/tokenized   the tokenization registry`,
+//   /api/datasets/goget        5,391 extraction assets (GEM GOGET, CC BY 4.0)
+//   /api/datasets/goit         1,018 oil & NGL pipelines + routes (GEM, CC BY 4.0)
+//   /api/datasets/jodi         monthly crude balances, 81 countries (JODI-Oil)
+//   /api/datasets/minerals     production & reserves, 84 commodities (USGS MCS)
+//   /api/datasets/electricity  generation by fuel, 214 areas (Ember, CC BY 4.0)
+//   /api/datasets/noc          61 national oil companies (NRGI open data)
+//   /api/datasets/plants       34,936 power plants, all fuels (CC-BY WRI)
+//   /api/datasets/tokenized    the tokenization registry`,
   },
   {
     id: "attest",
