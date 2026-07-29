@@ -172,7 +172,13 @@ function DatasetDetailView({
           ) : (
             <span className="badge warn">anchor stale</span>
           )}
-          <span className="badge plain">{detail.timeseries ? "weekly series" : "registry"}</span>
+          <span className="badge plain">
+            {detail.timeseries
+              ? detail.id === "jodi"
+                ? "monthly series"
+                : "weekly series"
+              : "registry"}
+          </span>
         </div>
       </header>
 
@@ -188,7 +194,15 @@ function DatasetDetailView({
           )}
 
           {detail.series ? (
-            <SeriesChart series={detail.series} />
+            <SeriesChart
+              series={detail.series}
+              provenance={
+                detail.id === "jodi"
+                  ? "Source: JODI-Oil World Database (jodidata.org), national submissions compiled by the Joint Organisations Data Initiative, republished under GEOM attestation. Field production of the largest reporting producers."
+                  : undefined
+              }
+              deltaLabel={detail.id === "jodi" ? "MO/MO" : undefined}
+            />
           ) : (
             <div className="panel">
               <p className="panel-title">About this dataset</p>

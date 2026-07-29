@@ -9,7 +9,11 @@
     "lint": "eslint",
     "anchor": "tsx scripts/anchor.ts",
     "ingest:eia": "tsx scripts/ingest-eia.ts",
-    "ingest:prices": "tsx scripts/ingest-prices.ts"
+    "ingest:prices": "tsx scripts/ingest-prices.ts",
+    "ingest:goget": "tsx scripts/ingest-goget.ts",
+    "ingest:goit": "tsx scripts/ingest-goit.ts",
+    "ingest:jodi": "tsx scripts/ingest-jodi.ts",
+    "ingest:noc": "tsx scripts/ingest-noc.ts"
   },
   "dependencies": {
     "bs58": "^6.0.0",

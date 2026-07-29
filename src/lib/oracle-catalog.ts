@@ -1,5 +1,6 @@
 import { DATASETS, datasetHashes } from "@/lib/attest";
 import eia from "@/data/eia.json";
+import jodi from "@/data/jodi.json";
 
 /**
  * Presentation metadata for the oracle explorer. The signed datasets stay
@@ -58,6 +59,34 @@ const DISPLAY: Record<
     recordsNoun: "quotes",
     schedule: "snapshot on ingest · every snapshot re-signed and re-anchored",
   },
+  goget: {
+    category: "Extraction assets",
+    color: "#e8873c",
+    recordsKey: "assets",
+    recordsNoun: "assets",
+    schedule: "GEM tracker releases, roughly twice yearly",
+  },
+  goit: {
+    category: "Oil pipelines",
+    color: "#b5773a",
+    recordsKey: "pipelines",
+    recordsNoun: "pipeline units",
+    schedule: "GEM tracker releases, roughly twice yearly",
+  },
+  jodi: {
+    category: "Country balances",
+    color: "#4a9db5",
+    recordsKey: "countries",
+    recordsNoun: "countries",
+    schedule: "JODI monthly update ~20th · re-ingested on release",
+  },
+  noc: {
+    category: "NOC indicators",
+    color: "#9b8ec4",
+    recordsKey: "companies",
+    recordsNoun: "national oil companies",
+    schedule: "NRGI database revisions",
+  },
 };
 
 const SERIES_LABELS: Record<string, string> = {
@@ -81,9 +110,30 @@ function recordsLabel(id: string): string {
     const s = (eia as { series: EiaSeries[] }).series;
     return `${s.length} series · ${s[0]?.points.length ?? 0} weeks`;
   }
+  if (id === "jodi") {
+    return `${jodi.countries.length} countries · ${jodi.flows.length} monthly flows`;
+  }
   if (id === "market") return "3 sample series";
   if (!d.recordsKey) return "—";
   return `${count(id, d.recordsKey).toLocaleString("en-US")} ${d.recordsNoun}`;
+}
+
+/** Headline JODI chart series: crude production of the largest producers. */
+function jodiTopProduction(n: number) {
+  type Pt = [string, number];
+  // JSON tuples import as (string | number)[][]; go through unknown.
+  const producers = (jodi.countries as unknown as Array<{ code: string; name: string; series: Record<string, Pt[]> }>)
+    .map((c) => ({ ...c, prod: c.series.INDPROD }))
+    .filter((c): c is typeof c & { prod: Pt[] } => !!c.prod && c.prod.length > 12)
+    .sort((a, b) => b.prod[b.prod.length - 1][1] - a.prod[a.prod.length - 1][1])
+    .slice(0, n);
+  return producers.map((c) => ({
+    id: `prod_${c.code}`,
+    label: c.name,
+    unit: "kb/d",
+    // lightweight-charts wants full dates; JODI periods are YYYY-MM.
+    points: c.prod.map(([time, value]) => ({ time: `${time}-01`, value })),
+  }));
 }
 
 export interface CatalogRow {
@@ -100,13 +150,16 @@ export interface CatalogRow {
 
 export function catalogRows(): CatalogRow[] {
   return datasetHashes().map(({ id, title, version }) => {
-    const timeseries = id === "eia";
+    const timeseries = id === "eia" || id === "jodi";
     let spark: number[] | null = null;
-    if (timeseries) {
+    if (id === "eia") {
       const crude = (eia as { series: EiaSeries[] }).series.find(
         (s) => s.id === "crude_stocks"
       );
       spark = crude ? crude.points.slice(-52).map((p) => p.value) : null;
+    } else if (id === "jodi") {
+      const top = jodiTopProduction(1)[0];
+      spark = top ? top.points.slice(-36).map((p) => p.value) : null;
     }
     return {
       id,
@@ -115,7 +168,12 @@ export function catalogRows(): CatalogRow[] {
       color: DISPLAY[id]?.color ?? "#7e97a6",
       records: recordsLabel(id),
       version,
-      updated: timeseries ? `week of ${version}` : `registry v${version}`,
+      updated:
+        id === "eia"
+          ? `week of ${version}`
+          : id === "jodi"
+            ? `month of ${version}`
+            : `registry v${version}`,
       timeseries,
       spark,
     };
@@ -152,7 +210,18 @@ export function datasetDetail(id: string): DatasetDetail | null {
   if (!DATASETS[id]) return null;
   const meta = metaOf(id);
   const hash = datasetHashes().find((h) => h.id === id)!;
-  const timeseries = id === "eia";
+  const timeseries = id === "eia" || id === "jodi";
+  let series: DatasetDetail["series"] = null;
+  if (id === "eia") {
+    series = (eia as { series: EiaSeries[] }).series.map((s) => ({
+      id: s.id,
+      label: SERIES_LABELS[s.id] ?? s.id,
+      unit: s.unit,
+      points: s.points.map((p) => ({ time: p.period, value: p.value })),
+    }));
+  } else if (id === "jodi") {
+    series = jodiTopProduction(8);
+  }
   return {
     id,
     title: DATASETS[id].title,
@@ -167,13 +236,6 @@ export function datasetDetail(id: string): DatasetDetail | null {
     records: recordsLabel(id),
     sha256: hash.sha256,
     timeseries,
-    series: timeseries
-      ? (eia as { series: EiaSeries[] }).series.map((s) => ({
-          id: s.id,
-          label: SERIES_LABELS[s.id] ?? s.id,
-          unit: s.unit,
-          points: s.points.map((p) => ({ time: p.period, value: p.value })),
-        }))
-      : null,
+    series,
   };
 }

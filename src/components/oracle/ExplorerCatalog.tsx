@@ -102,6 +102,10 @@ const DATASET_ICON: Record<string, string> = {
   pipelines: "pipe",
   eia: "bars",
   prices: "chart",
+  goget: "rig",
+  goit: "pipe",
+  jodi: "droplet",
+  noc: "bars",
 };
 
 const FOLDER_STYLE: Record<string, { color: string; icon: string }> = {
@@ -429,42 +433,111 @@ export default function ExplorerCatalog({
     return () => clearTimeout(t);
   }, [pending, kinds, cats, statuses]);
 
-  /* The plants index rides in on the first real search, from the same
-     signed bytes the oracle attests (/data/plants.json is the CDN copy). */
+  /* The heavy record indexes ride in on the first real search, from the
+     same signed bytes the oracle attests: the 34,936 plants (CDN copy),
+     plus the GEM extraction assets and pipelines (dataset API). */
   const plantsFetchStarted = useRef(false);
   const maybeLoadPlants = (value: string) => {
     if (value.trim().length < 2 || plantsFetchStarted.current) return;
     plantsFetchStarted.current = true;
     setPlantsLoading(true);
-    fetch("/data/plants.json")
+    const plants: Promise<ExploreRow[]> = fetch("/data/plants.json")
       .then((r) => r.json())
       .then(
         (ds: {
           plants: Array<{ name: string; country: string; fuel: string; mw: number; lat: number; lng: number }>;
-        }) => {
-          setPlantRecords(
-            ds.plants.map((p) => ({
-              key: `rec-pl-${p.name}-${p.lat}-${p.lng}`,
-              kind: "record" as const,
-              symbol: p.name,
-              title: `${p.country} · ${p.fuel}`,
-              category: "plants",
-              categoryKey: "rec:plants",
-              color: "#5fd4ae",
-              icon: "bolt",
-              status: ATTESTED,
-              details: `${p.mw.toLocaleString("en-US")} MW`,
-              meta: "plants",
-              spark: null,
-              datasetId: "plants",
-              record: { name: p.name, country: p.country, fuel: p.fuel, "capacity (MW)": p.mw },
-              lngLat: [p.lng, p.lat] as [number, number],
-              flagCountry: p.country,
-            }))
-          );
-        }
-      )
-      .catch(() => {})
+        }) =>
+          ds.plants.map((p) => ({
+            key: `rec-pl-${p.name}-${p.lat}-${p.lng}`,
+            kind: "record" as const,
+            symbol: p.name,
+            title: `${p.country} · ${p.fuel}`,
+            category: "plants",
+            categoryKey: "rec:plants",
+            color: "#5fd4ae",
+            icon: "bolt",
+            status: ATTESTED,
+            details: `${p.mw.toLocaleString("en-US")} MW`,
+            meta: "plants",
+            spark: null,
+            datasetId: "plants",
+            record: { name: p.name, country: p.country, fuel: p.fuel, "capacity (MW)": p.mw },
+            lngLat: [p.lng, p.lat] as [number, number],
+            flagCountry: p.country,
+          }))
+      );
+    const goget: Promise<ExploreRow[]> = fetch("/api/datasets/goget")
+      .then((r) => r.json())
+      .then(
+        (ds: {
+          assets: Array<{ project: string; country: string; status: string; fuel: string; type: string; operator?: string; parent?: string; lat?: number; lng?: number }>;
+        }) =>
+          ds.assets.map((a, i) => ({
+            key: `rec-gx-${i}-${a.project}`,
+            kind: "record" as const,
+            symbol: a.project,
+            title: `${a.country} · ${a.fuel} ${a.type}`,
+            category: "goget",
+            categoryKey: "rec:goget",
+            color: "#e8873c",
+            icon: "rig",
+            status: ATTESTED,
+            details: a.status,
+            meta: "goget",
+            spark: null,
+            datasetId: "goget",
+            record: {
+              project: a.project,
+              country: a.country,
+              status: a.status,
+              hydrocarbon: a.fuel,
+              type: a.type,
+              ...(a.operator ? { operator: a.operator } : {}),
+              ...(a.parent ? { parent: a.parent } : {}),
+            },
+            lngLat:
+              a.lng !== undefined && a.lat !== undefined
+                ? ([a.lng, a.lat] as [number, number])
+                : undefined,
+            flagCountry: a.country,
+          }))
+      );
+    const goit: Promise<ExploreRow[]> = fetch("/api/datasets/goit")
+      .then((r) => r.json())
+      .then(
+        (ds: {
+          pipelines: Array<{ project: string; unit?: string; type: string; parent?: string; countries: string; status: string; capacity?: number }>;
+        }) =>
+          ds.pipelines.map((p, i) => ({
+            key: `rec-gp-${i}-${p.project}`,
+            kind: "record" as const,
+            symbol: p.unit ? `${p.project} · ${p.unit}` : p.project,
+            title: `${p.countries} · ${p.type.replace(/_/g, " ")}`,
+            category: "goit",
+            categoryKey: "rec:goit",
+            color: "#b5773a",
+            icon: "pipe",
+            status: ATTESTED,
+            details: p.status,
+            meta: "goit",
+            spark: null,
+            datasetId: "goit",
+            record: {
+              project: p.project,
+              ...(p.unit ? { unit: p.unit } : {}),
+              countries: p.countries,
+              kind: p.type.replace(/_/g, " "),
+              status: p.status,
+              ...(p.parent ? { parent: p.parent } : {}),
+              ...(p.capacity !== undefined ? { capacity: p.capacity } : {}),
+            },
+          }))
+      );
+    Promise.allSettled([plants, goget, goit])
+      .then((results) => {
+        const rows = results.flatMap((r) => (r.status === "fulfilled" ? r.value : []));
+        if (rows.length) setPlantRecords(rows);
+      })
       .finally(() => setPlantsLoading(false));
   };
 
@@ -738,7 +811,7 @@ export default function ExplorerCatalog({
                 <tr className="ex-sep">
                   <td colSpan={9}>
                     Asset records · from inside the attested datasets
-                    {plantsLoading ? " · indexing plants…" : ""}
+                    {plantsLoading ? " · indexing plants, assets & pipelines…" : ""}
                   </td>
                 </tr>
               )}
@@ -750,7 +823,7 @@ export default function ExplorerCatalog({
           {filtered.length} results
           {recordHits.length > 0 &&
             ` · ${recordHits.length}${recordHits.length >= RECORD_HIT_CAP ? "+" : ""} asset records`}
-          {plantsLoading && " · indexing plants…"}
+          {plantsLoading && " · indexing plants, assets & pipelines…"}
           {" · "}
           {rows.length} in catalog
         </div>

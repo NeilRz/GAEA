@@ -16,6 +16,58 @@ function shortSig(sig: string): string {
   return `${sig.slice(0, 8)}…${sig.slice(-8)}`;
 }
 
+/* Upstream databases behind the signed catalog — the provenance ledger.
+   Licenses that permit redistribution are what make attestation possible. */
+const SOURCE_DBS: Array<{
+  source: string;
+  datasets: string;
+  cadence: string;
+  license: string;
+}> = [
+  {
+    source: "Global Energy Monitor · Global Oil & Gas Extraction Tracker",
+    datasets: "goget",
+    cadence: "tracker releases",
+    license: "CC BY 4.0",
+  },
+  {
+    source: "Global Energy Monitor · Global Oil Infrastructure Tracker",
+    datasets: "goit",
+    cadence: "tracker releases",
+    license: "CC BY 4.0",
+  },
+  {
+    source: "JODI-Oil World Database (OPEC, IEA, Eurostat et al.)",
+    datasets: "jodi",
+    cadence: "monthly ~20th",
+    license: "public JODI data",
+  },
+  {
+    source: "NRGI · National Oil Company Database",
+    datasets: "noc",
+    cadence: "database revisions",
+    license: "open data",
+  },
+  {
+    source: "WRI · Global Power Plant Database v1.3.0",
+    datasets: "plants",
+    cadence: "static",
+    license: "CC BY 4.0",
+  },
+  {
+    source: "U.S. EIA · Weekly Petroleum Status Report",
+    datasets: "eia",
+    cadence: "weekly (Wed)",
+    license: "public domain",
+  },
+  {
+    source: "OPEC ASB, EIA, operator disclosures, WNA (curated seed data)",
+    datasets: "reserves · fields · sites · pipelines",
+    cadence: "on revision",
+    license: "compiled figures",
+  },
+];
+
 const MODULE_ROWS: Array<{
   key: ModuleKey;
   title: string;
@@ -215,6 +267,40 @@ export default function OverviewModule({ data }: { data: AppData }) {
             )}
           </>
         )}
+      </section>
+
+      <section className="panel" style={{ marginTop: 22 }}>
+        <p className="panel-title">
+          Source databases <span className="badge plain">provenance</span>
+        </p>
+        <p className="dim" style={{ fontSize: 13, marginTop: 0 }}>
+          Every signed dataset traces to an upstream database whose terms
+          permit redistribution. GEOM fingerprints the exact bytes it
+          republishes; the attestation covers integrity and publication time,
+          not the accuracy of upstream figures.
+        </p>
+        <div className="table-wrap">
+          <table className="data">
+            <thead>
+              <tr>
+                <th>Upstream database</th>
+                <th>Dataset id</th>
+                <th>Cadence</th>
+                <th>Terms</th>
+              </tr>
+            </thead>
+            <tbody>
+              {SOURCE_DBS.map((s) => (
+                <tr key={s.datasets}>
+                  <td style={{ fontSize: 13 }}>{s.source}</td>
+                  <td className="mono dim" style={{ fontSize: 12 }}>{s.datasets}</td>
+                  <td className="dim" style={{ fontSize: 12.5 }}>{s.cadence}</td>
+                  <td className="dim" style={{ fontSize: 12.5 }}>{s.license}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </section>
 
       <div style={{ marginTop: 22 }}>

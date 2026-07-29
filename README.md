@@ -57,6 +57,12 @@ GET /api/quotes/:symbol      # OHLC candles for one symbol (?range=1d|5d|1mo|6mo
 | `fields` | 43 | major oil & gas fields, production figures, Arctic flags |
 | `sites` | 67 | mines, REE deposits, uranium mines, nuclear plants — operator, figure, status |
 | `plants` | 34,936 | global power plants, all fuels (WRI GPPD v1.3.0, CC-BY 4.0) |
+| `goget` | 5,391 | oil & gas extraction assets worldwide — status, ownership, coordinates (GEM GOGET, CC BY 4.0) |
+| `goit` | 1,018 | crude & NGL pipelines with route waypoints, ownership, capacity (GEM GOIT, CC BY 4.0) |
+| `jodi` | 81 countries | monthly crude balances: production, refinery intake, imports/exports, stocks (JODI-Oil) |
+| `noc` | 61 | national oil company indicators: revenue, net income, transfers to government, production, reserves (NRGI) |
+| `eia` | 8 series | U.S. weekly petroleum fundamentals (EIA WPSR, public domain) |
+| `prices` | ~26 | attested indicative price snapshot for registry symbols |
 | `pipelines` | 12 | trunk pipeline schematic routes (waypoint polylines) |
 | `tokenized` | 45 | tokenized-RWA registry + watchlists |
 | `market` | — | illustrative market-structure series |
@@ -142,7 +148,15 @@ are **seed data** compiled from public sources (OPEC ASB, EIA, operator
 disclosures, mining rankings, WNA) — approximate figures requiring
 verification before formal publication. `plants` is republished from the
 **WRI Global Power Plant Database v1.3.0 under CC-BY 4.0** (attribution
-required and included). Map imagery: NASA GIBS (public domain), CARTO
+required and included). `goget` and `goit` are republished from **Global
+Energy Monitor's** Global Oil & Gas Extraction Tracker and Global Oil
+Infrastructure Tracker under **CC BY 4.0** (attribution in each dataset's
+`meta.sources`). `jodi` is compiled from the freely published **JODI-Oil
+World Database** (jodidata.org, national submissions via OPEC/IEA/Eurostat
+et al.). `noc` is republished from the **NRGI National Oil Company
+Database** open-data export (nationaloilcompanydata.org). `eia` is
+public-domain U.S. government data (api.eia.gov). Ingest scripts:
+`npm run ingest:goget|goit|jodi|noc|eia|prices`. Map imagery: NASA GIBS (public domain), CARTO
 basemap/labels (© OpenStreetMap contributors, © CARTO), terrain © Mapzen/AWS,
 boundaries: Natural Earth (public domain). Quotes are proxied from the
 unofficial Yahoo Finance chart API — delayed, indicative market colour, not a

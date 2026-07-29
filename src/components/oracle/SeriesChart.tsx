@@ -27,12 +27,23 @@ export interface SeriesData {
 
 function formatValue(v: number, unit: string): string {
   if (unit === "percent") return `${v.toFixed(1)}%`;
-  if (unit === "thousand barrels") return `${(v / 1000).toFixed(1)}M bbl`;
-  if (unit === "thousand barrels/day") return `${(v / 1000).toFixed(2)}M b/d`;
+  if (unit === "thousand barrels" || unit === "kbbl") return `${(v / 1000).toFixed(1)}M bbl`;
+  if (unit === "thousand barrels/day" || unit === "kb/d") return `${(v / 1000).toFixed(2)}M b/d`;
   return v.toLocaleString("en-US");
 }
 
-export default function SeriesChart({ series }: { series: SeriesData[] }) {
+const EIA_PROVENANCE =
+  "Source: U.S. EIA Weekly Petroleum Status Report, public-domain U.S. government data republished under GEOM attestation.";
+
+export default function SeriesChart({
+  series,
+  provenance = EIA_PROVENANCE,
+  deltaLabel = "WK/WK",
+}: {
+  series: SeriesData[];
+  provenance?: string;
+  deltaLabel?: string;
+}) {
   const [activeId, setActiveId] = useState(series[0]?.id ?? "");
   const [hover, setHover] = useState<number | null>(null);
   const wrapRef = useRef<HTMLDivElement>(null);
@@ -154,7 +165,7 @@ export default function SeriesChart({ series }: { series: SeriesData[] }) {
         </span>
         {wow != null && (
           <span className={`ohlc-pair ${tone}`}>
-            <span className="ohlc-k">WK/WK</span>
+            <span className="ohlc-k">{deltaLabel}</span>
             <span>
               {wow >= 0 ? "+" : "−"}
               {formatValue(Math.abs(wow), active.unit)}
@@ -167,10 +178,7 @@ export default function SeriesChart({ series }: { series: SeriesData[] }) {
         </span>
       </div>
       <div ref={wrapRef} className="chart-frame" style={{ height: 360 }} />
-      <p className="provenance">
-        Source: U.S. EIA Weekly Petroleum Status Report, public-domain U.S.
-        government data republished under GEOM attestation.
-      </p>
+      <p className="provenance">{provenance}</p>
     </div>
   );
 }

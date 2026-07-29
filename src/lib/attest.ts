@@ -10,6 +10,10 @@ import plants from "@/data/plants.json";
 import pipelinesData from "@/data/pipelines.json";
 import eia from "@/data/eia.json";
 import prices from "@/data/prices.json";
+import goget from "@/data/goget.json";
+import goit from "@/data/goit.json";
+import jodi from "@/data/jodi.json";
+import noc from "@/data/noc.json";
 
 /**
  * GAEA Oracle v2, verifiable data attestation, Solana-native.
@@ -78,6 +82,26 @@ export const DATASETS: Record<
     data: prices,
     title: prices.meta.title,
     version: prices.meta.version,
+  },
+  goget: {
+    data: goget,
+    title: goget.meta.title,
+    version: goget.meta.version,
+  },
+  goit: {
+    data: goit,
+    title: goit.meta.title,
+    version: goit.meta.version,
+  },
+  jodi: {
+    data: jodi,
+    title: jodi.meta.title,
+    version: jodi.meta.version,
+  },
+  noc: {
+    data: noc,
+    title: noc.meta.title,
+    version: noc.meta.version,
   },
 };
 
