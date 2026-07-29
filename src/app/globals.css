@@ -1193,28 +1193,27 @@ table.catalog { min-width: 860px; }
 }
 
 .msel-top {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 18px clamp(20px, 4vw, 48px) 0;
+  display: grid; grid-template-columns: 1fr auto 1fr; align-items: center;
+  padding: 16px clamp(20px, 4vw, 48px) 18px;
 }
-.msel-brand { color: #fff; }
+.msel-brand { color: #fff; justify-self: start; }
+.msel-h1 {
+  font-family: var(--font-serif); font-weight: 600; letter-spacing: -0.01em;
+  text-align: center;
+  font-size: clamp(22px, 2.6vw, 34px); line-height: 1.05; margin: 0;
+}
+.msel-h1 em { font-style: italic; color: var(--glacial-bright); }
 .msel-exit {
+  justify-self: end;
   font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
   color: var(--ink-3); transition: color 0.25s var(--ease);
 }
 .msel-exit:hover { color: var(--ink); }
 
-.msel-head { text-align: center; padding: clamp(14px, 3vh, 34px) 20px clamp(16px, 3vh, 30px); }
-.msel-head h1 {
-  font-family: var(--font-serif); font-weight: 600; letter-spacing: -0.01em;
-  font-size: clamp(30px, 4.2vw, 50px); line-height: 1.05; margin: 0;
-  text-wrap: balance;
-}
-.msel-head h1 em { font-style: italic; color: var(--glacial-bright); }
-
 .msel-lobby {
   flex: 1; min-height: 0;
   display: flex; flex-direction: column; gap: 10px;
-  padding: 0 clamp(12px, 2vw, 28px);
+  padding: 0 clamp(12px, 2vw, 28px) clamp(12px, 2vw, 22px);
 }
 
 .msel-grid {
@@ -1310,22 +1309,31 @@ table.catalog { min-width: 860px; }
   color: var(--ink-3); margin: 0 0 5px 4px;
 }
 
-/* the locked fifth module: a full-width bar under the four live panels */
+/* the locked fifth module: a full-width panel under the four live ones */
 .msel-bar {
+  position: relative; overflow: hidden;
   display: flex; align-items: center; gap: clamp(14px, 2vw, 26px);
-  padding: 12px clamp(18px, 2.2vw, 30px);
-  border: 1px dashed var(--line-strong); border-radius: 14px;
+  padding: clamp(18px, 3vh, 32px) clamp(18px, 2.2vw, 30px);
+  min-height: clamp(112px, 16vh, 172px);
+  border: 1px dashed var(--line-strong); border-radius: 16px;
   background: var(--bg-raised);
-  opacity: 0.55; filter: grayscale(0.6);
+  opacity: 0.6; filter: grayscale(0.6);
   cursor: not-allowed; user-select: none;
 }
-.msel-bar .msel-index { color: var(--ink-3); margin: 0; }
+.msel-bar-bg {
+  position: absolute; inset: 0; z-index: 0;
+  color: #c4a469; opacity: 0.15;
+}
+.msel-bar .msel-index,
+.msel-bar-text,
+.msel-lock { position: relative; z-index: 1; }
+.msel-bar .msel-index { color: var(--ink-3); margin: 0; align-self: flex-start; }
 .msel-bar-text {
-  display: flex; align-items: baseline; gap: 12px 18px; flex-wrap: wrap;
+  display: flex; flex-direction: column; gap: 7px;
   min-width: 0;
 }
-.msel-bar-title { font-size: clamp(18px, 1.8vw, 24px); margin: 0; }
-.msel-bar-desc { margin: 0; max-width: none; font-size: 12.5px; }
+.msel-bar-title { font-size: clamp(20px, 2vw, 28px); margin: 0; }
+.msel-bar-desc { margin: 0; max-width: none; font-size: 13px; }
 .msel-lock {
   margin-left: auto; display: inline-flex; align-items: center; gap: 7px;
   font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase;
@@ -1336,12 +1344,6 @@ table.catalog { min-width: 860px; }
 
 /* the primary CTA stretches over the whole panel, so anywhere is clickable */
 .msel-btn-primary::after { content: ""; position: absolute; inset: 0; z-index: 1; }
-
-.msel-foot {
-  text-align: center; font-size: 10px; letter-spacing: 0.22em;
-  text-transform: uppercase; color: var(--ink-3);
-  padding: 14px 20px 16px;
-}
 
 /* panel visual animations */
 .msel-spin {
@@ -1369,14 +1371,76 @@ table.catalog { min-width: 860px; }
   55%, 100% { stroke-dashoffset: 0; }
 }
 
+/* map: survey sites blinking in, commodity glyphs breathing */
+.msel-blip { opacity: 0; animation: msel-blip 6.5s linear infinite; }
+@keyframes msel-blip {
+  0%, 100% { opacity: 0; }
+  6%, 40% { opacity: 0.9; }
+  54% { opacity: 0; }
+}
+.msel-breathe { animation: msel-breathe 4.5s ease-in-out infinite; }
+@keyframes msel-breathe {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.95; }
+}
+
+/* oracle: counter-rotation, radiating attestation pulses, breathing core */
+.msel-spin-rev { animation-duration: 55s; animation-direction: reverse; }
+.msel-emit {
+  transform-box: fill-box; transform-origin: center;
+  animation: msel-emit 5.5s linear infinite;
+}
+@keyframes msel-emit {
+  0% { transform: scale(0.04); opacity: 0.7; }
+  80%, 100% { transform: scale(1); opacity: 0; }
+}
+.msel-core {
+  transform-box: fill-box; transform-origin: center;
+  animation: msel-core 2.8s ease-in-out infinite;
+}
+@keyframes msel-core {
+  0%, 100% { transform: scale(1); opacity: 0.15; }
+  50% { transform: scale(1.7); opacity: 0.4; }
+}
+.msel-blink { animation: msel-blink 1.1s steps(2, jump-none) infinite; }
+@keyframes msel-blink {
+  0% { opacity: 0.6; }
+  50% { opacity: 0; }
+}
+
+/* terminal: candle bodies breathe, the live one prints faster */
+.msel-candle {
+  transform-box: fill-box; transform-origin: center;
+  animation: msel-candle 3.6s ease-in-out infinite;
+}
+@keyframes msel-candle {
+  0%, 100% { transform: scaleY(1); }
+  50% { transform: scaleY(1.28); }
+}
+.msel-candle-live { animation-duration: 1.6s; }
+.msel-price { animation: msel-price 7s ease-in-out infinite; }
+@keyframes msel-price {
+  0%, 100% { transform: translateY(0); }
+  30% { transform: translateY(9px); }
+  65% { transform: translateY(-7px); }
+}
+
+/* locked bar: the token pipeline drifts */
+.msel-tok { animation: msel-drift 16s ease-in-out infinite alternate; }
+@keyframes msel-drift {
+  from { transform: translateX(-14px); }
+  to { transform: translateX(14px); }
+}
+
 @media (max-width: 960px) {
   .msel-grid { flex-direction: column; }
-  .msel-lobby { padding-bottom: 4px; }
+  .msel-lobby { padding-bottom: 12px; }
   .msel-panel { min-height: 300px; flex: none; }
   .msel-panel:hover, .msel-panel:focus-within { flex-grow: 0; }
   .msel-bg { opacity: 0.6; }
-  .msel-bar { flex-wrap: wrap; }
+  .msel-bar { flex-wrap: wrap; min-height: 0; }
   .msel-lock { margin-left: 0; }
+  .msel-h1 { font-size: 20px; }
 }
 
 /* ── explorer live beat (pyth-style) ──

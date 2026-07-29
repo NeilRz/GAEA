@@ -20,12 +20,71 @@ interface PanelDef {
 function OracleVisual() {
   return (
     <svg className="msel-svg" viewBox="0 0 400 620" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+      {/* outer and inner rings counter-rotate against the middle one */}
       <g className="msel-spin" fill="none" stroke="currentColor">
         <circle cx="200" cy="250" r="150" strokeDasharray="3 9" opacity="0.5" />
-        <circle cx="200" cy="250" r="108" strokeDasharray="1 6" opacity="0.65" />
         <circle cx="200" cy="250" r="66" strokeDasharray="8 6" opacity="0.4" />
       </g>
+      <g className="msel-spin msel-spin-rev" fill="none" stroke="currentColor">
+        <circle cx="200" cy="250" r="108" strokeDasharray="1 6" opacity="0.65" />
+      </g>
+      {/* attestation pulses radiating from the core */}
+      <circle className="msel-emit" cx="200" cy="250" r="150" fill="none" stroke="currentColor" />
+      <circle
+        className="msel-emit"
+        style={{ animationDelay: "2.75s" }}
+        cx="200"
+        cy="250"
+        r="150"
+        fill="none"
+        stroke="currentColor"
+      />
+      {/* core with a breathing halo */}
+      <circle className="msel-core" cx="200" cy="250" r="11" fill="currentColor" />
       <circle cx="200" cy="250" r="4.5" fill="currentColor" />
+      {/* orbiting nodes: one tethered to the core, two free counter-orbits */}
+      <g>
+        <line
+          x1="200"
+          y1="250"
+          x2="200"
+          y2="142"
+          stroke="currentColor"
+          strokeDasharray="2 5"
+          opacity="0.35"
+        />
+        <circle cx="200" cy="142" r="3.5" fill="currentColor" />
+        <animateTransform
+          attributeName="transform"
+          type="rotate"
+          from="0 200 250"
+          to="360 200 250"
+          dur="22s"
+          repeatCount="indefinite"
+        />
+      </g>
+      <g>
+        <circle cx="200" cy="100" r="3" fill="currentColor" opacity="0.85" />
+        <animateTransform
+          attributeName="transform"
+          type="rotate"
+          from="360 200 250"
+          to="0 200 250"
+          dur="30s"
+          repeatCount="indefinite"
+        />
+      </g>
+      <g>
+        <circle cx="200" cy="184" r="2.5" fill="currentColor" opacity="0.7" />
+        <animateTransform
+          attributeName="transform"
+          type="rotate"
+          from="120 200 250"
+          to="480 200 250"
+          dur="12s"
+          repeatCount="indefinite"
+        />
+      </g>
       <g fill="currentColor" opacity="0.7">
         <rect x="196" y="96" width="8" height="8" rx="1" />
         <rect x="330" y="246" width="8" height="8" rx="1" opacity="0.6" />
@@ -36,6 +95,7 @@ function OracleVisual() {
         <text x="150" y="476">ed25519</text>
         <text x="104" y="500">sha-256 · anchored</text>
       </g>
+      <rect className="msel-blink" x="256" y="492" width="5" height="9" fill="currentColor" />
     </svg>
   );
 }
@@ -62,8 +122,68 @@ function MapVisual() {
         <circle cx="168" cy="176" r="3.5" />
         <circle className="msel-ping" cx="168" cy="176" r="3.5" fill="none" stroke="currentColor" />
         <circle cx="258" cy="238" r="3" opacity="0.8" />
+        <circle
+          className="msel-ping"
+          style={{ animationDelay: "0.9s" }}
+          cx="258"
+          cy="238"
+          r="3"
+          fill="none"
+          stroke="currentColor"
+        />
         <circle cx="128" cy="300" r="3" opacity="0.8" />
         <circle className="msel-ping msel-ping-late" cx="128" cy="300" r="3" fill="none" stroke="currentColor" />
+      </g>
+      {/* survey sites blinking in and out across the globe */}
+      <g fill="currentColor">
+        {(
+          [
+            [232, 152, 0],
+            [284, 318, 1.1],
+            [176, 352, 2.3],
+            [148, 238, 3.4],
+            [252, 196, 4.2],
+            [214, 296, 5.1],
+          ] as Array<[number, number, number]>
+        ).map(([x, y, d]) => (
+          <circle
+            key={`${x}-${y}`}
+            className="msel-blip"
+            style={{ animationDelay: `${d}s` }}
+            cx={x}
+            cy={y}
+            r="2.6"
+          />
+        ))}
+      </g>
+      {/* commodity glyphs: an oil drop and a cut mineral */}
+      <g className="msel-breathe" fill="currentColor">
+        <path d="M240 226 c5.5 7.5 8.5 11.5 8.5 15.5 a8.5 8.5 0 1 1 -17 0 c0 -4 3 -8 8.5 -15.5 Z" />
+      </g>
+      <g className="msel-breathe" style={{ animationDelay: "2s" }} fill="none" stroke="currentColor">
+        <path d="M146 302 l7 5.5 -7 11.5 -7 -11.5 Z" />
+        <path d="M139 307.5 h14" opacity="0.6" />
+      </g>
+      {/* a survey vessel tracing the equator */}
+      <circle r="2.6" fill="currentColor" opacity="0.9">
+        <animateMotion
+          dur="10s"
+          repeatCount="indefinite"
+          path="M 60 270 a 140 28 0 1 0 280 0 a 140 28 0 1 0 -280 0"
+        />
+      </circle>
+      {/* low orbit */}
+      <g>
+        <circle cx="200" cy="116" r="2.8" fill="currentColor" opacity="0.9" />
+        <circle cx="200" cy="116" r="6.5" fill="none" stroke="currentColor" opacity="0.4" />
+        <animateTransform
+          attributeName="transform"
+          type="rotate"
+          from="0 200 270"
+          to="360 200 270"
+          dur="16s"
+          repeatCount="indefinite"
+        />
       </g>
     </svg>
   );
@@ -89,19 +209,30 @@ function TerminalVisual() {
           <line key={y} x1="24" x2="376" y1={y} y2={y} />
         ))}
       </g>
-      {candles.map(([x, wt, bt, bh, up], i) => (
-        <g key={i} stroke="currentColor" opacity={up ? 0.85 : 0.4}>
-          <line x1={x} x2={x} y1={wt} y2={bt + bh + 18} />
-          <rect
-            x={x - 7}
-            y={bt}
-            width="14"
-            height={bh}
-            fill={up ? "currentColor" : "none"}
-            fillOpacity={up ? 0.5 : undefined}
-          />
-        </g>
-      ))}
+      {/* last-price line drifting with the tape */}
+      <g className="msel-price">
+        <line x1="24" x2="376" y1="216" y2="216" stroke="currentColor" strokeDasharray="4 5" opacity="0.3" />
+        <rect x="356" y="209.5" width="20" height="13" rx="3" fill="currentColor" opacity="0.2" />
+      </g>
+      {candles.map(([x, wt, bt, bh, up], i) => {
+        const live = i === candles.length - 1;
+        return (
+          <g key={i} stroke="currentColor" opacity={up ? 0.85 : 0.4}>
+            <line x1={x} x2={x} y1={wt} y2={bt + bh + 18} />
+            <rect
+              className={live ? "msel-candle msel-candle-live" : "msel-candle"}
+              style={{ animationDelay: `${i * 0.4}s` }}
+              x={x - 7}
+              y={bt}
+              width="14"
+              height={bh}
+              fill={up ? "currentColor" : "none"}
+              fillOpacity={up ? 0.5 : undefined}
+            />
+            {live && <circle className="msel-blink" cx={x} cy={wt - 8} r="2.5" fill="currentColor" stroke="none" />}
+          </g>
+        );
+      })}
     </svg>
   );
 }
@@ -128,6 +259,37 @@ function StatusVisual() {
       </g>
       <g fontFamily="monospace" fontSize="9" fill="currentColor" opacity="0.35" letterSpacing="2">
         <text x="126" y="446">anchor history</text>
+      </g>
+    </svg>
+  );
+}
+
+function TokenBarVisual() {
+  /* asset → contract → token pipeline, drifting slowly behind the locked bar */
+  return (
+    <svg className="msel-svg" viewBox="0 0 1200 190" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+      <g className="msel-tok" fill="none" stroke="currentColor">
+        <g opacity="0.8">
+          <circle cx="150" cy="95" r="34" />
+          <circle cx="150" cy="95" r="24" strokeDasharray="3 5" />
+        </g>
+        <line x1="192" y1="95" x2="332" y2="95" strokeDasharray="2 6" opacity="0.5" />
+        <path d="M370 61 l30 17 v34 l-30 17 -30 -17 v-34 Z" opacity="0.7" />
+        <line x1="408" y1="95" x2="548" y2="95" strokeDasharray="2 6" opacity="0.5" />
+        <g opacity="0.8">
+          <circle cx="586" cy="95" r="34" />
+          <path d="M586 73 c9 12 14 18 14 25 a14 14 0 1 1 -28 0 c0 -7 5 -13 14 -25 Z" />
+        </g>
+        <line x1="628" y1="95" x2="768" y2="95" strokeDasharray="2 6" opacity="0.5" />
+        <g opacity="0.7">
+          <rect x="776" y="65" width="60" height="60" rx="8" />
+          <path d="M794 95 l9 9 17 -17" />
+        </g>
+        <line x1="844" y1="95" x2="984" y2="95" strokeDasharray="2 6" opacity="0.5" />
+        <g opacity="0.8">
+          <circle cx="1022" cy="95" r="34" />
+          <path d="M1010 105 v-10 M1022 105 v-20 M1034 105 v-7" strokeWidth="2" />
+        </g>
       </g>
     </svg>
   );
@@ -183,19 +345,13 @@ export default function ModuleSelect() {
         <Link href="/" className="msel-brand brand-mark">
           GEOM
         </Link>
+        <h1 className="msel-h1">
+          GEOM <em>modules</em>
+        </h1>
         <Link href="/" className="msel-exit mono">
           geom.org →
         </Link>
       </header>
-
-      <div className="msel-head">
-        <p className="eyebrow" style={{ margin: "0 0 10px" }}>
-          THE GEOM APPLICATION
-        </p>
-        <h1>
-          GEOM <em>modules</em>
-        </h1>
-      </div>
 
       <main className="msel-lobby">
         <div className="msel-grid">
@@ -235,6 +391,9 @@ export default function ModuleSelect() {
         </div>
 
         <section className="msel-bar">
+          <div className="msel-bar-bg" aria-hidden="true">
+            <TokenBarVisual />
+          </div>
           <span className="msel-index mono">05</span>
           <span className="msel-bar-text">
             <h2 className="msel-title msel-bar-title">Tokenization Platform</h2>
