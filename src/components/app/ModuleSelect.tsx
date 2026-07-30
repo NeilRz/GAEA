@@ -14,6 +14,7 @@ interface PanelDef {
   cta: string;
   href: string;
   acc: string;
+  photo: string;
   visual: React.ReactNode;
 }
 
@@ -304,6 +305,7 @@ const PANELS: PanelDef[] = [
     cta: "See Map",
     href: "/app?m=map",
     acc: "#2ba57e",
+    photo: "/img/modules/map.jpg",
     visual: <MapVisual />,
   },
   {
@@ -314,6 +316,7 @@ const PANELS: PanelDef[] = [
     cta: "Enter Oracle",
     href: "/app",
     acc: "#8fb4c9",
+    photo: "/img/modules/oracle.jpg",
     visual: <OracleVisual />,
   },
   {
@@ -324,6 +327,7 @@ const PANELS: PanelDef[] = [
     cta: "Open Terminal",
     href: "/app?m=terminal",
     acc: "#c67c1b",
+    photo: "/img/modules/terminal.jpg",
     visual: <TerminalVisual />,
   },
   {
@@ -334,6 +338,7 @@ const PANELS: PanelDef[] = [
     cta: "View Status",
     href: "/app?m=overview",
     acc: "#cbc3b1",
+    photo: "/img/modules/status.jpg",
     visual: <StatusVisual />,
   },
 ];
@@ -365,6 +370,11 @@ export default function ModuleSelect() {
               {p.visual}
             </div>
             <div className="msel-scrim" aria-hidden="true" />
+            <div
+              className="msel-photo"
+              style={{ backgroundImage: `url(${p.photo})` }}
+              aria-hidden="true"
+            />
             <div className="msel-content">
               <span className="msel-index mono">{p.index}</span>
               <h2 className="msel-title">{p.title}</h2>

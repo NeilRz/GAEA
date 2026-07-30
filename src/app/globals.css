@@ -1257,6 +1257,16 @@ table.catalog { min-width: 860px; }
     var(--bg) 100%);
 }
 
+/* module photo: sits over the ambient visual and scrim, under the text */
+.msel-photo {
+  position: absolute; inset: 0; z-index: 1;
+  background-size: cover; background-position: center;
+  opacity: 0.2; pointer-events: none;
+  transition: transform 0.9s var(--ease);
+}
+.msel-panel:hover .msel-photo,
+.msel-panel:focus-within .msel-photo { transform: scale(1.045); }
+
 .msel-content {
   position: relative; z-index: 2;
   margin-top: auto; padding: clamp(18px, 2.2vw, 30px);
