@@ -63,10 +63,10 @@ html { scroll-behavior: smooth; }
 }
 
 body {
-  /* strata artwork at 20% under an 80% night wash; fixed so it holds
+  /* strata artwork at 5% under a 95% night wash; fixed so it holds
      still while content scrolls. Marketing wrappers paint over it. */
   background:
-    linear-gradient(rgba(12, 21, 25, 0.8), rgba(12, 21, 25, 0.8)),
+    linear-gradient(rgba(12, 21, 25, 0.95), rgba(12, 21, 25, 0.95)),
     url("/img/bg-strata.webp") center / cover no-repeat fixed,
     var(--bg);
   color: var(--ink);
@@ -1194,7 +1194,7 @@ table.catalog { min-width: 860px; }
 
 .msel-page {
   min-height: 100dvh; display: flex; flex-direction: column;
-  /* quieter strata here: 5% instead of the site-wide 20% */
+  /* strata at 5%, matching the site-wide wash */
   background:
     linear-gradient(rgba(12, 21, 25, 0.95), rgba(12, 21, 25, 0.95)),
     url("/img/bg-strata.webp") center / cover no-repeat fixed,
