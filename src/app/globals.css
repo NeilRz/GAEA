@@ -1194,7 +1194,11 @@ table.catalog { min-width: 860px; }
 
 .msel-page {
   min-height: 100dvh; display: flex; flex-direction: column;
-  background: transparent;
+  /* quieter strata here: 5% instead of the site-wide 20% */
+  background:
+    linear-gradient(rgba(12, 21, 25, 0.95), rgba(12, 21, 25, 0.95)),
+    url("/img/bg-strata.webp") center / cover no-repeat fixed,
+    var(--bg);
 }
 
 .msel-top {
