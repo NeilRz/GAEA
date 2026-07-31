@@ -63,7 +63,12 @@ html { scroll-behavior: smooth; }
 }
 
 body {
-  background: var(--bg);
+  /* strata artwork at 20% under an 80% night wash; fixed so it holds
+     still while content scrolls. Marketing wrappers paint over it. */
+  background:
+    linear-gradient(rgba(12, 21, 25, 0.8), rgba(12, 21, 25, 0.8)),
+    url("/img/bg-strata.webp") center / cover no-repeat fixed,
+    var(--bg);
   color: var(--ink);
   font-family: var(--font-body);
   font-size: 15px;
@@ -293,7 +298,7 @@ table.data th.num { text-align: right; }
 /* ── the unified GEOM app shell ── */
 
 .gapp {
-  display: flex; height: 100dvh; background: var(--bg); overflow: hidden;
+  display: flex; height: 100dvh; background: transparent; overflow: hidden;
 }
 .gapp-loading { align-items: center; justify-content: center; }
 
@@ -1189,7 +1194,7 @@ table.catalog { min-width: 860px; }
 
 .msel-page {
   min-height: 100dvh; display: flex; flex-direction: column;
-  background: var(--bg);
+  background: transparent;
 }
 
 .msel-top {

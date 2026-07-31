@@ -36,7 +36,9 @@ export const DARK_SATELLITE_PAINT = {
 /** Native MapLibre sky/atmosphere. Rendered by the engine, so the rim is
  *  always aligned with the globe silhouette at any pitch/zoom/resize. */
 export const ATMOSPHERE = {
-  "sky-color": "#0b1a24",
+  /* Transparent space: lets the page's strata background show behind the
+     globe while the horizon rim glow stays engine-rendered. */
+  "sky-color": "rgba(11, 26, 36, 0)",
   "horizon-color": "#274b5e",
   "fog-color": "#0c1519",
   "sky-horizon-blend": 0.7,
