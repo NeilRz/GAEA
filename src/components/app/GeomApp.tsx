@@ -12,6 +12,11 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import dynamic from "next/dynamic";
 import type { CatalogRow, DatasetDetail } from "@/lib/oracle-catalog";
+/* Mini country flags (fi fi-xx spans) used by the oracle record panels,
+   explorer rows, and the map popups. Self-hosted SVGs — emoji flags don't
+   render on Windows. Imported here, not in the root layout, so the 36KB
+   sheet + SVG set never loads on the marketing routes. */
+import "flag-icons/css/flag-icons.min.css";
 
 /* The single GEOM application shell, Pyth-Terminal-shaped: persistent left
    sidebar, one content surface, modules mounted lazily on first visit and
@@ -33,7 +38,7 @@ const DEFAULT_VIEW: ModuleKey = "oracle";
 const MODULES: Array<{ key: ModuleKey; label: string; desc: string }> = [
   { key: "oracle", label: "Oracle", desc: "attested datasets & tokenization registry" },
   { key: "map", label: "Map", desc: "the physical layer, mapped" },
-  { key: "terminal", label: "Terminal", desc: "market structure, read-only" },
+  { key: "terminal", label: "Terminal", desc: "market structure · self-custody routing" },
   { key: "overview", label: "Status", desc: "attestation proof & developer access" },
 ];
 

@@ -2,7 +2,18 @@ import type { Metadata } from "next";
 import "@/app/geom-corp.css";
 import { NEWS_HTML } from "@/components/geom/corpHtml";
 
-export const metadata: Metadata = { title: "News · GEOM" };
+export const metadata: Metadata = {
+  title: "News",
+  description:
+    "Announcements from GEOM Foundation members, linked to the original filings. No commentary, just the record.",
+  alternates: { canonical: "/news" },
+  openGraph: {
+    title: "News · GEOM",
+    description:
+      "Announcements from GEOM Foundation members, linked to the original filings.",
+    url: "/news",
+  },
+};
 
 export default function NewsPage() {
   return <div className="geom-corp" dangerouslySetInnerHTML={{ __html: NEWS_HTML }} />;

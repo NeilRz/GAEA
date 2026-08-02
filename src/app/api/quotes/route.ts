@@ -14,11 +14,17 @@ export async function GET(request: Request) {
   const requested = searchParams.get("symbols");
 
   const allowed = new Set(ALL_INSTRUMENTS.map((i) => i.symbol));
+  // Dedupe + cap: without the Set, ?symbols=XOM,XOM,… fans one request out
+  // into thousands of upstream fetches.
   const symbols = requested
-    ? requested
-        .split(",")
-        .map((s) => s.trim())
-        .filter((s) => allowed.has(s))
+    ? [
+        ...new Set(
+          requested
+            .split(",")
+            .map((s) => s.trim())
+            .filter((s) => allowed.has(s)),
+        ),
+      ].slice(0, ALL_INSTRUMENTS.length)
     : ALL_INSTRUMENTS.map((i) => i.symbol);
 
   if (symbols.length === 0) {
@@ -29,13 +35,31 @@ export async function GET(request: Request) {
   }
 
   const quotes = await fetchQuotes(symbols);
+  const live = quotes.filter((q) => q !== null).length;
+
+  // A fully dead upstream must not be cached as a valid empty board.
+  if (live === 0) {
+    return NextResponse.json(
+      { error: "Quote upstream unavailable.", degraded: true },
+      { status: 503, headers: { "Cache-Control": "no-store" } },
+    );
+  }
 
   return NextResponse.json(
     {
       quotes: symbols.map((symbol, i) => ({ symbol, quote: quotes[i] })),
+      degraded: live < symbols.length,
       source: "Yahoo Finance chart API (unofficial)",
       ttlSeconds: QUOTE_TTL,
     },
-    { headers: { "Cache-Control": `s-maxage=${QUOTE_TTL}, stale-while-revalidate=300` } },
+    {
+      headers: {
+        // Partial outages get a short cache window instead of the full TTL.
+        "Cache-Control":
+          live < symbols.length
+            ? "s-maxage=15, stale-while-revalidate=60"
+            : `s-maxage=${QUOTE_TTL}, stale-while-revalidate=300`,
+      },
+    },
   );
 }

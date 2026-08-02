@@ -3,12 +3,13 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
+/* This chrome only renders on stray routes (e.g. the 404 page) — every
+   real surface carries its own. Keep the links pointed at live doors. */
 const LINKS = [
   { href: "/overview", label: "Overview" },
-  { href: "/map", label: "Map" },
-  { href: "/tracker", label: "Tracker" },
-  { href: "/terminal", label: "Terminal" },
-  { href: "/oracle", label: "Oracle" },
+  { href: "/app", label: "App" },
+  { href: "/news", label: "News" },
+  { href: "/investors", label: "Investors" },
 ];
 
 // The marketing site (landing + corporate pages) supplies its own chrome.

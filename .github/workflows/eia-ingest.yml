@@ -3,8 +3,9 @@
 # WPSR releases Wednesdays ~10:30 ET; we ingest Wednesday evening UTC with a
 # Friday catch-up for holiday-delayed releases. If the data changed, the job
 # re-anchors the dataset manifest on Solana and pushes the new dataset +
-# anchor history to main — which triggers the Vercel production deploy.
-# A push with no data change never happens (ingest is byte-deterministic).
+# anchor history to main. The push uses GITHUB_TOKEN, which does NOT trigger
+# other workflows — deploy-geom.yml therefore also listens for this
+# workflow's completion via workflow_run.
 #
 # Secrets: EIA_API_KEY (eia.gov key), ORACLE_SIGNER_KEY (Solana secret key).
 # Optional repo variable: SOLANA_CLUSTER (defaults to devnet until launch).
@@ -18,6 +19,7 @@ on:
 
 permissions:
   contents: write
+  issues: write
 
 concurrency:
   group: eia-ingest
@@ -56,7 +58,7 @@ jobs:
 
       - name: Detect dataset change
         id: diff
-        run: echo "changed=$(git status --porcelain src/data/eia.json | wc -l)" >> "$GITHUB_OUTPUT"
+        run: echo "changed=$(git status --porcelain src/data | wc -l)" >> "$GITHUB_OUTPUT"
 
       - name: Anchor manifest on Solana
         if: steps.diff.outputs.changed != '0'
@@ -65,11 +67,26 @@ jobs:
           ORACLE_SIGNER_KEY: ${{ secrets.ORACLE_SIGNER_KEY }}
           SOLANA_CLUSTER: ${{ vars.SOLANA_CLUSTER || 'devnet' }}
 
-      - name: Commit and push (triggers Vercel deploy)
+      - name: Commit and push
         if: steps.diff.outputs.changed != '0'
         run: |
           git config user.name "geom-oracle-bot"
           git config user.email "geom-oracle-bot@users.noreply.github.com"
-          git add src/data/eia.json src/data/anchors.json
+          # Whole data dir: the anchor commits to every dataset, so a
+          # partial add would ship a manifest mismatch.
+          git add src/data
           git commit -m "EIA WPSR ingest: week ending $(node -p "require('./src/data/eia.json').meta.version")"
+          # main may have moved since checkout — never force, always rebase.
+          git pull --rebase origin main
           git push
+
+      - name: Alert on failure
+        if: failure()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh issue create \
+            --repo "$GITHUB_REPOSITORY" \
+            --title "EIA ingest failed ($(date -u +%F))" \
+            --body "The scheduled EIA ingest/anchor run failed. The oracle stops updating until this is fixed. Run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" \
+            || echo "issue creation failed; check run logs"

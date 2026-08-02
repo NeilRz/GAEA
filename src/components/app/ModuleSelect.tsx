@@ -323,7 +323,7 @@ const PANELS: PanelDef[] = [
     key: "terminal",
     index: "03",
     title: "Terminal",
-    desc: "Market structure, read-only. Live candles across partners, tokenized RWA, energy and benchmarks.",
+    desc: "Live candles across partners, tokenized RWA, energy and benchmarks. Swap routing to external venues, self-custody.",
     cta: "Open Terminal",
     href: "/app?m=terminal",
     acc: "#c67c1b",
@@ -429,6 +429,10 @@ export default function ModuleSelect() {
         </section>
       </main>
 
+      <footer className="msel-foot mono">
+        Informational only, not investment advice. GEOM routes to external
+        venues and never holds funds or executes orders.
+      </footer>
     </div>
   );
 }

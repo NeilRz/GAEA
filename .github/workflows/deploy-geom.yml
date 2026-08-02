@@ -4,36 +4,64 @@ name: Deploy geom.org
 # (project "geom", team jj-me55s-projects — the brand-site domain lives there,
 # separate from the neilrzs-projects/gaea project that serves gaea-gray.vercel.app).
 #
-# ACTIVATION (repo admin, one time): add an Actions secret named VERCEL_TOKEN
-# containing a Vercel token for the jj-me55s-projects team.
-# Settings -> Secrets and variables -> Actions -> New repository secret.
-# Until that secret exists, this workflow skips itself.
+# Triggers on human pushes AND on completion of the EIA ingest workflow —
+# the ingest bot pushes with GITHUB_TOKEN, which never fires push-triggered
+# workflows, so without the workflow_run hook geom.org would serve stale
+# datasets after every automated ingest.
 
 on:
   push:
     branches: [main]
+  workflow_run:
+    workflows: ["EIA weekly ingest"]
+    types: [completed]
   workflow_dispatch:
 
+permissions:
+  contents: read
+  issues: write
+
 jobs:
+  quality:
+    # Lint + typecheck gate before anything reaches production.
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4, SHA-pinned
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4, SHA-pinned
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - run: npm run lint
+      - run: npx tsc --noEmit
+
   deploy:
+    needs: quality
     runs-on: ubuntu-latest
     env:
       VERCEL_ORG_ID: team_Qce0MaAG8nIOZHPNXaHrZIpQ
       VERCEL_PROJECT_ID: prj_OGGp1XbpLnsJgYeQE3cj97Qs7dTq
     steps:
-      - name: Check secret
-        id: check
+      - name: Require deploy token
         run: |
-          if [ -n "${{ secrets.VERCEL_TOKEN }}" ]; then
-            echo "ok=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "VERCEL_TOKEN secret not set - skipping deploy (see comments in this file)."
-            echo "ok=false" >> "$GITHUB_OUTPUT"
+          if [ -z "${{ secrets.VERCEL_TOKEN }}" ]; then
+            echo "::error::VERCEL_TOKEN secret is not set — geom.org will not update. Add it under Settings → Secrets and variables → Actions."
+            exit 1
           fi
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4, SHA-pinned
-        if: steps.check.outputs.ok == 'true'
       - name: Deploy to Vercel (production)
-        if: steps.check.outputs.ok == 'true'
         run: |
           npm i -g vercel@latest
           vercel deploy --prod --yes --token "${{ secrets.VERCEL_TOKEN }}"
+
+      - name: Alert on failure
+        if: failure()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh issue create \
+            --repo "$GITHUB_REPOSITORY" \
+            --title "geom.org deploy failed ($(date -u +%F))" \
+            --body "Production deploy of geom.org failed — the live site is now behind main. Run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" \
+            || echo "issue creation failed; check run logs"

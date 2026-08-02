@@ -776,7 +776,7 @@ export default function ExplorerCatalog({
               {sortableTh("kind", "Type")}
               {sortableTh("category", "Category")}
               {sortableTh("status", "Status")}
-              {sortableTh("price", "Price")}
+              {sortableTh("price", "Indicative")}
               {sortableTh("details", "Details")}
               {sortableTh("meta", "Version · Chains")}
               <th>Trend · 52w</th>
@@ -828,6 +828,11 @@ export default function ExplorerCatalog({
           {plantsLoading && " · indexing plants, assets & pipelines…"}
           {" · "}
           {rows.length} in catalog
+        </div>
+        <div className="ex-foot mono">
+          Indicative prices and 52w trends: snapshot of {prices.meta.version}{" "}
+          from the attested prices dataset (Yahoo chart API, unofficial,
+          delayed). Informational only, not investment advice.
         </div>
       </div>
     </div>

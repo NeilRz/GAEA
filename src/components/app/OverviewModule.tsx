@@ -104,7 +104,7 @@ const MODULE_ROWS: Array<{
   {
     key: "terminal",
     title: "Terminal",
-    desc: "Live quotes and market structure, read-only, no price calls",
+    desc: "Live quotes, market structure, and swap routing to external venues. Self-custody, no price calls",
     status: "warn",
     label: "Partial",
   },
@@ -331,7 +331,8 @@ export default function OverviewModule({ data }: { data: AppData }) {
             <span className="k">GET</span> /api/attest/:id          <span className="v"># signed attestation (Ed25519)</span>
           </div>
           <p className="dim" style={{ fontSize: 13, marginBottom: 0 }}>
-            Verifying what GEOM published will never sit behind a paywall.
+            Verifying what GEOM published is free today, and we intend to keep
+            it that way.
             Public verifiability is the point. These three endpoints are all a
             verifier needs, from curl, a browser, or any language.
           </p>

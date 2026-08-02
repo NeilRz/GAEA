@@ -97,6 +97,9 @@ export async function fetchSeries(
     res = await fetch(url, {
       headers: { "User-Agent": UA, Accept: "application/json" },
       next: { revalidate: QUOTE_TTL },
+      // A hanging (not refusing) upstream would otherwise pin every request
+      // until the platform function timeout.
+      signal: AbortSignal.timeout(8000),
     });
   } catch {
     throw new QuoteError(`Upstream unreachable for ${symbol}`, 502);

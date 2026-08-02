@@ -133,6 +133,9 @@ async function main() {
 }
 
 main().catch((e) => {
-  console.error(e);
+  // Message only: this runs in CI with the signer key in the environment,
+  // and a dumped error object could carry transformed key material past
+  // the Actions secret masker.
+  console.error(e instanceof Error ? e.message : String(e));
   process.exit(1);
 });

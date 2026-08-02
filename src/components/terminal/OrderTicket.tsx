@@ -90,21 +90,21 @@ export function OrderTicket({
         <span className="t2-custody">self-custody</span>
       </div>
 
-      <div className="t2-sides" role="tablist" aria-label="Order side">
+      {/* Two-state toggle, not tabs: aria-pressed buttons are the right
+          semantics and need no roving tabindex. */}
+      <div className="t2-sides" role="group" aria-label="Order side">
         <button
           type="button"
-          role="tab"
           className={`buy${side === "buy" ? " on" : ""}`}
-          aria-selected={side === "buy"}
+          aria-pressed={side === "buy"}
           onClick={() => setSide("buy")}
         >
           Buy
         </button>
         <button
           type="button"
-          role="tab"
           className={`sell${side === "sell" ? " on" : ""}`}
-          aria-selected={side === "sell"}
+          aria-pressed={side === "sell"}
           onClick={() => setSide("sell")}
         >
           Sell

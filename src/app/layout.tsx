@@ -4,10 +4,6 @@ import localFont from "next/font/local";
 import Nav from "@/components/Nav";
 import SiteFooter from "@/components/SiteFooter";
 import "./globals.css";
-/* Mini country flags (fi fi-xx spans) used by the oracle record panels,
-   explorer rows, and the map popups. Self-hosted SVGs — emoji flags
-   don't render on Windows. */
-import "flag-icons/css/flag-icons.min.css";
 
 /* Same expanded Archivo file the marketing wordmark uses, so the app
    logotype and the geom.org brandmark are the identical glyphs. */
@@ -41,7 +37,8 @@ export const metadata: Metadata = {
   },
   description:
     "The intelligence layer for oil and minerals. GEOM maps the world's energy assets, tracks tokenization, and signs every dataset it publishes on Solana.",
-  alternates: { canonical: "/" },
+  /* No inherited canonical: each page declares its own (an inherited "/"
+     makes every route read as a duplicate of the homepage to crawlers). */
   openGraph: {
     type: "website",
     url: "https://www.geom.org",

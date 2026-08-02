@@ -18,6 +18,10 @@ export default function GeomLanding() {
     const root = rootRef.current;
     if (!root) return;
     const cleanups: Array<() => void> = [];
+    // "anim" arms the reveal animations (content starts at opacity 0).
+    // Added here, not in the JSX, so a no-JS render or a failed chunk
+    // still shows every section.
+    root.classList.add("anim");
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     /* ── reveals + background-video fade-loop ── */
@@ -179,24 +183,34 @@ export default function GeomLanding() {
       const startPreload = () => {
         if (started) return;
         started = true;
-        for (let i = 0; i < N; i++) {
-          ((idx: number) => {
-            const img = new Image();
-            img.onload = () => {
-              loaded++;
-              if (idx === 0) {
-                resize();
-                drawIndex(0, true);
-              }
-              if (loaded === N) onScroll();
-            };
-            img.onerror = () => {
-              loaded++;
-            };
-            img.src = DIR + "f_" + pad(idx) + EXT;
-            frames[idx] = img;
-          })(i);
-        }
+        // Coarse-first order (every 8th frame, then the fill) with bounded
+        // concurrency — firing all 120 requests (~4.3 MB) in one burst
+        // stalled everything else on the page.
+        const order: number[] = [];
+        for (let i = 0; i < N; i += 8) order.push(i);
+        for (let i = 0; i < N; i++) if (i % 8 !== 0) order.push(i);
+        let cursor = 0;
+        const pump = () => {
+          if (cursor >= order.length) return;
+          const idx = order[cursor++];
+          const img = new Image();
+          img.onload = () => {
+            loaded++;
+            if (idx === 0) {
+              resize();
+              drawIndex(0, true);
+            }
+            if (loaded === N) onScroll();
+            pump();
+          };
+          img.onerror = () => {
+            loaded++;
+            pump();
+          };
+          img.src = DIR + "f_" + pad(idx) + EXT;
+          frames[idx] = img;
+        };
+        for (let k = 0; k < 8; k++) pump();
       };
       let pio: IntersectionObserver | null = null;
       if ("IntersectionObserver" in window) {
@@ -249,7 +263,7 @@ export default function GeomLanding() {
   return (
     <div
       ref={rootRef}
-      className="geom-site anim"
+      className="geom-site"
       dangerouslySetInnerHTML={{ __html: LANDING_HTML }}
     />
   );

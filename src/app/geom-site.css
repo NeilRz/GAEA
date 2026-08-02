@@ -1,21 +1,21 @@
 /* GEOM landing styles, ported from the static site and scoped under .geom-site */
-@font-face{font-family:"ArchivoExp";src:url(/fonts/archivoexp-700.woff2) format('woff2');font-weight:700 900;font-stretch:125%;font-display:block}
+/* wordmark face comes from next/font (--font-archivo on body) - no duplicate @font-face */
 .geom-site{
     --night:#0C1519; --ink:#16232B; --slate:#3C4C57; --slate-2:#5B6B75;
-    --ice:#5E8BA6; --glacier:#8FB4C9;
+    --ice:#5E8BA6; --ice-dark:#3D6B87; --glacier:#8FB4C9;
     --redbed:#8F4632; --terracotta:#B26A4E; --sandstone:#C4A469; --carbonate:#CBC3B1;
     --shale:#2C2D31; --dyke:#20242A;
     --sky:#B9C6CE; --snow:#EDF1F3; --paper:#F2F5F6; --line:#CBD5DA;
     --shadowblue:#7E97A6;
     --ease:cubic-bezier(.19,.72,.18,1);
-    --disp:"ArchivoExp",Impact,"Arial Narrow Bold",system-ui,sans-serif;
+    --disp:var(--font-archivo),Impact,"Arial Narrow Bold",system-ui,sans-serif;
     --serif:var(--font-archivo-std),system-ui,"Segoe UI",sans-serif;
     --mono:var(--font-fragment),ui-monospace,"SF Mono",Menlo,Consolas,monospace;
     --body:var(--font-archivo-std),-apple-system,system-ui,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
   }
 .geom-site *{margin:0;padding:0;box-sizing:border-box}
 .geom-site{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
-.geom-site{font-family:var(--body);background:var(--night);color:var(--ink);line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:clip}
+.geom-site{font-family:var(--body);background:var(--night);color:var(--ink);line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden;overflow-x:clip}
 .geom-site .gs-mono{font-family:var(--mono)}
 .geom-site ::selection{background:var(--ice);color:#fff}
 .geom-site a{color:inherit;text-decoration:none}
@@ -143,7 +143,7 @@
 .geom-site /* ================= PROOF ================= */
   .proof{background:var(--snow);padding:clamp(74px,13vh,146px) 0}
 .geom-site .sec-head{display:flex;align-items:baseline;gap:16px;margin-bottom:clamp(36px,6vh,68px);flex-wrap:wrap}
-.geom-site .sec-head .eyebrow-s{font-family:var(--mono);font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:var(--ice)}
+.geom-site .sec-head .eyebrow-s{font-family:var(--mono);font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:var(--ice-dark)}
 .geom-site .sec-head h2{font-family:var(--serif);font-weight:500;font-size:clamp(28px,5.6vw,54px);line-height:1.05;color:var(--night);letter-spacing:0;text-wrap:balance}
 .geom-site .sec-head h2 em{font-style:italic;color:var(--redbed)}
 .geom-site .cols{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:10px;overflow:hidden}
@@ -151,7 +151,7 @@
 @media(max-width:560px){.geom-site .cols{grid-template-columns:1fr}}
 .geom-site .cell2{background:var(--paper);padding:30px 26px 34px;transition:background .35s var(--ease)}
 .geom-site .cell2:hover{background:#FBFCFC}
-.geom-site .cell2 .t{font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--ice);margin-bottom:16px;display:flex;gap:12px;align-items:center}
+.geom-site .cell2 .t{font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--ice-dark);margin-bottom:16px;display:flex;gap:12px;align-items:center}
 .geom-site .cell2 .t::before{content:"";width:11px;height:1px;background:var(--redbed)}
 .geom-site .cell2 h3{font-family:var(--serif);font-weight:500;font-size:clamp(21px,2.2vw,27px);color:var(--night);letter-spacing:0;line-height:1.1}
 .geom-site .cell2 p{margin-top:13px;font-size:14.5px;color:var(--slate)}
@@ -177,7 +177,7 @@
 .geom-site .pchip:hover{opacity:1;transform:translateY(-2px)}
 .geom-site .pchip img{max-width:100%;max-height:52px;object-fit:contain;display:block}
 .geom-site .plinks{display:flex;gap:20px;justify-content:center}
-.geom-site .plinks a{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ice);transition:color .25s}
+.geom-site .plinks a{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ice-dark);transition:color .25s}
 .geom-site .plinks a:hover{color:var(--redbed)}
 .geom-site .pnote{margin-top:34px;font-family:var(--mono);font-size:11.5px;letter-spacing:.1em;color:var(--slate-2);text-align:center}
 .geom-site /* ================= CLOSE ================= */
@@ -233,7 +233,7 @@
 .geom-site .struct-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;margin-top:clamp(28px,5vh,50px)}
 @media(max-width:760px){.geom-site .struct-grid{grid-template-columns:1fr}}
 .geom-site .scard{background:#fff;border:1px solid rgba(12,21,25,.08);border-radius:16px;padding:32px 30px}
-.geom-site .scard .sn{font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--ice);margin-bottom:12px}
+.geom-site .scard .sn{font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--ice-dark);margin-bottom:12px}
 .geom-site .scard h3{font-family:var(--serif);font-weight:400;font-size:clamp(22px,2.6vw,30px);line-height:1.1;color:var(--night);margin-bottom:10px}
 .geom-site .scard p{color:#33424c;font-size:15.5px;line-height:1.6}
 .geom-site .sstub{display:inline-block;font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--redbed);border:1px dashed var(--redbed);border-radius:5px;padding:2px 7px;margin-left:6px;vertical-align:middle}
@@ -251,7 +251,7 @@
 
 /* Intro: decodes the name and sets the three-market narrative between hero and proof */
 .geom-site .intro{background:var(--paper);text-align:center}
-.geom-site .intro-k{font-family:var(--mono);font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:var(--ice)}
+.geom-site .intro-k{font-family:var(--mono);font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:var(--ice-dark)}
 .geom-site .intro-line{font-family:var(--serif);font-weight:500;font-size:clamp(24px,3.6vw,40px);line-height:1.25;color:var(--night);max-width:30ch;margin:18px auto 0;text-wrap:balance}
 .geom-site .intro-line em{font-style:italic;color:var(--redbed)}
 .geom-site .intro-sub{max-width:58ch;margin:20px auto 0;font-size:clamp(15px,1.5vw,17px);line-height:1.7;color:var(--slate)}

@@ -8,7 +8,7 @@ isn't — tokenized, streams live market colour, and cryptographically signs
 every dataset it publishes, anchoring each publication on Solana. Pre-Clarity
 Act, GEOM is intelligence only: data, not advice, no execution.
 
-Production: **https://gaea-gray.vercel.app** · Brand site: **https://geom.org**
+Production: **https://www.geom.org** (also mirrored at gaea-gray.vercel.app)
 
 ## Modules
 
@@ -37,7 +37,7 @@ deploy-on-push) that are easy to violate accidentally.
 
 ## For frontend integration (the API)
 
-Base URL: `https://gaea-gray.vercel.app` (or your own deployment).
+Base URL: `https://www.geom.org` (or your own deployment).
 All endpoints are public JSON over HTTPS — no key, no account, CORS-open
 same-origin usage; ask if you need CORS headers for another domain.
 
@@ -45,8 +45,11 @@ same-origin usage; ask if you need CORS headers for another domain.
 GET /api/datasets            # index: all dataset ids, versions, current SHA-256 digests
 GET /api/datasets/:id        # the raw canonical dataset (see shapes below)
 GET /api/attest/:id          # signed attestation for the dataset (Ed25519)
-GET /api/quotes              # live quote board (16 symbols, cached 60s)
+GET /api/quotes              # live quote board (cached 60s)
 GET /api/quotes/:symbol      # OHLC candles for one symbol (?range=1d|5d|1mo|6mo|1y)
+GET /api/health              # signer + anchor health (503 when unhealthy)
+POST /api/orders             # resolves buy/sell to a route on an external venue
+GET /api/orders              # custody statement (always empty: GEOM keeps no order book)
 ```
 
 ### Datasets (all signed & anchored)
@@ -78,9 +81,8 @@ Every dataset has the same shape — a `meta` block, then the records:
 }
 ```
 
-Note: `plants` is ~4.3 MB, above Vercel's function response limit, so
-`/api/datasets/plants` returns a **307 redirect** to the byte-identical static
-file `/data/plants.json` (CDN-served). Standard `fetch`/`curl -L` follow it
+Note: `plants` (~4.3 MB), `goget` (~2 MB) and `goit` (~1 MB) are served as
+**307 redirects** to byte-identical static files under `/data/` (CDN-served). Standard `fetch`/`curl -L` follow it
 transparently; the attestation hash matches either way.
 
 ### Verifying an attestation (the oracle)
@@ -174,6 +176,10 @@ underlying third-party figures.
 ## Compliance posture
 
 GEOM publishes verifiable market intelligence. It does not provide investment
-advice, recommendations, or price targets, and operates no trading, issuance,
-custody, or settlement functionality pre-regulatory-clarity. Nothing is
-issued, deployed, or custodied through the oracle.
+advice, recommendations, or price targets. The terminal's buy/sell surface is
+routing only:  resolves a request to an execution URL on an
+external venue (currently Uniswap, for tokens with a verified contract and a
+public pool) and the swap happens in the user's own wallet. GEOM is
+non-custodial and operates no order book, execution, issuance, custody, or
+settlement functionality. Nothing is issued, deployed, or custodied through
+the oracle.

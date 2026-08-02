@@ -11,9 +11,16 @@ import minerals from "@/data/minerals.json";
 import GeomApp, { type AppData, type AnchorRecord } from "@/components/app/GeomApp";
 
 export const metadata: Metadata = {
-  title: "App · GEOM",
+  title: "App",
   description:
     "The GEOM application: reserve map, tokenization tracker, terminal, and oracle in one surface.",
+  alternates: { canonical: "/app" },
+  openGraph: {
+    title: "App · GEOM",
+    description:
+      "The GEOM application: reserve map, tokenization tracker, terminal, and oracle in one surface.",
+    url: "/app",
+  },
 };
 
 export default function AppPage() {
@@ -44,7 +51,7 @@ export default function AppPage() {
   return (
     <Suspense
       fallback={
-        <div className="gapp gapp-loading">
+        <div className="gapp gapp-loading" role="status" aria-live="polite">
           <span className="mono dimmer" style={{ fontSize: 12, letterSpacing: "0.2em" }}>
             LOADING GEOM…
           </span>

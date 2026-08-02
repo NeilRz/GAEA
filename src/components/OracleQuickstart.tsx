@@ -5,7 +5,7 @@ import { useState } from "react";
 /* Pyth-style developer quick-start: one code window, pill tabs, each tab
    showing a real request/response against the live GEOM oracle API. */
 
-const BASE = "https://gaea-gray.vercel.app";
+const BASE = process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.geom.org";
 
 const TABS: Array<{ id: string; label: string; lang: "json" | "js" | "sh"; code: string }> = [
   {

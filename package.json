@@ -29,7 +29,7 @@
     "tweetnacl": "^1.0.3"
   },
   "devDependencies": {
-    "@solana/web3.js": "^1.98.4",
+    "@solana/web3.js": "1.98.4",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",

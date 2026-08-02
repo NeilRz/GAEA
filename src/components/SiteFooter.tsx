@@ -18,7 +18,9 @@ export default function SiteFooter() {
   return (
     <footer className="footer">
       <span>GEOM, REAL ASSETS FROM THE FAR NORTH</span>
-      <span style={{ marginLeft: "auto" }}>INTELLIGENCE LAYER · V1 PROTOTYPE</span>
+      <span style={{ marginLeft: "auto" }}>
+        INFORMATIONAL ONLY · NOT INVESTMENT ADVICE
+      </span>
     </footer>
   );
 }

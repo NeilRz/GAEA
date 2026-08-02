@@ -6,7 +6,7 @@ import { highlight } from "@/components/OracleQuickstart";
 /* Pyth-style "</> Code" window scoped to one dataset: the same qs-win
    chrome as the quickstart, with per-dataset endpoints baked in. */
 
-const BASE = "https://gaea-gray.vercel.app";
+const BASE = process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.geom.org";
 
 function tabsFor(id: string): Array<{ id: string; label: string; code: string }> {
   return [

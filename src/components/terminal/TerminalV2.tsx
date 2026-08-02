@@ -61,6 +61,7 @@ export default function TerminalV2() {
   const [rangeId, setRangeId] = useState(DEFAULT_RANGE);
   const [result, setResult] = useState<LoadResult | null>(null);
   const [updatedAt, setUpdatedAt] = useState<string | null>(null);
+  const [degraded, setDegraded] = useState(false);
   const [filter, setFilter] = useState("");
   const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
   const [structTab, setStructTab] = useState<StructTab>("curve");
@@ -79,12 +80,14 @@ export default function TerminalV2() {
         if (!res.ok) throw new Error(`quotes ${res.status}`);
         return res.json() as Promise<{
           quotes: { symbol: string; quote: QuoteMeta | null }[];
+          degraded?: boolean;
         }>;
       })
       .then((body) => {
         const next: Record<string, QuoteMeta | null> = {};
         for (const q of body.quotes) next[q.symbol] = q.quote;
         setQuotes(next);
+        setDegraded(!!body.degraded);
         setUpdatedAt(
           new Date().toLocaleTimeString("en-GB", {
             hour: "2-digit",
@@ -93,9 +96,12 @@ export default function TerminalV2() {
         );
       })
       .catch((e: Error) => {
-        // A failed refresh is not fatal, the last good prices stay up.
-        if (e.name !== "AbortError")
+        // A failed refresh is not fatal, the last good prices stay up —
+        // but the pulse flips amber instead of pretending it's live.
+        if (e.name !== "AbortError") {
+          setDegraded(true);
           console.warn("[terminal] quote refresh failed", e);
+        }
       });
   }, []);
 
@@ -223,7 +229,7 @@ export default function TerminalV2() {
               </p>
             </div>
 
-            <div className="t2-cell">
+            <div className="t2-cell" aria-live="polite">
               <span className={`t2-px tone-${tone}`}>
                 {head ? formatPrice(head.price, currency) : "—"}
               </span>
@@ -299,9 +305,21 @@ export default function TerminalV2() {
                   key={t.id}
                   type="button"
                   role="tab"
+                  id={`t2-tab-${t.id}`}
+                  aria-controls="t2-struct-panel"
                   aria-selected={structTab === t.id}
+                  tabIndex={structTab === t.id ? 0 : -1}
                   className={`t2-tab${structTab === t.id ? " on" : ""}`}
                   onClick={() => setStructTab(t.id)}
+                  onKeyDown={(e) => {
+                    if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
+                    const ids = STRUCT_TABS.map((s) => s.id);
+                    const delta = e.key === "ArrowRight" ? 1 : -1;
+                    const next =
+                      ids[(ids.indexOf(structTab) + delta + ids.length) % ids.length];
+                    setStructTab(next);
+                    document.getElementById(`t2-tab-${next}`)?.focus();
+                  }}
                 >
                   {t.label}
                 </button>
@@ -309,11 +327,16 @@ export default function TerminalV2() {
               <span className="t2-note" style={{ padding: 0, flex: 1 }}>
                 {STRUCT_TABS.find((t) => t.id === structTab)?.sub}
               </span>
-              <span className="t2-sample" title="Exchange and vendor feed integration is the next milestone.">
+              <span className="t2-sample" title="Illustrative series, not live quotes.">
                 sample data
               </span>
             </div>
-            <div className="t2-struct-body">
+            <div
+              className="t2-struct-body"
+              id="t2-struct-panel"
+              role="tabpanel"
+              aria-labelledby={`t2-tab-${structTab}`}
+            >
               {structTab === "curve" && <FuturesCurveChart />}
               {structTab === "crack" && <CrackSpreadChart />}
               {structTab === "inv" && <InventoryChart />}
@@ -330,9 +353,13 @@ export default function TerminalV2() {
       </div>
 
       <footer className="t2-statusbar">
-        <span className="t2-live">
-          <span className="t2-pulse" aria-hidden />
-          {updatedAt ? `refreshed ${updatedAt} · auto 60s` : "connecting…"}
+        <span className="t2-live" role="status">
+          <span className={`t2-pulse${degraded ? " degraded" : ""}`} aria-hidden />
+          {degraded
+            ? `feed degraded${updatedAt ? ` · last good ${updatedAt}` : ""}`
+            : updatedAt
+              ? `refreshed ${updatedAt} · auto 60s`
+              : "connecting…"}
         </span>
         <span>quotes: yahoo chart api · unofficial · delayed</span>
         <button className="t2-statuslink" onClick={() => nav.openDataset("market")}>
@@ -356,8 +383,8 @@ function StatusDot({ status }: { status?: Instrument["status"] }) {
       className={`t2-dot ${status === "live" ? "live" : "soon"}`}
       title={
         status === "live"
-          ? "live · tradeable through a verified route"
-          : "tokenization planned · not tradeable yet"
+          ? "live · routable to an external venue"
+          : "no public route today"
       }
     />
   );

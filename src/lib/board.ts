@@ -52,7 +52,7 @@ export const BOARD: BoardGroup[] = [
     title: "Partners",
     accent: "gold",
     blurb:
-      "Listed vehicles behind the Greenland licence positions we track. Prices are the market's, not ours.",
+      "Listed GEOM Foundation members behind the Greenland licence positions we track. GEOM has an association relationship with these issuers and receives no compensation for their inclusion. Prices are the market's, not ours.",
     instruments: [
       {
         // The combined company is USFM; the exchange line still prints as
@@ -173,7 +173,7 @@ export const BOARD: BoardGroup[] = [
   {
     id: "benchmarks",
     title: "Benchmarks",
-    blurb: "The underlying. Everything above is a claim on one of these.",
+    blurb: "The underlying commodities the rest of the board prices against.",
     instruments: [
       { symbol: "CL=F", label: "WTI", venue: "NYMEX", note: "WTI crude, front month." },
       { symbol: "BZ=F", label: "Brent", venue: "ICE", note: "Brent crude, front month." },

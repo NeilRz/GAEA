@@ -155,6 +155,14 @@ export function getSigner(): { keypair: nacl.SignKeyPair; dev: boolean } {
   if (envKey) {
     return { keypair: nacl.sign.keyPair.fromSecretKey(parseSecretKey(envKey)), dev: false };
   }
+  // Fail closed in production: the dev key is derived from a committed
+  // string, so anyone can forge attestations against it. A production
+  // deployment without the real key must not come up at all.
+  if (process.env.VERCEL_ENV === "production") {
+    throw new Error(
+      "ORACLE_SIGNER_KEY is not set in a production deployment. Refusing to sign with the publicly derivable dev key."
+    );
+  }
   const seed = createHash("sha256").update(DEV_KEY_SEED).digest();
   return { keypair: nacl.sign.keyPair.fromSeed(seed), dev: true };
 }
@@ -183,10 +191,34 @@ export interface Attestation {
   devSigner: boolean;
 }
 
+/** Own-property lookup: `DATASETS["constructor"]` and friends are truthy
+ *  via the prototype chain and would crash the hash step downstream. */
+export function findDataset(
+  datasetId: string
+): { data: unknown; title: string; version: string } | null {
+  return Object.prototype.hasOwnProperty.call(DATASETS, datasetId)
+    ? DATASETS[datasetId]
+    : null;
+}
+
+/* The datasets are static imports — their bytes cannot change at runtime —
+   so each canonical hash is computed once per process, not per request.
+   (~130ms of CPU across all datasets, previously burned on every call.) */
+const hashCache = new Map<string, string>();
+
+function datasetHash(datasetId: string, data: unknown): string {
+  let hash = hashCache.get(datasetId);
+  if (!hash) {
+    hash = sha256Hex(canonicalize(data));
+    hashCache.set(datasetId, hash);
+  }
+  return hash;
+}
+
 export function attest(datasetId: string): Attestation | null {
-  const entry = DATASETS[datasetId];
+  const entry = findDataset(datasetId);
   if (!entry) return null;
-  const hash = sha256Hex(canonicalize(entry.data));
+  const hash = datasetHash(datasetId, entry.data);
   const message = attestMessage(datasetId, entry.version, hash);
   const { keypair, dev } = getSigner();
   const signature = nacl.sign.detached(
@@ -218,7 +250,7 @@ export function datasetHashes(): Array<{
     id,
     title: entry.title,
     version: entry.version,
-    sha256: sha256Hex(canonicalize(entry.data)),
+    sha256: datasetHash(id, entry.data),
   }));
 }
 

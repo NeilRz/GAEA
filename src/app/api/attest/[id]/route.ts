@@ -13,5 +13,11 @@ export async function GET(
       { status: 404 }
     );
   }
-  return NextResponse.json(attestation);
+  // The signature is deterministic for a given dataset version; only the
+  // unsigned signedAt stamp varies, so a short shared cache is safe.
+  return NextResponse.json(attestation, {
+    headers: {
+      "Cache-Control": "public, s-maxage=300, stale-while-revalidate=3600",
+    },
+  });
 }

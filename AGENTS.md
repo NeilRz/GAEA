@@ -9,8 +9,8 @@ This version has breaking changes — APIs, conventions, and file structure may 
 This repo now hosts **both the GEOM brand site and the GEOM application**. The
 marketing landing is the homepage (`/`); the application (map, tracker,
 terminal, oracle) sits behind the "Enter" button, which targets `/overview`.
-Production: https://gaea-gray.vercel.app, deployed on Vercel; the geom.org
-brand domain is being pointed at this project.
+Production: https://www.geom.org (geom.org 308s to www), deployed on Vercel;
+gaea-gray.vercel.app mirrors the same repo from a second Vercel project.
 
 Read `README.md` for the product/API overview. This file is the working
 contract: stack facts, hard invariants, and gotchas that have already cost
@@ -48,10 +48,11 @@ npm run anchor   # writes a new Solana anchor after dataset changes
    `GAEA-ANCHOR-V1` (in `src/lib/attest.ts`). Existing signatures and
    on-chain anchors depend on those exact bytes. The legacy GAEA prefix is
    intentional — do not "fix" it to GEOM.
-4. **`src/data/plants.json` and `public/data/plants.json` must stay
-   byte-identical.** The first is the signed source of truth; the second is
-   the CDN copy that `/api/datasets/plants` 307-redirects to (Vercel caps
-   function responses at ~4.5 MB). Regenerate both together or neither.
+4. **`src/data/{plants,goget,goit}.json` and their `public/data/` twins
+   must stay byte-identical.** The `src/data` files are the signed source
+   of truth; the `public/data` copies are what `/api/datasets/<id>`
+   307-redirects to (Vercel caps function responses at ~4.5 MB).
+   Regenerate each pair together or neither.
 5. **`npm run build` must stay on webpack.** Turbopack production builds
    break maplibre-gl silently (map inits, tiles never draw, zero errors).
    Turbopack *dev* is fine.
@@ -143,7 +144,7 @@ idiomatic React. Treat them as one self-contained unit.
 ```
 src/app/            marketing: / (landing), /overview, /news, /investors,
                     /terms, /privacy · app: /map, /tracker, /terminal, /oracle
-src/app/api/        datasets, attest, quotes route handlers
+src/app/api/        datasets, attest, quotes, orders (venue routing), health
 src/app/*.css       globals.css (app) + geom-site.css / geom-corp.css (scoped
                     marketing styles)
 src/components/geom/ GeomLanding + landingHtml.ts / corpHtml.ts (ported brand site)
