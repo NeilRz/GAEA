@@ -28,7 +28,8 @@ export default function Nav() {
   return (
     <header className="topbar">
       <Link href="/" className="brand">
-        <span className="brand-mark">GEOM</span>
+        {/* eslint-disable-next-line @next/next/no-img-element -- static SVG brand asset */}
+        <img className="brand-logo" src="/brand/geom-logo-light.svg" alt="GEOM" />
         <span className="brand-sub">Real assets from the far north</span>
       </Link>
       <nav className="nav" aria-label="Primary">

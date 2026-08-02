@@ -13,7 +13,8 @@
 .geom-corp .wrap{max-width:1080px;margin:0 auto;padding:0 clamp(20px,5vw,48px)}
 .geom-corp .top{position:sticky;top:0;z-index:20;background:rgba(242,245,246,.82);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
 .geom-corp .top .wrap{display:flex;align-items:center;justify-content:space-between;height:66px}
-.geom-corp .gc-brand{font-family:var(--wm);font-weight:900;font-stretch:125%;font-size:22px;letter-spacing:.04em;color:var(--night)}
+.geom-corp .gc-brand{display:flex;align-items:center}
+.geom-corp .gc-brand img{display:block;height:24px;width:auto}
 .geom-corp .topnav{display:flex;gap:26px;align-items:center}
 .geom-corp .topnav a{font-family:var(--mono);font-size:12.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--slate);transition:color .2s}
 .geom-corp .topnav a:hover, .geom-corp .topnav a.gc-on{color:var(--basin)}

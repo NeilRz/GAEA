@@ -64,7 +64,7 @@ const ORG_JSONLD = {
   name: "GEOM",
   legalName: "Greenland Energy Oil & Minerals Foundation",
   url: "https://www.geom.org",
-  logo: "https://www.geom.org/img/geom-hero-photo.jpg",
+  logo: "https://www.geom.org/brand/geom-mark.png",
   description:
     "The intelligence layer for oil and minerals. GEOM maps the world's energy assets, tracks tokenization, and cryptographically signs every dataset it publishes.",
   sameAs: ["https://x.com/Geom_Global"],

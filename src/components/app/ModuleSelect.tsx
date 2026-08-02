@@ -347,8 +347,9 @@ export default function ModuleSelect() {
   return (
     <div className="msel-page">
       <header className="msel-top">
-        <Link href="/" className="msel-brand brand-mark">
-          GEOM
+        <Link href="/" className="msel-brand">
+          {/* eslint-disable-next-line @next/next/no-img-element -- static SVG brand asset */}
+          <img className="brand-logo" src="/brand/geom-logo-light.svg" alt="GEOM" />
         </Link>
         <h1 className="msel-h1">
           GEOM <em>modules</em>

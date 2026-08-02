@@ -216,7 +216,8 @@ export default function GeomApp({ data }: { data: AppData }) {
       <div className="gapp">
         <aside className="gapp-side">
           <Link href="/" className="gapp-brand" title="geom.org">
-            <span className="brand-mark">GEOM</span>
+            {/* eslint-disable-next-line @next/next/no-img-element -- static SVG brand asset */}
+            <img className="brand-logo" src="/brand/geom-logo-light.svg" alt="GEOM" />
           </Link>
           <nav className="gapp-nav" aria-label="Modules">
             {MODULES.map((m) => (
