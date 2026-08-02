@@ -3,7 +3,7 @@
 import { usePathname } from "next/navigation";
 
 // The marketing site (landing + corporate pages) carries its own footer.
-const MARKETING = new Set(["/", "/news", "/investors", "/terms", "/privacy"]);
+const MARKETING = new Set(["/", "/news", "/investors", "/privacy"]);
 
 export default function SiteFooter() {
   const pathname = usePathname();
