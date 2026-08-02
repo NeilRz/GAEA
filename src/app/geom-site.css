@@ -190,7 +190,7 @@
 .geom-site .close .ccoord{position:relative;font-family:var(--mono);font-size:clamp(10px,2.6vw,12px);letter-spacing:.2em;color:#7E90A0;margin-top:22px}
 .geom-site /* footer */
   .foot{background:var(--night);color:var(--snow);border-top:1px solid rgba(255,255,255,.09);padding:clamp(44px,7vh,72px) 0}
-.geom-site .foot .gs-grid{display:flex;justify-content:space-between;gap:26px;flex-wrap:wrap;align-items:flex-start}
+.geom-site .foot .gs-grid{display:flex;justify-content:center;gap:26px;flex-wrap:wrap;align-items:flex-start}
 .geom-site .disc{max-width:60ch;font-size:12.5px;line-height:1.65;color:#8296A1}
 .geom-site .disc b{color:#C4D2DA;font-weight:600}
 .geom-site .foot .fl{display:flex;gap:22px}

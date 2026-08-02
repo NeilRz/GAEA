@@ -70,7 +70,7 @@ const ORG_JSONLD = {
   logo: "https://www.geom.org/img/geom-hero-photo.jpg",
   description:
     "The intelligence layer for oil and minerals. GEOM maps the world's energy assets, tracks tokenization, and cryptographically signs every dataset it publishes.",
-  sameAs: ["https://x.com/geom_org"],
+  sameAs: ["https://x.com/Geom_Global"],
   email: "hello@geom.org",
 };
 
