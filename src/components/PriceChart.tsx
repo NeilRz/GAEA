@@ -28,10 +28,13 @@ export function PriceChart({
   candles,
   currency = "USD",
   height = 400,
+  fill = false,
 }: {
   candles: Candle[];
   currency?: string;
   height?: number;
+  /** Fill the parent instead of a fixed height (parent must size it). */
+  fill?: boolean;
 }) {
   const wrapRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<IChartApi | null>(null);
@@ -165,7 +168,7 @@ export function PriceChart({
     active && prev && prev.c !== 0 ? ((active.c - prev.c) / prev.c) * 100 : null;
 
   return (
-    <div>
+    <div className={fill ? "chart-fill" : undefined}>
       {active && (
         <div className="ohlc-legend">
           <span className="ohlc-date">{formatBarDate(active.t, true)}</span>
@@ -197,7 +200,7 @@ export function PriceChart({
         </div>
       )}
 
-      <div ref={wrapRef} className="chart-frame" style={{ height }} />
+      <div ref={wrapRef} className="chart-frame" style={fill ? undefined : { height }} />
     </div>
   );
 }
