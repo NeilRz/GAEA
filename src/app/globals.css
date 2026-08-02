@@ -1425,6 +1425,28 @@ a.badge:hover { border-color: currentColor; }
   font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase;
   color: var(--ink-3);
 }
+
+/* collapsible group header */
+.t2-group-btn {
+  display: flex; align-items: center; gap: 7px; width: 100%;
+  padding: 12px 12px 5px; background: none; border: 0; cursor: pointer;
+  font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.2em;
+  text-transform: uppercase; color: var(--ink-3); text-align: left;
+  transition: color 120ms var(--ease);
+}
+.t2-group-btn:hover { color: var(--ink-2); }
+.t2-caret {
+  display: inline-block; font-size: 8px; line-height: 1;
+  transition: transform 160ms var(--ease);
+}
+.t2-caret.open { transform: rotate(90deg); }
+.t2-count { margin-left: auto; font-size: 8.5px; letter-spacing: 0.05em; opacity: 0.65; }
+
+/* partners ride gold, the house cluster */
+.t2-glist.gold .t2-group-btn { color: var(--amber-bright); }
+.t2-glist.gold .t2-group-btn:hover { color: #e8c07a; }
+.t2-glist.gold .t2-row .s { color: #e8c07a; }
+.t2-glist.gold .t2-row.on { box-shadow: inset 2px 0 0 var(--amber-bright); }
 .t2-row {
   display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 0 10px;
   width: 100%; padding: 6px 12px; border: 0; cursor: pointer;
@@ -1452,11 +1474,11 @@ a.badge:hover { border-color: currentColor; }
   text-align: right; white-space: nowrap;
 }
 
-/* diamond marker: this instrument carries a verified on-chain route */
-.t2-route-dot {
-  width: 5px; height: 5px; border-radius: 1px; flex-shrink: 0;
-  background: var(--glacial-bright); opacity: 0.85; transform: rotate(45deg);
-}
+/* status dots: green = live/tradeable via verified route,
+   orange = tokenization planned, not tradeable yet */
+.t2-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+.t2-dot.live { background: var(--good); box-shadow: 0 0 6px rgba(43, 165, 126, 0.8); }
+.t2-dot.soon { background: #c67c1b; box-shadow: 0 0 6px rgba(198, 124, 27, 0.6); }
 
 /* ── center: head / chart / structure ── */
 

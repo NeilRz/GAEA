@@ -12,6 +12,10 @@ export interface Instrument {
   venue: string;
   /** Why it is on our board, one clause, factual, no view */
   note: string;
+  /** Board indicator: "live" = tradeable now through a verified route,
+      "planned" = tokenization/route expected but not live yet. Omitted for
+      instruments where neither applies (plain listed equities, futures). */
+  status?: "live" | "planned";
   /** Verified on-chain contract — enables the swap route in the terminal.
       Only set for tokens whose address was checked against the issuer's
       own documentation AND that have a real public pool. Trades execute
@@ -37,6 +41,8 @@ export interface BoardGroup {
   id: string;
   title: string;
   blurb: string;
+  /** Visual accent for the group in the terminal rail. */
+  accent?: "gold";
   instruments: Instrument[];
 }
 
@@ -44,6 +50,7 @@ export const BOARD: BoardGroup[] = [
   {
     id: "partners",
     title: "Partners",
+    accent: "gold",
     blurb:
       "Listed vehicles behind the Greenland licence positions we track. Prices are the market's, not ours.",
     instruments: [
@@ -72,7 +79,7 @@ export const BOARD: BoardGroup[] = [
   },
   {
     id: "tokenized",
-    title: "Tokenized real-world assets",
+    title: "Tokenized RWA",
     blurb:
       "The on-chain wrappers for commodity and treasury exposure, the market our oracle attests into. Tokens with a verified contract and a public pool carry a swap route.",
     instruments: [
@@ -81,6 +88,7 @@ export const BOARD: BoardGroup[] = [
         label: "ONDO",
         venue: "Crypto",
         note: "Ondo Finance, tokenized treasuries and equities; USOon wraps the United States Oil Fund.",
+        status: "live",
         token: {
           chain: "ethereum",
           address: "0xfAbA6f8e4a5E8Ab82F62fe7C39859FA577269BE3",
@@ -94,6 +102,7 @@ export const BOARD: BoardGroup[] = [
         label: "PAXG",
         venue: "Crypto",
         note: "Paxos Gold, one token, one allocated troy ounce. Half of the tokenized-commodity float.",
+        status: "live",
         token: {
           chain: "ethereum",
           address: "0x45804880De22913dAFE09f4980848ECE6EcbAf78",
@@ -107,6 +116,7 @@ export const BOARD: BoardGroup[] = [
         label: "XAUT",
         venue: "Crypto",
         note: "Tether Gold, the other half. Together with PAXG, roughly three-quarters of tokenized commodities.",
+        status: "live",
         token: {
           chain: "ethereum",
           address: "0x68749665FF8D2d112Fa859AA293F07A622782F38",
@@ -120,18 +130,21 @@ export const BOARD: BoardGroup[] = [
         label: "VNXAU",
         venue: "Crypto",
         note: "VNX Gold, one token, one gram of LBMA gold. No verified public pool — no swap route shown.",
+        status: "planned",
       },
       {
         symbol: "CGO-USD",
         label: "CGO",
         venue: "Crypto",
         note: "Comtech Gold, gram-denominated gold on XDC. No verified public pool — no swap route shown.",
+        status: "planned",
       },
       {
         symbol: "KAG-USD",
         label: "KAG",
         venue: "Crypto",
         note: "Kinesis Silver, one token, one troy ounce; trades on the Kinesis exchange, not on public DEXs.",
+        status: "planned",
       },
     ],
   },

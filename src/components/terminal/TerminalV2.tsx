@@ -62,6 +62,7 @@ export default function TerminalV2() {
   const [result, setResult] = useState<LoadResult | null>(null);
   const [updatedAt, setUpdatedAt] = useState<string | null>(null);
   const [filter, setFilter] = useState("");
+  const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
   const [structTab, setStructTab] = useState<StructTab>("curve");
 
   const instrument = findInstrument(symbol);
@@ -167,22 +168,42 @@ export default function TerminalV2() {
             />
           </div>
           <div className="t2-list">
-            {groups.map((group) => (
-              <div key={group.id}>
-                <p className="t2-group" title={group.blurb}>
-                  {group.title}
-                </p>
-                {group.instruments.map((ins) => (
-                  <MarketRow
-                    key={ins.symbol}
-                    ins={ins}
-                    quote={quotes[ins.symbol]}
-                    active={ins.symbol === symbol}
-                    onSelect={() => setSymbol(ins.symbol)}
-                  />
-                ))}
-              </div>
-            ))}
+            {groups.map((group) => {
+              // An active filter overrides collapse, matches must be visible.
+              const open = filter.trim() !== "" || !collapsed[group.id];
+              return (
+                <div
+                  key={group.id}
+                  className={group.accent === "gold" ? "t2-glist gold" : "t2-glist"}
+                >
+                  <button
+                    type="button"
+                    className="t2-group-btn"
+                    title={group.blurb}
+                    aria-expanded={open}
+                    onClick={() =>
+                      setCollapsed((c) => ({ ...c, [group.id]: !c[group.id] }))
+                    }
+                  >
+                    <span className={`t2-caret${open ? " open" : ""}`} aria-hidden>
+                      ▸
+                    </span>
+                    {group.title}
+                    <span className="t2-count">{group.instruments.length}</span>
+                  </button>
+                  {open &&
+                    group.instruments.map((ins) => (
+                      <MarketRow
+                        key={ins.symbol}
+                        ins={ins}
+                        quote={quotes[ins.symbol]}
+                        active={ins.symbol === symbol}
+                        onSelect={() => setSymbol(ins.symbol)}
+                      />
+                    ))}
+                </div>
+              );
+            })}
             {groups.length === 0 && (
               <p className="t2-group">no match — clear the filter</p>
             )}
@@ -195,9 +216,7 @@ export default function TerminalV2() {
             <div className="t2-id">
               <h2 className="t2-sym">
                 {instrument?.label ?? symbol}
-                {instrument?.token && (
-                  <span className="t2-route-dot" title="on-chain route available" />
-                )}
+                <StatusDot status={instrument?.status} />
               </h2>
               <p className="t2-name" title={head?.name ?? undefined}>
                 {instrument?.venue ?? "—"} · {head?.name ?? "—"}
@@ -328,6 +347,22 @@ export default function TerminalV2() {
   );
 }
 
+/** Green: live and tradeable through a verified route. Orange: tokenization
+ *  on the way, no route yet. No dot: neither applies. */
+function StatusDot({ status }: { status?: Instrument["status"] }) {
+  if (!status) return null;
+  return (
+    <span
+      className={`t2-dot ${status === "live" ? "live" : "soon"}`}
+      title={
+        status === "live"
+          ? "live · tradeable through a verified route"
+          : "tokenization planned · not tradeable yet"
+      }
+    />
+  );
+}
+
 function MarketRow({
   ins,
   quote,
@@ -350,7 +385,7 @@ function MarketRow({
     >
       <span className="s">
         {ins.label}
-        {ins.token && <span className="t2-route-dot" aria-hidden />}
+        <StatusDot status={ins.status} />
       </span>
       <span className="v">{ins.venue}</span>
       <span className="p">{quote ? formatPrice(quote.price, quote.currency) : "—"}</span>
