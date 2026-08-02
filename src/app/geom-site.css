@@ -225,7 +225,7 @@
 @keyframes aurain{to{opacity:.92}}
 @keyframes blink{0%,100%{opacity:.3;transform:scaleY(.55)}50%{opacity:1;transform:scaleY(1)}}
 @media(prefers-reduced-motion:reduce){.geom-site *{animation:none!important;transition:none!important}
-.geom-site .brandmark, .geom-site .gs-eyebrow, .geom-site .wordmark, .geom-site .tagline, .geom-site .subtag, .geom-site .reveal>*{opacity:1!important;transform:none!important;filter:none!important}
+.geom-site .brandmark, .geom-site .gs-mark, .geom-site .gs-eyebrow, .geom-site .wordmark, .geom-site .tagline, .geom-site .subtag, .geom-site .reveal>*{opacity:1!important;transform:none!important;filter:none!important}
 .geom-site .cue{opacity:.85!important}
 .geom-site .hero-photo{opacity:1!important}
 .geom-site .gs-nav{opacity:1!important;transform:translateX(-50%)!important;pointer-events:auto!important}}
@@ -300,3 +300,9 @@
 .geom-site .foot .fl{flex-wrap:wrap;row-gap:6px}
 .geom-site .gs-eyebrow{text-wrap:balance}
 @media(max-width:560px){.geom-site .gs-eyebrow{letter-spacing:.22em}}
+
+/* ── brand lockup: G monogram above the wordmark, ruled subtitle (matches the X banner) ── */
+.geom-site .gs-mark{display:block;width:clamp(54px,7vw,92px);height:auto;color:#1D94EE;margin:0 auto clamp(14px,2.6vh,26px)}
+.geom-site .wm-sub{display:flex;align-items:center;justify-content:center;gap:clamp(10px,1.6vw,20px);color:#C7DAE6}
+.geom-site .wm-sub::before,.geom-site .wm-sub::after{content:"";height:1px;width:clamp(34px,6vw,110px);background:currentColor;opacity:.5;flex:none}
+.geom-site.anim .gs-mark{opacity:0;transform:translateY(26px);filter:blur(12px);animation:emerge 1.5s var(--ease) .55s forwards}
