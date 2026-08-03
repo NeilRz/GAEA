@@ -13,7 +13,7 @@ const LINKS = [
 ];
 
 // The marketing site (landing + corporate pages) supplies its own chrome.
-const MARKETING = new Set(["/", "/news", "/investors", "/privacy"]);
+const MARKETING = new Set(["/", "/news", "/join", "/investors", "/privacy"]);
 
 export default function Nav() {
   const pathname = usePathname();

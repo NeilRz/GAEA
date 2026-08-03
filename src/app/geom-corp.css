@@ -68,3 +68,25 @@
 .geom-corp h2.h{font-weight:600;letter-spacing:-.015em}
 .geom-corp .legal h2{font-weight:600;letter-spacing:-.01em}
 .geom-corp .it-title{font-weight:500;letter-spacing:-.01em}
+
+/* ── membership application form (/join) ── */
+.geom-corp .jf{max-width:880px}
+.geom-corp .jf-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px 22px}
+@media(max-width:700px){.geom-corp .jf-grid{grid-template-columns:1fr}}
+.geom-corp .jf-field{display:flex;flex-direction:column;gap:7px}
+.geom-corp .jf-wide{grid-column:1/-1}
+.geom-corp .jf-l{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--slate)}
+.geom-corp .jf input,.geom-corp .jf select,.geom-corp .jf textarea{
+  font:inherit;font-size:15px;color:var(--night);background:#fff;
+  border:1px solid var(--line);border-radius:8px;padding:11px 13px;outline:none;
+  transition:border-color .2s, box-shadow .2s}
+.geom-corp .jf input:focus,.geom-corp .jf select:focus,.geom-corp .jf textarea:focus{
+  border-color:var(--ice-dark);box-shadow:0 0 0 3px rgba(94,139,166,.15)}
+.geom-corp .jf textarea{resize:vertical;min-height:96px}
+.geom-corp .jf-hp{position:absolute;left:-9999px;top:-9999px;height:1px;width:1px;overflow:hidden}
+.geom-corp .jf-submit{margin-top:26px;display:inline-flex;cursor:pointer;background:var(--night);color:#fff;border:1px solid var(--night)}
+.geom-corp .jf-submit:disabled{opacity:.55;cursor:default}
+.geom-corp .jf-err{margin-top:16px;font-family:var(--mono);font-size:12.5px;color:var(--redbed)}
+.geom-corp .jf-note{margin-top:18px;font-size:13px;color:var(--slate);max-width:60ch}
+.geom-corp .jf-note a{color:var(--basin, var(--ice-dark))}
+.geom-corp .jf-done .h{margin-bottom:10px}

@@ -12,6 +12,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { path: "/overview", priority: 0.8 },
     { path: "/news", priority: 0.7 },
     { path: "/investors", priority: 0.7 },
+    { path: "/join", priority: 0.5 },
     { path: "/privacy", priority: 0.3 },
   ];
   return routes.map((r) => ({
