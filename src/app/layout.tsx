@@ -1,3 +1,4 @@
+import { Analytics } from "@vercel/analytics/next";
 import type { Metadata } from "next";
 import { Archivo, Fragment_Mono } from "next/font/google";
 import localFont from "next/font/local";
@@ -88,6 +89,7 @@ export default function RootLayout({
           {children}
           <SiteFooter />
         </div>
+        <Analytics />
       </body>
     </html>
   );
