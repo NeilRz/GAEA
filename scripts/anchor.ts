@@ -10,8 +10,8 @@
  * Env:    ORACLE_SIGNER_KEY  base58 or JSON-array Ed25519 secret key
  *                            (falls back to .keys/oracle-devnet.json,
  *                            generated on first run — devnet only)
- *         SOLANA_RPC_URL     default https://api.devnet.solana.com
- *         SOLANA_CLUSTER     explorer label + airdrop guard, default devnet
+ *         SOLANA_CLUSTER     target cluster, default devnet
+ *         SOLANA_RPC_URL     default https://api.<cluster>.solana.com
  */
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
@@ -36,8 +36,9 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const ANCHORS_PATH = join(ROOT, "src", "data", "anchors.json");
 const DEV_KEYFILE = join(ROOT, ".keys", "oracle-devnet.json");
 
-const RPC_URL = process.env.SOLANA_RPC_URL ?? "https://api.devnet.solana.com";
 const CLUSTER = process.env.SOLANA_CLUSTER ?? "devnet";
+const RPC_URL =
+  process.env.SOLANA_RPC_URL ?? `https://api.${CLUSTER}.solana.com`;
 
 function loadKeypair(): Keypair {
   const envKey = process.env.ORACLE_SIGNER_KEY;
