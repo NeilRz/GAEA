@@ -170,7 +170,7 @@
 .geom-site .gs-nav .cash:hover{color:#fff;background:rgba(255,255,255,.06)}
 .geom-site .partners{background:var(--paper);padding:clamp(60px,10vh,112px) 0}
 .geom-site .partners .sec-head{flex-direction:column;align-items:center;text-align:center;gap:10px}
-.geom-site .plogos{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;max-width:1020px;margin:0 auto}
+.geom-site .plogos{display:grid;grid-template-columns:repeat(2,minmax(0,330px));justify-content:center;gap:20px;max-width:1020px;margin:0 auto}
 @media(max-width:760px){.geom-site .plogos{grid-template-columns:1fr;max-width:440px;margin:0 auto}}
 .geom-site .pcard{display:flex;flex-direction:column;align-items:center;gap:18px;background:#fff;border:1px solid rgba(12,21,25,.08);border-radius:16px;padding:34px 24px 26px;box-shadow:0 10px 30px rgba(12,21,25,.05);transition:transform .3s var(--ease),box-shadow .3s var(--ease)}
 .geom-site .pcard:hover{transform:translateY(-3px);box-shadow:0 18px 46px rgba(12,21,25,.09)}
