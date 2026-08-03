@@ -1,7 +1,7 @@
 /* Display formatting for the terminal. Shared by the ticker strip and the
    chart so a price reads identically in both places. */
 
-/** London lines (80M.L) quote in pence, not pounds, never prefix them with $. */
+/** London lines quote in pence, not pounds, never prefix them with $. */
 export function formatPrice(value: number, currency = "USD"): string {
   if (!Number.isFinite(value)) return "—";
 

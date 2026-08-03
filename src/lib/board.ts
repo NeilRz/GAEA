@@ -64,12 +64,6 @@ export const BOARD: BoardGroup[] = [
         note: "US Fuels & Minerals (Twin Vee combination), funding the US$30m Disko-Nuussuaq earn-in. Quote line still prints as VEEE until the ticker change completes.",
       },
       {
-        symbol: "80M.L",
-        label: "80M",
-        venue: "LSE AIM",
-        note: "80 Mile plc, operator at Disko-Nuussuaq, West Greenland; USFM funding a US$30m earn-in. Quoted in pence.",
-      },
-      {
         symbol: "GLND",
         label: "GLND",
         venue: "Nasdaq GM",
@@ -189,7 +183,7 @@ export function findInstrument(symbol: string): Instrument | undefined {
 }
 
 /** Default selection when the terminal opens, our own partner cluster. */
-export const DEFAULT_SYMBOL = "80M.L";
+export const DEFAULT_SYMBOL = "GLND";
 
 export interface RangeOption {
   id: string;

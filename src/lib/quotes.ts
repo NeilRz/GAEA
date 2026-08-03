@@ -26,7 +26,7 @@ export interface Candle {
 export interface QuoteMeta {
   symbol: string;
   name: string;
-  /** "USD", or "GBp" for London pence-quoted lines like 80M.L */
+  /** "USD", or "GBp" for London pence-quoted lines */
   currency: string;
   exchange: string;
   price: number;
@@ -79,7 +79,7 @@ function str(v: unknown, fallback: string): string {
 /**
  * Fetch one symbol's OHLC series.
  *
- * @param symbol Yahoo symbol, "80M.L", "GLND", "ONDO-USD", "CL=F"
+ * @param symbol Yahoo symbol, "GLND", "ONDO-USD", "CL=F"
  * @param range  "1mo" | "3mo" | "6mo" | "1y" | "5y"
  * @param interval "1d" | "1wk" | "60m" …
  */
