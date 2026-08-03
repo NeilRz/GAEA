@@ -16,6 +16,11 @@ on:
     - cron: "30 21 * * 3" # Wed 21:30 UTC — after the WPSR release
     - cron: "0 12 * * 5"  # Fri 12:00 UTC — catch-up for delayed releases
   workflow_dispatch:
+    inputs:
+      force_anchor:
+        description: "Anchor even if datasets are unchanged (e.g. cluster cutover, key rotation)"
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -61,21 +66,25 @@ jobs:
         run: echo "changed=$(git status --porcelain src/data | wc -l)" >> "$GITHUB_OUTPUT"
 
       - name: Anchor manifest on Solana
-        if: steps.diff.outputs.changed != '0'
+        if: steps.diff.outputs.changed != '0' || inputs.force_anchor
         run: npm run anchor
         env:
           ORACLE_SIGNER_KEY: ${{ secrets.ORACLE_SIGNER_KEY }}
           SOLANA_CLUSTER: ${{ vars.SOLANA_CLUSTER || 'devnet' }}
 
       - name: Commit and push
-        if: steps.diff.outputs.changed != '0'
+        if: steps.diff.outputs.changed != '0' || inputs.force_anchor
         run: |
           git config user.name "geom-oracle-bot"
           git config user.email "geom-oracle-bot@users.noreply.github.com"
           # Whole data dir: the anchor commits to every dataset, so a
           # partial add would ship a manifest mismatch.
           git add src/data
-          git commit -m "EIA WPSR ingest: week ending $(node -p "require('./src/data/eia.json').meta.version")"
+          if [ "${{ steps.diff.outputs.changed }}" != "0" ]; then
+            git commit -m "EIA WPSR ingest: week ending $(node -p "require('./src/data/eia.json').meta.version")"
+          else
+            git commit -m "Re-anchor manifest (forced dispatch, no dataset change)"
+          fi
           # main may have moved since checkout — never force, always rebase.
           git pull --rebase origin main
           git push
