@@ -18,7 +18,7 @@ const REQUIRED = [
 
 const MAX = 2000;
 const TO = process.env.JOIN_TO || "hello@geom.org";
-const FROM = process.env.JOIN_FROM || "GEOM applications <onboarding@resend.dev>";
+const FROM = process.env.JOIN_FROM || "GEOM applications <applications@geom.org>";
 
 const esc = (s: string) =>
   s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
