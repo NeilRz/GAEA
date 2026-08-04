@@ -1,5 +1,6 @@
 import { DATASETS, datasetHashes } from "@/lib/attest";
 import eia from "@/data/eia.json";
+import spots from "@/data/spots.json";
 import jodi from "@/data/jodi.json";
 import minerals from "@/data/minerals.json";
 import electricity from "@/data/electricity.json";
@@ -47,6 +48,13 @@ const DISPLAY: Record<
   sites: { category: "Minerals & nuclear", color: "#b26a4e", recordsKey: "sites", recordsNoun: "sites" },
   plants: { category: "Power infrastructure", color: "#5fd4ae", recordsKey: "plants", recordsNoun: "plants" },
   pipelines: { category: "Midstream", color: "#c67c1b", recordsKey: "pipelines", recordsNoun: "pipelines" },
+  spots: {
+    category: "Spot prices",
+    color: "#4fae8d",
+    recordsKey: null,
+    recordsNoun: "series",
+    schedule: "EIA daily spot series · ingested with the weekly EIA run",
+  },
   eia: {
     category: "Weekly fundamentals",
     color: "#3e90cb",
@@ -122,6 +130,10 @@ function metaOf(id: string): DatasetMetaBlock {
 
 function recordsLabel(id: string): string {
   const d = DISPLAY[id];
+  if (id === "spots") {
+    const s = (spots as { series: EiaSeries[] }).series;
+    return `${s.length} series · ${s[0]?.points.length ?? 0} trading days`;
+  }
   if (id === "eia") {
     const s = (eia as { series: EiaSeries[] }).series;
     return `${s.length} series · ${s[0]?.points.length ?? 0} weeks`;

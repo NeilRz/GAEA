@@ -9,6 +9,7 @@ import sites from "@/data/sites.json";
 import plants from "@/data/plants.json";
 import pipelinesData from "@/data/pipelines.json";
 import eia from "@/data/eia.json";
+import spots from "@/data/spots.json";
 import prices from "@/data/prices.json";
 import goget from "@/data/goget.json";
 import goit from "@/data/goit.json";
@@ -79,6 +80,11 @@ export const DATASETS: Record<
     data: eia,
     title: eia.meta.title,
     version: eia.meta.version,
+  },
+  spots: {
+    data: spots,
+    title: spots.meta.title,
+    version: spots.meta.version,
   },
   prices: {
     data: prices,
