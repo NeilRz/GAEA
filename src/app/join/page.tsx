@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import "@/app/geom-corp.css";
 import JoinForm from "@/components/geom/JoinForm";
 
@@ -20,18 +21,18 @@ export default function JoinPage() {
     <div className="geom-corp">
       <header className="top">
         <div className="wrap">
-          <a className="gc-brand" href="/">
+          <Link className="gc-brand" href="/">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/brand/geom-logo-dark.svg" alt="GEOM" />
-          </a>
+          </Link>
           <nav className="topnav">
-            <a href="/">Home</a>
-            <a href="/news">News</a>
-            <a href="/investors">Investors</a>
-            <a href="/#structure">Structure</a>
-            <a className="enter gc-on" href="/join">
+            <Link href="/">Home</Link>
+            <Link href="/news">News</Link>
+            <Link href="/investors">Investors</Link>
+            <Link href="/#structure">Structure</Link>
+            <Link className="enter gc-on" href="/join">
               Join
-            </a>
+            </Link>
           </nav>
         </div>
       </header>
@@ -62,15 +63,15 @@ export default function JoinPage() {
             </div>
             <div>
               <h5>Site</h5>
-              <a href="/">Home</a>
-              <a href="/news">News</a>
-              <a href="/investors">Investors</a>
-              <a href="/#structure">Structure</a>
-              <a href="/join">Join the association</a>
+              <Link href="/">Home</Link>
+              <Link href="/news">News</Link>
+              <Link href="/investors">Investors</Link>
+              <Link href="/#structure">Structure</Link>
+              <Link href="/join">Join the association</Link>
             </div>
             <div>
               <h5>Legal</h5>
-              <a href="/privacy">Privacy policy</a>
+              <Link href="/privacy">Privacy policy</Link>
               <a href="https://x.com/Geom_Global" target="_blank" rel="noopener noreferrer">
                 X / Twitter
               </a>

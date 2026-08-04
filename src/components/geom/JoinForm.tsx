@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const STAGES = ["Exploration", "Development", "Production"] as const;
 const LISTINGS = [
@@ -16,7 +16,10 @@ const LISTINGS = [
 export default function JoinForm() {
   const [state, setState] = useState<"idle" | "sending" | "done" | "error">("idle");
   const [error, setError] = useState<string>("");
-  const startedAt = useRef<number>(Date.now());
+  const startedAt = useRef<number>(0);
+  useEffect(() => {
+    startedAt.current = Date.now();
+  }, []);
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
