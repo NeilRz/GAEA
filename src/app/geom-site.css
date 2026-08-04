@@ -281,7 +281,7 @@
 .geom-site .gap-bar-wrap{display:flex;align-items:center;gap:10px}
 .geom-site .gap-bar{height:16px;border-radius:3px;flex:none}
 .geom-site .gap-bar.b1{width:min(76%,560px);background:linear-gradient(90deg,#1B6FAE,#4E9AD0)}
-.geom-site .gap-bar.b2{width:15px;background:#C98A3C}
+.geom-site .gap-bar.b2{width:22px;background:#C98A3C}
 .geom-site .gap-val{font-family:var(--mono);font-size:12px;letter-spacing:.04em;color:#E4EDF2}
 .geom-site .gap-zero{font-family:var(--mono);font-size:13px;letter-spacing:.06em;color:#E08A74}
 
@@ -306,3 +306,5 @@
 .geom-site .wm-sub{display:flex;align-items:center;justify-content:center;gap:clamp(10px,1.6vw,20px);color:#C7DAE6}
 .geom-site .wm-sub::before,.geom-site .wm-sub::after{content:"";height:1px;width:clamp(34px,6vw,110px);background:currentColor;opacity:.5;flex:none}
 .geom-site.anim .gs-mark{opacity:0;transform:translateY(26px);filter:blur(12px);animation:emerge 1.5s var(--ease) .55s forwards}
+
+.geom-site .gap-note{margin-top:22px;font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:#7D8F9B}
