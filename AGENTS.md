@@ -36,6 +36,15 @@ npm run anchor   # writes a new Solana anchor after dataset changes
 
 ## Hard invariants — do not violate
 
+0. **Never regenerate package-lock.json with Windows npm.** Windows npm
+   silently prunes Linux-only optional deps (@emnapi/*, bufferutil,
+   utf-8-validate) from the lock, and the deploy Action's `npm ci` then
+   fails on every push until fixed (this killed all auto-deploys 3–4 Aug).
+   Regenerate from WSL Ubuntu with `npm install --package-lock-only`
+   (move node_modules aside first, or npm rebuilds the lock from the
+   stale hidden lockfile inside it). After any Windows `npm install`,
+   check `git diff package-lock.json` for pruned optionals before pushing.
+
 1. **`src/data/*.json` are cryptographically signed datasets.** The oracle
    (`/oracle`, `src/lib/attest.ts`) hashes and signs their exact bytes, and
    the digest manifest is anchored on Solana. Any content change requires:
