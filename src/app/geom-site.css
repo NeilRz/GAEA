@@ -308,3 +308,5 @@
 .geom-site.anim .gs-mark{opacity:0;transform:translateY(26px);filter:blur(12px);animation:emerge 1.5s var(--ease) .55s forwards}
 
 .geom-site .gap-note{margin-top:22px;font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:#7D8F9B}
+
+.geom-site .gap-src{display:block;margin-top:4px;font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:#7D8F9B}
