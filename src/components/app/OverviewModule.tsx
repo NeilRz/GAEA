@@ -61,7 +61,7 @@ const SOURCE_DBS: Array<{
     license: "CC BY 4.0",
   },
   {
-    source: "WRI · Global Power Plant Database v1.3.0",
+    source: "GEM · Global Integrated Power Tracker",
     datasets: "plants",
     cadence: "static",
     license: "CC BY 4.0",
@@ -97,7 +97,7 @@ const MODULE_ROWS: Array<{
   {
     key: "map",
     title: "Map",
-    desc: "3D globe: reserves, mines, GEM extraction assets & pipeline routes, 34,936 plants",
+    desc: "3D globe: reserves, mines, GEM extraction assets & pipeline routes, 38,378 plants",
     status: "live",
     label: "Live",
   },

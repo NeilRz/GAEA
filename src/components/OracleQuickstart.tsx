@@ -54,7 +54,7 @@ console.log(countries[0]);    // { iso: "VE", name: "Venezuela", reserves: 303, 
 //   /api/datasets/minerals     production & reserves, 84 commodities (USGS MCS)
 //   /api/datasets/electricity  generation by fuel, 214 areas (Ember, CC BY 4.0)
 //   /api/datasets/noc          61 national oil companies (NRGI open data)
-//   /api/datasets/plants       34,936 power plants, all fuels (CC-BY WRI)
+//   /api/datasets/plants       38,378 power plants, all fuels (CC BY GEM)
 //   /api/datasets/tokenized    the tokenization registry`,
   },
   {

@@ -29,7 +29,7 @@ const GROUPS = {
   battery: { color: "#2ba57e", label: "Battery metals", hint: "bolt · lithium, nickel, cobalt" },
   ree: { color: "#8a75e8", label: "Rare earths", hint: "crystal · NdPr, heavy REE" },
   nuclear: { color: "#8fb4c9", label: "Nuclear", hint: "atom = plant · trefoil = U mine" },
-  plants: { color: "#5fd4ae", label: "Power plants (34,936)", hint: "typed clusters by fuel · WRI GPPD" },
+  plants: { color: "#5fd4ae", label: "Power plants (38,378)", hint: "typed clusters by fuel · GEM GIPT" },
   reserves: { color: "#5e8ba6", label: "Proven oil reserves", hint: "circle area = billion bbl" },
   arctic: { color: "#6fd4c3", label: "Arctic highlight", hint: "assets above 66°33′N" },
 } as const;
@@ -195,7 +195,7 @@ function plantPopupHTML(p: Record<string, unknown>): string {
     <div class="popup-kv">
       ${flagHTML(p.c)}${p.c} · ${p.f}<br/>
       <b>${p.mw} MW</b><br/>
-      <span style="color:#64778f">WRI Global Power Plant Database · CC-BY 4.0</span>
+      <span style="color:#64778f">GEM Global Integrated Power Tracker · CC BY 4.0</span>
     </div>${oracleLinkHTML()}`;
 }
 
@@ -298,7 +298,7 @@ export default function ReserveMap({
             ],
             tileSize: 256,
             attribution:
-              "© <a href='https://www.openstreetmap.org/copyright'>OpenStreetMap</a> contributors © <a href='https://carto.com/attributions'>CARTO</a> · terrain © <a href='https://registry.opendata.aws/terrain-tiles/'>Mapzen/AWS</a> · plants © <a href='https://datasets.wri.org/dataset/globalpowerplantdatabase'>WRI GPPD</a>",
+              "© <a href='https://www.openstreetmap.org/copyright'>OpenStreetMap</a> contributors © <a href='https://carto.com/attributions'>CARTO</a> · terrain © <a href='https://registry.opendata.aws/terrain-tiles/'>Mapzen/AWS</a> · plants © <a href='https://globalenergymonitor.org/projects/global-integrated-power-tracker/'>GEM GIPT</a>",
           },
           satellite: {
             type: "raster",
@@ -990,7 +990,7 @@ export default function ReserveMap({
         </div>
         <div className="provenance" style={{ marginTop: 14 }}>
           Curated layers: seed data, verify before publication · Power plants ©
-          WRI Global Power Plant Database (CC-BY 4.0) · Extraction assets &
+          GEM Global Integrated Power Tracker (CC BY 4.0) · Extraction assets &
           routed pipelines © Global Energy Monitor (CC BY 4.0) · Trunk pipeline
           routes schematic
         </div>

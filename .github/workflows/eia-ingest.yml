@@ -61,6 +61,11 @@ jobs:
         env:
           EIA_API_KEY: ${{ secrets.EIA_API_KEY }}
 
+      - name: Ingest EIA daily spot prices
+        run: npm run ingest:spots
+        env:
+          EIA_API_KEY: ${{ secrets.EIA_API_KEY }}
+
       - name: Detect dataset change
         id: diff
         run: echo "changed=$(git status --porcelain src/data | wc -l)" >> "$GITHUB_OUTPUT"

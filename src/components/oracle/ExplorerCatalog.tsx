@@ -16,7 +16,7 @@ import Flag from "@/components/Flag";
    datasets, tokenized assets, and watchlist names are all rows of the same
    catalog. The quick search goes deeper: it also hits every individual
    asset record inside the datasets (fields, mines, reserve countries,
-   pipelines, and the 34,936 power plants, lazy-loaded on first search). */
+   pipelines, and the 38,378 power plants, lazy-loaded on first search). */
 
 type Kind = "dataset" | "asset" | "watch" | "record";
 
@@ -226,7 +226,7 @@ function buildRows(catalog: CatalogRow[]): ExploreRow[] {
 }
 
 /* Every individual asset inside the small attested datasets, searchable.
-   Plants (34,936 records, 4.3 MB) load separately on first search. */
+   Plants (38,378 records, 7.7 MB) load separately on first search. */
 function buildRecordIndex(): ExploreRow[] {
   const rec = (
     key: string,
@@ -436,7 +436,7 @@ export default function ExplorerCatalog({
   }, [pending, kinds, cats, statuses]);
 
   /* The heavy record indexes ride in on the first real search, from the
-     same signed bytes the oracle attests: the 34,936 plants (CDN copy),
+     same signed bytes the oracle attests: the 38,378 plants (CDN copy),
      plus the GEM extraction assets and pipelines (dataset API). */
   const plantsFetchStarted = useRef(false);
   const maybeLoadPlants = (value: string) => {

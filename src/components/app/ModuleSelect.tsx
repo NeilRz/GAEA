@@ -301,7 +301,7 @@ const PANELS: PanelDef[] = [
     key: "map",
     index: "01",
     title: "Map",
-    desc: "The physical layer on one globe: reserves, mines, 5,391 extraction assets, routed pipelines and 34,936 power plants.",
+    desc: "The physical layer on one globe: reserves, mines, 5,391 extraction assets, routed pipelines and 38,378 power plants.",
     cta: "See Map",
     href: "/app?m=map",
     acc: "#2ba57e",

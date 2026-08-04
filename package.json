@@ -16,7 +16,8 @@
     "ingest:noc": "tsx scripts/ingest-noc.ts",
     "ingest:minerals": "tsx scripts/ingest-minerals.ts",
     "ingest:electricity": "tsx scripts/ingest-electricity.ts",
-    "ingest:spots": "tsx scripts/ingest-spots.ts"
+    "ingest:spots": "tsx scripts/ingest-spots.ts",
+    "ingest:plants": "tsx scripts/ingest-plants.ts"
   },
   "dependencies": {
     "@vercel/analytics": "^2.0.1",
