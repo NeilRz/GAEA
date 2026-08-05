@@ -8,7 +8,7 @@
       "U.S. EIA Weekly Petroleum Status Report (api.eia.gov v2)"
     ],
     "cadence": "weekly (WPSR release, Wednesdays ~10:30 ET)",
-    "version": "2026-07-24"
+    "version": "2026-07-31"
   },
   "series": [
     {
@@ -17,14 +17,10 @@
       "label": "Crude oil stocks, commercial (excl. SPR)",
       "unit": "thousand barrels",
       "latest": {
-        "period": "2026-07-24",
-        "value": 404508
+        "period": "2026-07-31",
+        "value": 406987
       },
       "points": [
-        {
-          "period": "2024-08-02",
-          "value": 429321
-        },
         {
           "period": "2024-08-09",
           "value": 430678
@@ -436,6 +432,10 @@
         {
           "period": "2026-07-24",
           "value": 404508
+        },
+        {
+          "period": "2026-07-31",
+          "value": 406987
         }
       ]
     },
@@ -445,14 +445,10 @@
       "label": "Crude oil stocks, Strategic Petroleum Reserve",
       "unit": "thousand barrels",
       "latest": {
-        "period": "2026-07-24",
-        "value": 307650
+        "period": "2026-07-31",
+        "value": 304809
       },
       "points": [
-        {
-          "period": "2024-08-02",
-          "value": 375833
-        },
         {
           "period": "2024-08-09",
           "value": 376527
@@ -864,6 +860,10 @@
         {
           "period": "2026-07-24",
           "value": 307650
+        },
+        {
+          "period": "2026-07-31",
+          "value": 304809
         }
       ]
     },
@@ -873,14 +873,10 @@
       "label": "U.S. field production of crude oil",
       "unit": "thousand barrels/day",
       "latest": {
-        "period": "2026-07-24",
-        "value": 13796
+        "period": "2026-07-31",
+        "value": 13804
       },
       "points": [
-        {
-          "period": "2024-08-02",
-          "value": 13400
-        },
         {
           "period": "2024-08-09",
           "value": 13300
@@ -1292,6 +1288,10 @@
         {
           "period": "2026-07-24",
           "value": 13796
+        },
+        {
+          "period": "2026-07-31",
+          "value": 13804
         }
       ]
     },
@@ -1301,14 +1301,10 @@
       "label": "Refiner net input of crude oil",
       "unit": "thousand barrels/day",
       "latest": {
-        "period": "2026-07-24",
-        "value": 17336
+        "period": "2026-07-31",
+        "value": 17153
       },
       "points": [
-        {
-          "period": "2024-08-02",
-          "value": 16402
-        },
         {
           "period": "2024-08-09",
           "value": 16467
@@ -1720,6 +1716,10 @@
         {
           "period": "2026-07-24",
           "value": 17336
+        },
+        {
+          "period": "2026-07-31",
+          "value": 17153
         }
       ]
     },
@@ -1729,14 +1729,10 @@
       "label": "Refinery percent utilization",
       "unit": "percent",
       "latest": {
-        "period": "2026-07-24",
-        "value": 97.2
+        "period": "2026-07-31",
+        "value": 96.5
       },
       "points": [
-        {
-          "period": "2024-08-02",
-          "value": 90.5
-        },
         {
           "period": "2024-08-09",
           "value": 91.5
@@ -2148,6 +2144,10 @@
         {
           "period": "2026-07-24",
           "value": 97.2
+        },
+        {
+          "period": "2026-07-31",
+          "value": 96.5
         }
       ]
     },
@@ -2157,14 +2157,10 @@
       "label": "U.S. imports of crude oil",
       "unit": "thousand barrels/day",
       "latest": {
-        "period": "2026-07-24",
-        "value": 5683
+        "period": "2026-07-31",
+        "value": 6198
       },
       "points": [
-        {
-          "period": "2024-08-02",
-          "value": 6224
-        },
         {
           "period": "2024-08-09",
           "value": 6285
@@ -2576,6 +2572,10 @@
         {
           "period": "2026-07-24",
           "value": 5683
+        },
+        {
+          "period": "2026-07-31",
+          "value": 6198
         }
       ]
     },
@@ -2585,14 +2585,10 @@
       "label": "Total motor gasoline stocks",
       "unit": "thousand barrels",
       "latest": {
-        "period": "2026-07-24",
-        "value": 211301
+        "period": "2026-07-31",
+        "value": 209658
       },
       "points": [
-        {
-          "period": "2024-08-02",
-          "value": 225097
-        },
         {
           "period": "2024-08-09",
           "value": 222203
@@ -3004,6 +3000,10 @@
         {
           "period": "2026-07-24",
           "value": 211301
+        },
+        {
+          "period": "2026-07-31",
+          "value": 209658
         }
       ]
     },
@@ -3013,14 +3013,10 @@
       "label": "Distillate fuel oil stocks",
       "unit": "thousand barrels",
       "latest": {
-        "period": "2026-07-24",
-        "value": 110632
+        "period": "2026-07-31",
+        "value": 107159
       },
       "points": [
-        {
-          "period": "2024-08-02",
-          "value": 127796
-        },
         {
           "period": "2024-08-09",
           "value": 126123
@@ -3432,6 +3428,10 @@
         {
           "period": "2026-07-24",
           "value": 110632
+        },
+        {
+          "period": "2026-07-31",
+          "value": 107159
         }
       ]
     }
