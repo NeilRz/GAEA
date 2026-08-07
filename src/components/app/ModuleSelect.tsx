@@ -14,9 +14,7 @@ interface PanelDef {
   cta: string;
   href: string;
   acc: string;
-  /** Omitted where no poster has been shot yet; the ambient SVG carries the
-   *  panel on its own rather than requesting a file that 404s. */
-  photo?: string;
+  photo: string;
   visual: React.ReactNode;
 }
 
@@ -240,46 +238,6 @@ function TerminalVisual() {
   );
 }
 
-function IsobarVisual() {
-  /* Pressure contours drifting behind a forecast cone: the commit is a fixed
-     tick, the cone opens to the right, and the outcome lands inside it. */
-  return (
-    <svg className="msel-svg" viewBox="0 0 400 620" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-      <g className="msel-breathe" fill="none" stroke="currentColor">
-        <path d="M112 210 c46 -44 132 -46 176 -6 c40 36 26 96 -26 116 c-58 22 -136 12 -164 -30 c-20 -30 -12 -60 14 -80 Z" opacity="0.5" />
-        <path d="M136 222 c38 -34 106 -36 142 -4 c32 28 20 74 -22 90 c-46 18 -108 10 -130 -22 c-16 -24 -10 -48 10 -64 Z" opacity="0.4" />
-        <path d="M160 234 c28 -24 78 -26 104 -2 c24 20 14 52 -16 64 c-34 12 -80 6 -96 -16 c-12 -18 -8 -34 8 -46 Z" opacity="0.32" />
-        <path d="M186 248 c16 -14 44 -14 58 0 c14 12 8 30 -10 36 c-20 8 -46 4 -54 -10 c-8 -10 -4 -18 6 -26 Z" opacity="0.24" />
-      </g>
-      {/* the low: a fixed point the contours close around */}
-      <circle className="msel-core" cx="212" cy="272" r="4.5" fill="currentColor" />
-
-      {/* forecast cone: committed at the tick, widening into the unknown */}
-      <g stroke="currentColor" fill="none">
-        <line x1="40" y1="430" x2="360" y2="430" strokeDasharray="2 6" opacity="0.3" />
-        <line x1="132" y1="398" x2="132" y2="462" opacity="0.75" />
-        <path d="M132 430 L344 384 L344 476 Z" fill="currentColor" fillOpacity="0.1" stroke="none" />
-        <path d="M132 430 L344 384 M132 430 L344 476" strokeDasharray="3 5" opacity="0.45" />
-        <path
-          className="msel-pulse"
-          d="M132 430 C 190 424, 244 440, 300 420"
-          strokeWidth="1.5"
-          opacity="0.9"
-        />
-      </g>
-      {/* the print landing inside the interval */}
-      <circle cx="300" cy="420" r="3.5" fill="currentColor" />
-      <circle className="msel-ping" cx="300" cy="420" r="3.5" fill="none" stroke="currentColor" />
-
-      <g fontFamily="monospace" fontSize="9" fill="currentColor" opacity="0.35" letterSpacing="2">
-        <text x="100" y="392">committed</text>
-        <text x="100" y="514">sha-256 · sealed before print</text>
-      </g>
-      <rect className="msel-blink" x="284" y="506" width="5" height="9" fill="currentColor" />
-    </svg>
-  );
-}
-
 function StatusVisual() {
   return (
     <svg className="msel-svg" viewBox="0 0 400 620" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
@@ -373,18 +331,8 @@ const PANELS: PanelDef[] = [
     visual: <TerminalVisual />,
   },
   {
-    key: "isobar",
-    index: "04",
-    title: "Isobar",
-    desc: "Forecasts on physical oil fundamentals, committed as a hash before the release and settled against the signed dataset. Never prices.",
-    cta: "Open Isobar",
-    href: "/app?m=isobar",
-    acc: "#8a75e8",
-    visual: <IsobarVisual />,
-  },
-  {
     key: "status",
-    index: "05",
+    index: "04",
     title: "Status",
     desc: "The proof surface: anchor history, signer identity and dataset digests, verifiable in the open.",
     cta: "View Status",
@@ -416,20 +364,18 @@ export default function ModuleSelect() {
         {PANELS.map((p) => (
           <section
             key={p.key}
-            className={`msel-panel ${p.photo ? "" : "no-photo"}`}
+            className="msel-panel"
             style={{ "--acc": p.acc } as CSSProperties}
           >
             <div className="msel-bg" aria-hidden="true">
               {p.visual}
             </div>
             <div className="msel-scrim" aria-hidden="true" />
-            {p.photo && (
-              <div
-                className="msel-photo"
-                style={{ backgroundImage: `url(${p.photo})` }}
-                aria-hidden="true"
-              />
-            )}
+            <div
+              className="msel-photo"
+              style={{ backgroundImage: `url(${p.photo})` }}
+              aria-hidden="true"
+            />
             <div className="msel-content">
               <span className="msel-index mono">{p.index}</span>
               <h2 className="msel-title">{p.title}</h2>
@@ -459,11 +405,11 @@ export default function ModuleSelect() {
           <div className="msel-bar-bg" aria-hidden="true">
             <TokenBarVisual />
           </div>
-          <span className="msel-index mono">06</span>
+          <span className="msel-index mono">05</span>
           <span className="msel-bar-text">
             <h2 className="msel-title msel-bar-title">Tokenization Platform</h2>
             <p className="msel-desc msel-bar-desc">
-              The sixth module. In development, unlocks in a future phase.
+              The fifth module. In development, unlocks in a future phase.
             </p>
           </span>
           <span className="msel-lock mono">

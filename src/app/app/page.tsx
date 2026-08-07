@@ -3,7 +3,6 @@ import { Suspense } from "react";
 import bs58 from "bs58";
 import { anchorManifestHash, getSigner } from "@/lib/attest";
 import { catalogRows, datasetDetail, datasetIds } from "@/lib/oracle-catalog";
-import { isobarView } from "@/lib/isobar";
 import anchors from "@/data/anchors.json";
 import reserves from "@/data/reserves.json";
 import fields from "@/data/fields.json";
@@ -47,9 +46,6 @@ export default function AppPage() {
     details: Object.fromEntries(
       datasetIds().map((id) => [id, datasetDetail(id)!])
     ),
-    // Rounds resolve and score against the signed eia bytes, so this is
-    // recomputed on every build rather than stored.
-    isobar: isobarView(),
   };
 
   return (

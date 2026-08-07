@@ -53,10 +53,10 @@ npm run anchor   # writes a new Solana anchor after dataset changes
 2. **Never edit `src/data/anchors.json` by hand.** It is append-only history
    written by `scripts/anchor.ts`; each entry corresponds to a real on-chain
    transaction.
-3. **Never change the protocol strings** `GAEA-ATTEST-V2`, `GAEA-ANCHOR-V1`
-   (in `src/lib/attest.ts`) or `GAEA-FORECAST-V1` (in `src/lib/isobar.ts`).
-   Existing signatures and on-chain anchors depend on those exact bytes. The
-   legacy GAEA prefix is intentional — do not "fix" it to GEOM.
+3. **Never change the protocol strings** `GAEA-ATTEST-V2` and
+   `GAEA-ANCHOR-V1` (in `src/lib/attest.ts`). Existing signatures and
+   on-chain anchors depend on those exact bytes. The legacy GAEA prefix is
+   intentional — do not "fix" it to GEOM.
 4. **`src/data/{plants,goget,goit}.json` and their `public/data/` twins
    must stay byte-identical.** The `src/data` files are the signed source
    of truth; the `public/data` copies are what `/api/datasets/<id>`
@@ -80,13 +80,6 @@ GEOM is intelligence-only, pre-Clarity-Act, and counsel watches the wording:
 - The oracle is a **data attestation layer**: it attests to integrity and
   publication time, not accuracy. Never describe it as issuing, custodying,
   trading, or settling anything.
-- **Isobar forecasts physical fundamentals only.** `FORECASTABLE_SERIES` in
-  `src/lib/isobar.ts` is the entire surface and `assertForecastable()` throws
-  on anything else. Never widen it to prices, spreads, cracks, valuations or
-  directional calls — that allowlist is the compliance boundary, and it lives
-  in code so it cannot drift out of sync with the copy. An attested forecast
-  is one that cannot be quietly edited, not one that is correct; never let the
-  copy blur those.
 
 ## Design system (matched to geom.org)
 
@@ -159,25 +152,17 @@ idiomatic React. Treat them as one self-contained unit.
 
 ```
 src/app/            marketing: / (landing), /overview, /news, /investors,
-                    /terms, /privacy · app: /map, /tracker, /terminal, /oracle,
-                    /isobar (all app routes redirect into /app?m=<key>)
-src/app/api/        datasets, attest, quotes, orders (venue routing), health,
-                    isobar/{rounds,leaderboard,attest}
+                    /terms, /privacy · app: /map, /tracker, /terminal, /oracle
+src/app/api/        datasets, attest, quotes, orders (venue routing), health
 src/app/*.css       globals.css (app) + geom-site.css / geom-corp.css (scoped
                     marketing styles)
 src/components/geom/ GeomLanding + landingHtml.ts / corpHtml.ts (ported brand site)
 src/components/     ReserveMap (globe), TrackerLibrary, MarketBoard,
                     CandleChart, AttestPanel, OracleQuickstart, Nav,
                     SiteFooter, charts
-src/lib/            attest.ts (oracle core), isobar.ts (forecast protocol:
-                    baselines, skill scoring, settlement, GAEA-FORECAST-V1),
-                    map-config, map-icons, tracker-folders,
-                    quotes/board/format (terminal)
+src/lib/            attest.ts (oracle core), map-config, map-icons,
+                    tracker-folders, quotes/board/format (terminal)
 src/data/           SIGNED datasets (see invariants) + anchors.json history
-src/forecasts/      Isobar round ledger. NOT a signed dataset and NOT in
-                    DATASETS: outcomes and scores are recomputed from the
-                    signed eia bytes, so only the commits are stored. Adding
-                    it to DATASETS would change the anchor manifest.
 public/data/        CDN copies: plants.json (signed twin), boundaries.geojson
 public/             seq/ (pump frames), fonts/, img/, partners/, brand videos
 scripts/anchor.ts   Solana Memo anchoring (npm run anchor)

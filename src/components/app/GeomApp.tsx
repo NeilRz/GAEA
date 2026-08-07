@@ -12,7 +12,6 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import dynamic from "next/dynamic";
 import type { CatalogRow, DatasetDetail } from "@/lib/oracle-catalog";
-import type { IsobarView } from "@/lib/isobar";
 /* Mini country flags (fi fi-xx spans) used by the oracle record panels,
    explorer rows, and the map popups. Self-hosted SVGs — emoji flags don't
    render on Windows. Imported here, not in the root layout, so the 36KB
@@ -30,9 +29,8 @@ const OverviewModule = dynamic(() => import("./OverviewModule"), { ssr: false })
 const MapModule = dynamic(() => import("./MapModule"), { ssr: false });
 const TerminalModule = dynamic(() => import("./TerminalModule"), { ssr: false });
 const OracleModule = dynamic(() => import("./OracleModule"), { ssr: false });
-const IsobarModule = dynamic(() => import("./IsobarModule"), { ssr: false });
 
-export type ModuleKey = "overview" | "map" | "terminal" | "oracle" | "isobar";
+export type ModuleKey = "overview" | "map" | "terminal" | "oracle";
 
 /* The oracle explorer is the app's landing surface, Pyth-style. */
 const DEFAULT_VIEW: ModuleKey = "oracle";
@@ -41,7 +39,6 @@ const MODULES: Array<{ key: ModuleKey; label: string; desc: string }> = [
   { key: "oracle", label: "Oracle", desc: "attested datasets & tokenization registry" },
   { key: "map", label: "Map", desc: "the physical layer, mapped" },
   { key: "terminal", label: "Terminal", desc: "market structure · self-custody routing" },
-  { key: "isobar", label: "Isobar", desc: "committed forecasts on physical fundamentals" },
   { key: "overview", label: "Status", desc: "attestation proof & developer access" },
 ];
 
@@ -74,7 +71,6 @@ export interface AppData {
   anchors: AnchorRecord[];
   catalog: CatalogRow[];
   details: Record<string, DatasetDetail>;
-  isobar: IsobarView;
 }
 
 export interface OracleSelection {
@@ -125,7 +121,6 @@ export default function GeomApp({ data }: { data: AppData }) {
       map: initial === "map",
       terminal: initial === "terminal",
       oracle: initial === "oracle",
-      isobar: initial === "isobar",
     };
   });
   const focusToken = useRef(0);
@@ -288,11 +283,6 @@ export default function GeomApp({ data }: { data: AppData }) {
           {mounted.terminal && (
             <div className="gapp-view" style={{ display: view === "terminal" ? undefined : "none" }}>
               <TerminalModule />
-            </div>
-          )}
-          {mounted.isobar && (
-            <div className="gapp-view" style={{ display: view === "isobar" ? undefined : "none" }}>
-              <IsobarModule view={data.isobar} />
             </div>
           )}
           {mounted.oracle && (
