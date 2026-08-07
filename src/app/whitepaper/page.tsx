@@ -72,16 +72,10 @@ export default function WhitepaperPage() {
 
       <section className="phead">
         <div className="wrap">
-          <p className="gc-eyebrow">Whitepaper · Version {VERSION}</p>
+          {/* .title's <em> is already italic in --basin, the corp blue. */}
           <h1 className="title">
-            The intelligence layer for <em>oil and minerals</em>
+            GEOM&apos;s <em>whitepaper</em>
           </h1>
-          <p className="gc-lede">
-            Real-world asset tokenisation has reached treasuries, private credit
-            and real estate. It has not reached the ground. Across the 45
-            tokenised resource instruments GEOM tracks, tokenised crude oil
-            stands at zero and tokenised rare earths stand at zero.
-          </p>
 
           <div className="wp-meta">
             <span>
