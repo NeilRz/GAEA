@@ -13,7 +13,7 @@ import "@/app/geom-corp.css";
    House rule: no em-dashes in brand-facing copy. */
 
 const PDF = "/GEOM-Whitepaper-v3.1.pdf";
-const VERSION = "3.0";
+const VERSION = "3.1";
 const PAGES = 47;
 
 export const metadata: Metadata = {
