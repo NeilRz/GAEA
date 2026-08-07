@@ -12,14 +12,14 @@ import "@/app/geom-corp.css";
 
    House rule: no em-dashes in brand-facing copy. */
 
-const PDF = "/GEOM-Whitepaper-v3.0.pdf";
+const PDF = "/GEOM-Whitepaper-v3.1.pdf";
 const VERSION = "3.0";
 const PAGES = 47;
 
 export const metadata: Metadata = {
   title: "Whitepaper",
   description:
-    "GEOM Whitepaper v3.0: a verifiable record of the physical resource base, a first-party attestation oracle, and the settlement rails for tokenising oil and minerals.",
+    "GEOM Whitepaper v3.1: a verifiable record of the physical resource base, a first-party attestation oracle, and the settlement rails for tokenising oil and minerals.",
   alternates: { canonical: "/whitepaper" },
   openGraph: {
     title: "Whitepaper · GEOM",
