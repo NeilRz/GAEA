@@ -108,6 +108,13 @@ const MODULE_ROWS: Array<{
     status: "warn",
     label: "Partial",
   },
+  {
+    key: "isobar",
+    title: "Isobar",
+    desc: "Forecasts on physical fundamentals, hash-committed before the release and settled against the signed eia dataset",
+    status: "warn",
+    label: "Preview",
+  },
 ];
 
 export default function OverviewModule({ data }: { data: AppData }) {

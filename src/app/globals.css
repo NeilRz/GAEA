@@ -1707,3 +1707,95 @@ a.badge:hover { border-color: currentColor; }
   .t2-seg { margin-left: 0; }
   .t2-status-right { margin-left: 0; text-align: left; }
 }
+
+/* ── isobar: the forecast attestation layer ─────────────────────────────
+   Marks on a shared scale (interval band, forecast tick, naive baseline,
+   printed outcome) plus the scope and caveat blocks. Everything else on the
+   module reuses the global panel / table / badge vocabulary. */
+
+.isb-thesis p em { color: var(--glacial-bright); font-style: italic; }
+
+.isb-caveat {
+  font-size: 11.5px; line-height: 1.65; color: var(--cream);
+  background: rgba(196, 164, 105, 0.07);
+  border: 1px solid rgba(196, 164, 105, 0.28);
+  border-radius: 10px; padding: 11px 14px; margin: 0 0 18px;
+}
+
+/* The track is a percentage-positioned strip: no chart library, and it stays
+   readable at table-row height where a real chart would not. */
+.isb-track {
+  position: relative; height: 18px; margin-bottom: 4px;
+  border-bottom: 1px solid var(--line);
+}
+.isb-band {
+  position: absolute; top: 5px; height: 8px; min-width: 2px;
+  background: rgba(143, 180, 201, 0.22);
+  border-left: 1px solid rgba(143, 180, 201, 0.5);
+  border-right: 1px solid rgba(143, 180, 201, 0.5);
+  border-radius: 2px;
+}
+.isb-mark {
+  position: absolute; top: 2px; width: 2px; height: 14px;
+  margin-left: -1px; border-radius: 1px;
+}
+.isb-mark.isb-naive {
+  background: var(--ink-3);
+  /* dashed so the baseline never reads as a measurement */
+  background-image: linear-gradient(var(--bg) 40%, transparent 40%);
+  background-size: 2px 4px;
+}
+.isb-mark.isb-point { background: var(--glacial-bright); }
+.isb-mark.isb-actual {
+  background: var(--amber-bright); width: 3px; margin-left: -1.5px;
+  box-shadow: 0 0 0 1px rgba(12, 21, 25, 0.9);
+}
+
+.isb-legend {
+  display: flex; flex-wrap: wrap; gap: 18px;
+  font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--ink-3);
+}
+.isb-legend span { display: inline-flex; align-items: center; gap: 6px; }
+.isb-key { display: inline-block; width: 2px; height: 11px; border-radius: 1px; }
+.isb-key.isb-naive { background: var(--ink-3); }
+.isb-key.isb-point { background: var(--glacial-bright); }
+.isb-key.isb-actual { background: var(--amber-bright); width: 3px; }
+.isb-key.isb-band-key {
+  width: 16px; height: 8px; border-radius: 2px;
+  background: rgba(143, 180, 201, 0.22);
+  border-left: 1px solid rgba(143, 180, 201, 0.5);
+  border-right: 1px solid rgba(143, 180, 201, 0.5);
+}
+
+.isb-scope { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.isb-list { list-style: none; margin: 8px 0 0; padding: 0; }
+.isb-list li {
+  font-size: 12.5px; line-height: 1.5; color: var(--ink-2);
+  padding: 4px 0 4px 15px; position: relative;
+}
+.isb-list li::before {
+  content: ""; position: absolute; left: 0; top: 10px;
+  width: 7px; height: 1px; background: var(--good);
+}
+.isb-list.isb-list-no li { color: var(--ink-3); }
+.isb-list.isb-list-no li::before {
+  top: 12px; width: 7px; height: 1px; background: var(--critical);
+}
+
+@media (max-width: 900px) {
+  .isb-scope { grid-template-columns: 1fr; }
+}
+
+/* Panels with no poster shot: the photo layer normally carries most of the
+   texture, so lift the ambient visual and warm the surface to keep the panel
+   from reading as an empty slot next to its neighbours. */
+.msel-panel.no-photo .msel-bg { opacity: 0.62; }
+.msel-panel.no-photo:hover .msel-bg,
+.msel-panel.no-photo:focus-within .msel-bg { opacity: 1; }
+.msel-panel.no-photo::before {
+  content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background: radial-gradient(120% 70% at 50% 34%,
+    color-mix(in srgb, var(--acc) 16%, transparent) 0%,
+    transparent 68%);
+}

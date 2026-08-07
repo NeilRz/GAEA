@@ -18,6 +18,7 @@ Production: **https://www.geom.org** (also mirrored at gaea-gray.vercel.app)
 | **Tokenization Tracker** | `/tracker` | Library-style registry of tokenized resource instruments (45 entries, 11 folders). Headline finding: tokenized crude **and** tokenized rare earths are both $0 |
 | **Terminal** | `/terminal` | Live candlestick board, 16 instruments (partner equities, tokenized RWAs, energy, minerals, benchmarks), 60 s refresh via `/api/quotes` proxy |
 | **Oracle** | `/oracle` | The trust layer: SHA-256 + Ed25519 attestations over every dataset, anchored on Solana, verifiable in-browser or from anyone's machine |
+| **Isobar** | `/isobar` | Forecast attestation: forecasts on physical oil fundamentals, hash-committed before the release and settled against the signed `eia` dataset. Physical fundamentals only, never prices. See `docs/isobar.md` |
 
 ## Linking from the brand site (the "Enter" button)
 
@@ -48,6 +49,11 @@ GET /api/attest/:id          # signed attestation for the dataset (Ed25519)
 GET /api/quotes              # live quote board (cached 60s)
 GET /api/quotes/:symbol      # OHLC candles for one symbol (?range=1d|5d|1mo|6mo|1y)
 GET /api/health              # signer + anchor health (503 when unhealthy)
+GET /api/isobar/rounds       # forecast rounds, newest first, with settlement
+GET /api/isobar/rounds/:id   # one round: baselines, reveals, per-series scores
+GET /api/isobar/leaderboard  # skill + interval calibration across resolved rounds
+GET /api/isobar/attest/:round/:forecaster
+                             # Ed25519 over GAEA-FORECAST-V1|round|forecaster|hash
 POST /api/orders             # resolves buy/sell to a route on an external venue
 GET /api/orders              # custody statement (always empty: GEOM keeps no order book)
 ```
