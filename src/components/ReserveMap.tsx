@@ -254,6 +254,15 @@ export default function ReserveMap({
   const [fuel, setFuel] = useState("all");
   const [plantCount, setPlantCount] = useState<number | null>(null);
   const [query, setQuery] = useState("");
+  /* The panel is a floating overlay, and on a phone an expanded one covers the
+     globe it is meant to filter. Start collapsed there, open everywhere else.
+     Safe to read matchMedia during init: this component is only ever mounted
+     through a dynamic import with ssr disabled. */
+  const [panelOpen, setPanelOpen] = useState(
+    () =>
+      typeof window === "undefined" ||
+      !window.matchMedia("(max-width: 700px)").matches
+  );
 
   const searchIndex = useMemo(
     () => [
@@ -885,10 +894,27 @@ export default function ReserveMap({
   return (
     <div className="map-shell">
       <div ref={containerRef} className="map-canvas" style={{ position: "absolute", inset: 0 }} />
-      <div className="map-panel">
-        <p className="panel-title" style={{ marginBottom: 4 }}>
-          Physical layer
-        </p>
+      <div className={`map-panel ${panelOpen ? "" : "closed"}`}>
+        <button
+          className="map-panel-head"
+          onClick={() => setPanelOpen((v) => !v)}
+          aria-expanded={panelOpen}
+          aria-controls="map-panel-body"
+        >
+          <span className="panel-title" style={{ margin: 0 }}>
+            Physical layer
+          </span>
+          <span className="map-panel-sum mono">
+            {Object.values(visible).filter(Boolean).length}/
+            {Object.keys(GROUPS).length}
+          </span>
+          <span className={`ex-chevron ${panelOpen ? "" : "closed"}`} aria-hidden="true">
+            ⌃
+          </span>
+        </button>
+
+        <div className={`map-panel-body ${panelOpen ? "" : "closed"}`} id="map-panel-body">
+          <div>
         <p className="dimmer mono" style={{ fontSize: 10, margin: "0 0 8px", letterSpacing: "0.06em" }}>
           {fields.fields.length + sites.sites.length} CURATED
           {plantCount ? ` + ${plantCount.toLocaleString("en-US")} PLANTS` : " · PLANTS LOADING…"} · DRAG TO SPIN
@@ -993,6 +1019,8 @@ export default function ReserveMap({
           GEM Global Integrated Power Tracker (CC BY 4.0) · Extraction assets &
           routed pipelines © Global Energy Monitor (CC BY 4.0) · Trunk pipeline
           routes schematic
+        </div>
+          </div>
         </div>
       </div>
     </div>

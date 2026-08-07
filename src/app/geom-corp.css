@@ -90,3 +90,59 @@
 .geom-corp .jf-note{margin-top:18px;font-size:13px;color:var(--slate);max-width:60ch}
 .geom-corp .jf-note a{color:var(--basin, var(--ice-dark))}
 .geom-corp .jf-done .h{margin-bottom:10px}
+
+/* ── whitepaper (/whitepaper) ──────────────────────────────────────────
+   Front matter (cover + contents) above an inline reader. The reader is a
+   plain <object>, so a browser that cannot render PDFs falls back to its
+   own children with no scripting; below 900px it is hidden entirely and the
+   .wp-onphone card takes over, because phone browsers embed PDFs badly. */
+
+.geom-corp .wp-meta{display:flex;flex-wrap:wrap;gap:0;margin-top:30px;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.geom-corp .wp-meta span{display:flex;flex-direction:column;gap:3px;padding:14px 26px 14px 0;margin-right:26px;border-right:1px solid var(--line);font-family:var(--mono);font-size:12px;color:var(--slate)}
+.geom-corp .wp-meta span:last-child{border-right:0;margin-right:0;padding-right:0}
+.geom-corp .wp-meta b{font-weight:400;font-size:13px;letter-spacing:.02em;color:var(--night)}
+@media(max-width:640px){
+  .geom-corp .wp-meta span{flex:1 0 46%;border-right:0;margin-right:0;padding:10px 0}
+}
+
+.geom-corp .wp-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:26px}
+.geom-corp .wp-btn{display:inline-flex;align-items:center;gap:9px;padding:12px 22px;border:1px solid var(--night);border-radius:999px;font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--night);transition:background .2s,color .2s,border-color .2s}
+.geom-corp .wp-btn:hover{background:var(--night);color:var(--snow)}
+.geom-corp .wp-btn-primary{background:var(--night);color:var(--snow)}
+.geom-corp .wp-btn-primary:hover{background:var(--basin);border-color:var(--basin);color:#fff}
+
+/* front matter: cover beside contents, stacking on tablet down */
+.geom-corp .wp-front{display:grid;grid-template-columns:minmax(0,340px) minmax(0,1fr);gap:clamp(28px,5vw,64px);align-items:start}
+@media(max-width:820px){.geom-corp .wp-front{grid-template-columns:1fr;gap:34px}}
+
+.geom-corp .wp-cover{display:block;border-radius:10px;overflow:hidden;border:1px solid var(--line);background:#fff;box-shadow:0 18px 46px rgba(12,21,25,.13);transition:transform .35s cubic-bezier(.19,.72,.18,1),box-shadow .35s}
+.geom-corp .wp-cover:hover{transform:translateY(-4px);box-shadow:0 26px 62px rgba(12,21,25,.2)}
+.geom-corp .wp-cover img{display:block;width:100%;height:auto}
+@media(max-width:820px){.geom-corp .wp-cover{max-width:300px}}
+
+.geom-corp .wp-toc-list{list-style:none;margin-top:20px;border-top:1px solid var(--line)}
+.geom-corp .wp-toc-list li{border-bottom:1px solid var(--line)}
+.geom-corp .wp-toc-list a{display:grid;grid-template-columns:38px minmax(0,1fr) auto;align-items:baseline;gap:14px;padding:13px 6px 13px 0;transition:background .18s,padding .18s}
+.geom-corp .wp-toc-list a:hover{background:#fff;padding-left:8px;padding-right:8px}
+.geom-corp .wp-toc-list a:hover .wp-toc-t{color:var(--basin)}
+.geom-corp .wp-toc-n{font-family:var(--mono);font-size:12px;color:var(--ice-dark)}
+.geom-corp .wp-toc-t{font-size:15.5px;color:#33424c;transition:color .18s}
+.geom-corp .wp-toc-p{font-family:var(--mono);font-size:11.5px;color:var(--slate)}
+
+/* the inline reader */
+.geom-corp .wp-readblk{background:#fff}
+.geom-corp .wp-frame{display:block;width:100%;height:min(1180px,88vh);margin-top:26px;border:1px solid var(--line);border-radius:12px;background:var(--mist);box-shadow:0 14px 40px rgba(12,21,25,.1)}
+.geom-corp .wp-escape{margin-top:14px;font-family:var(--mono);font-size:11.5px;letter-spacing:.04em;color:var(--slate)}
+.geom-corp .wp-escape a{color:var(--basin);border-bottom:1px solid rgba(27,111,174,.3)}
+
+/* phone: the <object> is unreliable, so swap it for a card */
+.geom-corp .wp-onphone{display:none}
+@media(max-width:900px){
+  .geom-corp .wp-frame,.geom-corp .wp-escape,.geom-corp .wp-readsub{display:none}
+  .geom-corp .wp-onphone{display:block;margin-top:24px;padding:26px;background:#fff;border:1px solid var(--line);border-radius:14px}
+  .geom-corp .wp-onphone-t{font-family:var(--serif);font-size:21px;margin-bottom:8px}
+  .geom-corp .wp-onphone-d{font-size:14.5px;color:#33424c;max-width:52ch}
+  .geom-corp .wp-onphone .wp-actions{margin-top:20px}
+}
+
+.geom-corp .wp-note{max-width:78ch;font-family:var(--mono);font-size:12.5px;line-height:1.85;color:var(--slate);padding-left:18px;border-left:2px solid var(--line)}

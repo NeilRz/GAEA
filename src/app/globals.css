@@ -798,8 +798,47 @@ table.catalog { min-width: 860px; }
   border: 1px solid rgba(255, 255, 255, 0.13); border-radius: 16px; padding: 16px;
   box-shadow: 0 10px 44px rgba(0, 0, 0, 0.34);
 }
+/* Collapse control. Present at every width: hiding it on desktop would let a
+   panel collapsed on a phone stay shut with no way to reopen after a rotate
+   or resize. */
+.map-panel-head {
+  display: flex; align-items: center; gap: 10px; width: 100%;
+  background: transparent; border: 0; padding: 0 0 8px; cursor: pointer;
+  text-align: left; color: inherit;
+}
+.map-panel-head .panel-title { flex: 1; min-width: 0; }
+.map-panel-sum {
+  font-size: 10px; letter-spacing: 0.08em; color: var(--ink-3);
+  flex-shrink: 0;
+}
+/* Same grid-rows disclosure the explorer filter groups use (.ex-group-body).
+   Preferred over a max-height transition, which needs a magic height cap that
+   silently clips once the layer list outgrows it. */
+.map-panel-body {
+  display: grid; grid-template-rows: 1fr;
+  transition: grid-template-rows 0.25s var(--ease);
+}
+.map-panel-body > div { overflow: hidden; min-height: 0; }
+.map-panel-body.closed { grid-template-rows: 0fr; }
+.map-panel.closed { padding-bottom: 8px; }
+
+/* Phone: the panel is an overlay on the globe it filters, so cap it and let
+   it scroll. `.gapp .map-panel` below is not redundant, it matches the
+   in-shell override's specificity, which otherwise wins and restores the
+   full-height panel that covered the whole screen. */
 @media (max-width: 700px) {
-  .map-panel { width: calc(100% - 32px); max-height: 45%; }
+  .map-panel,
+  .gapp .map-panel {
+    top: 12px; left: 12px; right: 12px; width: auto;
+    /* Percentage of the map area, not vh: inside the app shell the map sits
+       under a top bar, so a vh cap overshoots and eats more of the globe than
+       it looks like it should. */
+    max-height: 50%;
+    padding: 12px 14px;
+  }
+  /* Collapsed the panel is just its header, so height follows content. */
+  .map-panel.closed,
+  .gapp .map-panel.closed { max-height: none; overflow: hidden; }
 }
 
 .layer-toggle {

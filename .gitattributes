@@ -1,0 +1,14 @@
+# The whitepaper PDF has no NUL bytes in its first 8KB, so git's heuristic
+# classifies it as text and core.autocrlf=true rewrites its line endings on
+# checkout, corrupting the file. Mark the binary assets explicitly.
+*.pdf  binary
+*.webp binary
+*.png  binary
+*.jpg  binary
+*.jpeg binary
+*.gif  binary
+*.ico  binary
+*.mp4  binary
+*.webm binary
+*.woff binary
+*.woff2 binary
