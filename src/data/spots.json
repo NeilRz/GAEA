@@ -8,7 +8,7 @@
       "U.S. EIA spot price series (api.eia.gov v2)"
     ],
     "cadence": "daily (EIA publication lags the trading day)",
-    "version": "2026-08-11"
+    "version": "2026-08-18"
   },
   "series": [
     {
@@ -17,30 +17,10 @@
       "label": "WTI crude oil spot, Cushing OK",
       "unit": "USD/bbl",
       "latest": {
-        "period": "2026-08-11",
-        "value": 84.77
+        "period": "2026-08-18",
+        "value": 86.48
       },
       "points": [
-        {
-          "period": "2024-08-05",
-          "value": 74.46
-        },
-        {
-          "period": "2024-08-06",
-          "value": 74.6
-        },
-        {
-          "period": "2024-08-07",
-          "value": 76.68
-        },
-        {
-          "period": "2024-08-08",
-          "value": 77.64
-        },
-        {
-          "period": "2024-08-09",
-          "value": 78.28
-        },
         {
           "period": "2024-08-12",
           "value": 81.45
@@ -2036,6 +2016,26 @@
         {
           "period": "2026-08-11",
           "value": 84.77
+        },
+        {
+          "period": "2026-08-12",
+          "value": 84.97
+        },
+        {
+          "period": "2026-08-13",
+          "value": 82.77
+        },
+        {
+          "period": "2026-08-14",
+          "value": 83.99
+        },
+        {
+          "period": "2026-08-17",
+          "value": 86.04
+        },
+        {
+          "period": "2026-08-18",
+          "value": 86.48
         }
       ]
     },
@@ -2045,30 +2045,10 @@
       "label": "Brent crude oil spot, Europe",
       "unit": "USD/bbl",
       "latest": {
-        "period": "2026-08-11",
-        "value": 93.26
+        "period": "2026-08-18",
+        "value": 95.29
       },
       "points": [
-        {
-          "period": "2024-08-15",
-          "value": 83.09
-        },
-        {
-          "period": "2024-08-16",
-          "value": 81.56
-        },
-        {
-          "period": "2024-08-19",
-          "value": 81.09
-        },
-        {
-          "period": "2024-08-20",
-          "value": 78.85
-        },
-        {
-          "period": "2024-08-21",
-          "value": 78.77
-        },
         {
           "period": "2024-08-22",
           "value": 78.8
@@ -4064,6 +4044,26 @@
         {
           "period": "2026-08-11",
           "value": 93.26
+        },
+        {
+          "period": "2026-08-12",
+          "value": 92.52
+        },
+        {
+          "period": "2026-08-13",
+          "value": 92.03
+        },
+        {
+          "period": "2026-08-14",
+          "value": 92.02
+        },
+        {
+          "period": "2026-08-17",
+          "value": 92.43
+        },
+        {
+          "period": "2026-08-18",
+          "value": 95.29
         }
       ]
     },
@@ -4073,30 +4073,10 @@
       "label": "Conventional gasoline spot, New York Harbor",
       "unit": "USD/gal",
       "latest": {
-        "period": "2026-08-11",
-        "value": 3.152
+        "period": "2026-08-18",
+        "value": 3.361
       },
       "points": [
-        {
-          "period": "2024-08-05",
-          "value": 2.38
-        },
-        {
-          "period": "2024-08-06",
-          "value": 2.346
-        },
-        {
-          "period": "2024-08-07",
-          "value": 2.387
-        },
-        {
-          "period": "2024-08-08",
-          "value": 2.421
-        },
-        {
-          "period": "2024-08-09",
-          "value": 2.419
-        },
         {
           "period": "2024-08-12",
           "value": 2.462
@@ -6092,6 +6072,26 @@
         {
           "period": "2026-08-11",
           "value": 3.152
+        },
+        {
+          "period": "2026-08-12",
+          "value": 3.158
+        },
+        {
+          "period": "2026-08-13",
+          "value": 3.13
+        },
+        {
+          "period": "2026-08-14",
+          "value": 3.192
+        },
+        {
+          "period": "2026-08-17",
+          "value": 3.324
+        },
+        {
+          "period": "2026-08-18",
+          "value": 3.361
         }
       ]
     },
@@ -6101,30 +6101,10 @@
       "label": "Ultra-low-sulphur diesel spot, New York Harbor",
       "unit": "USD/gal",
       "latest": {
-        "period": "2026-08-11",
-        "value": 4.325
+        "period": "2026-08-18",
+        "value": 4.55
       },
       "points": [
-        {
-          "period": "2024-08-05",
-          "value": 2.276
-        },
-        {
-          "period": "2024-08-06",
-          "value": 2.251
-        },
-        {
-          "period": "2024-08-07",
-          "value": 2.313
-        },
-        {
-          "period": "2024-08-08",
-          "value": 2.317
-        },
-        {
-          "period": "2024-08-09",
-          "value": 2.3
-        },
         {
           "period": "2024-08-12",
           "value": 2.361
@@ -8120,6 +8100,26 @@
         {
           "period": "2026-08-11",
           "value": 4.325
+        },
+        {
+          "period": "2026-08-12",
+          "value": 4.345
+        },
+        {
+          "period": "2026-08-13",
+          "value": 4.305
+        },
+        {
+          "period": "2026-08-14",
+          "value": 4.332
+        },
+        {
+          "period": "2026-08-17",
+          "value": 4.532
+        },
+        {
+          "period": "2026-08-18",
+          "value": 4.55
         }
       ]
     },
@@ -8129,30 +8129,10 @@
       "label": "Henry Hub natural gas spot",
       "unit": "USD/MMBtu",
       "latest": {
-        "period": "2026-08-11",
-        "value": 2.79
+        "period": "2026-08-18",
+        "value": 2.82
       },
       "points": [
-        {
-          "period": "2024-07-31",
-          "value": 1.94
-        },
-        {
-          "period": "2024-08-01",
-          "value": 1.95
-        },
-        {
-          "period": "2024-08-02",
-          "value": 1.89
-        },
-        {
-          "period": "2024-08-05",
-          "value": 1.83
-        },
-        {
-          "period": "2024-08-06",
-          "value": 1.83
-        },
         {
           "period": "2024-08-07",
           "value": 1.96
@@ -10148,6 +10128,26 @@
         {
           "period": "2026-08-11",
           "value": 2.79
+        },
+        {
+          "period": "2026-08-12",
+          "value": 2.82
+        },
+        {
+          "period": "2026-08-13",
+          "value": 2.82
+        },
+        {
+          "period": "2026-08-14",
+          "value": 2.79
+        },
+        {
+          "period": "2026-08-17",
+          "value": 2.77
+        },
+        {
+          "period": "2026-08-18",
+          "value": 2.82
         }
       ]
     },
@@ -10157,30 +10157,10 @@
       "label": "3-2-1 crack spread, spot basis (2×gasoline + 1×diesel − 3×WTI, per barrel)",
       "unit": "USD/bbl",
       "latest": {
-        "period": "2026-08-11",
-        "value": 64.04
+        "period": "2026-08-18",
+        "value": 71.33
       },
       "points": [
-        {
-          "period": "2024-08-05",
-          "value": 24.04
-        },
-        {
-          "period": "2024-08-06",
-          "value": 22.6
-        },
-        {
-          "period": "2024-08-07",
-          "value": 22.54
-        },
-        {
-          "period": "2024-08-08",
-          "value": 22.59
-        },
-        {
-          "period": "2024-08-09",
-          "value": 21.65
-        },
         {
           "period": "2024-08-12",
           "value": 20.54
@@ -12176,6 +12156,26 @@
         {
           "period": "2026-08-11",
           "value": 64.04
+        },
+        {
+          "period": "2026-08-12",
+          "value": 64.28
+        },
+        {
+          "period": "2026-08-13",
+          "value": 65.14
+        },
+        {
+          "period": "2026-08-14",
+          "value": 66.03
+        },
+        {
+          "period": "2026-08-17",
+          "value": 70.48
+        },
+        {
+          "period": "2026-08-18",
+          "value": 71.33
         }
       ]
     }
